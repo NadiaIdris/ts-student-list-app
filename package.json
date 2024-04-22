@@ -39,5 +39,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "App to manage student list using typescript and react",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Nadia Idris",
+  "license": "MIT"
 }

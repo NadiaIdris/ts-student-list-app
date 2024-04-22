@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es5", // Set the ECMAScript target version
     "lib": [
+      // Specify the library files to include
       "dom",
       "dom.iterable",
       "esnext"
     ],
     "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
+    "skipLibCheck": true, // Avoid checking for errors in library files
+    "esModuleInterop": true, 
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -21,6 +22,6 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src" // Specify the directory containing your TypeScript files
   ]
 }
