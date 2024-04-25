@@ -1,16 +1,23 @@
-import { useState } from "react";
-import { useAuthContext } from "../../hooks/useAuthContext";
-import { routes } from "../../routes/routes";
 import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { UserType } from "../../context/AuthContext";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { apiEndpoints } from "../../apiEndpoints/apiEndpoints";
 
 interface UserLogInDetailsType {
   email: string;
   password: string;
 }
 
-const LogInPage = () => {
+interface LogInPageProps {
+  /* Url to navigate to if user requested other than login page, but are not authenticated yet */
+  url?: string;
+}
+
+const LogInPage = ({ url }: LogInPageProps) => {
   const { logIn } = useAuthContext();
+  const navigate = useNavigate();
   const [userLogInDetails, setUserLogInDetails] =
     useState<UserLogInDetailsType>({
       email: "",
@@ -23,13 +30,14 @@ const LogInPage = () => {
   ) => {
     // Make a post request to the server
     try {
-      const url = `http://localhost:4000${routes.logInRoute}`;
-      const response = await axios.post(url, userLogInDetails);
+      const reqUrl = `http://localhost:4000${apiEndpoints.logInEndpoint}`;
+      const response = await axios.post(reqUrl, userLogInDetails);
       // Extract the token and user details from the response
-      const bearerToken = response.headers.Authorization || response.headers.authorization;
+      const bearerToken =
+        response.headers.Authorization || response.headers.authorization;
       const token = bearerToken.split(" ")[1];
       const { registered_user_uid, first_name, last_name, email } =
-      response.data;
+        response.data;
       const user = {
         isAuthenticated: true,
         token: token,
@@ -39,6 +47,7 @@ const LogInPage = () => {
         email: email,
       };
       loginFn(user);
+      navigate(url || "/students", { replace: true });
     } catch (error) {
       console.error("Error logging in", error);
     }
@@ -86,7 +95,7 @@ const LogInPage = () => {
       </form>
       <div>
         <p>
-          Not a member? <a href={routes.signUpRoute}>Sign up now</a>
+          Not a member? <a href={apiEndpoints.signUpEndpoint}>Sign up now</a>
         </p>
         <p>* Required fields</p>
       </div>

@@ -3,6 +3,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 import { AuthContextProvider } from "./context/AuthContext";
+import { StudentsPage } from "./pages/StudentsPage";
 const LogInPage = React.lazy(() =>
   import("./pages/LogInPage").then((exp) => ({ default: exp.LogInPage }))
 );
@@ -29,7 +30,14 @@ function App() {
             }
           />
           {/* <Route path="/signup" element={<SignUp />} /> */}
-          {/* <Route path="/students" element={<Students />} /> */}
+          <Route
+            path="/students"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <StudentsPage />
+              </Suspense>
+            }
+          />
           {/* <Route path="/students/add-student" element={<AddStudent />} /> */}
           {/* <Route path="/students/:id" element={<Student />} /> */}
           {/* <Route path="/students/:id/edit" element={<Student />} /> */}
