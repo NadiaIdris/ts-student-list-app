@@ -1,5 +1,5 @@
 const LoadingSpinner = () => {
-  return "Loading..."
+  return <p>"Loading..."</p>;
 };
 
 export { LoadingSpinner };
