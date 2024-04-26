@@ -5,6 +5,7 @@ import { LoadingSpinner } from "./components/LoadingSpinner";
 import { AuthContextProvider } from "./context/AuthContext";
 import { StudentsPage } from "./pages/StudentsPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { LogInPage } from "./pages/LogInPage";
 
 function App() {
   return (
@@ -23,6 +24,16 @@ function App() {
           />
           <Route
             path="/students"
+            element={
+              <ProtectedRoute>
+                <Suspense fallback={<LoadingSpinner />}>
+                  <StudentsPage />
+                </Suspense>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/login"
             element={
               <ProtectedRoute>
                 <Suspense fallback={<LoadingSpinner />}>

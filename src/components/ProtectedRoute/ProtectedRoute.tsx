@@ -1,4 +1,3 @@
-import { Route } from "react-router-dom";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { LogInPage } from "../../pages/LogInPage";
 

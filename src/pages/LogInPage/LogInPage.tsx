@@ -1,5 +1,5 @@
 import { axiosInstance } from "../../api/axiosConfig";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
 import { UserType } from "../../context/AuthContext";
@@ -11,7 +11,7 @@ interface UserLogInDetailsType {
 }
 
 const LogInPage = () => {
-  const { logIn } = useAuthContext();
+  const { user, logIn } = useAuthContext();
   const navigate = useNavigate();
   const [userLogInDetails, setUserLogInDetails] =
     useState<UserLogInDetailsType>({
@@ -25,7 +25,10 @@ const LogInPage = () => {
   ) => {
     // Make a post request to the server
     try {
-      const response = await axiosInstance.post(LOGIN_ENDPOINT, userLogInDetails);
+      const response = await axiosInstance.post(
+        LOGIN_ENDPOINT,
+        userLogInDetails
+      );
       // Extract the token and user details from the response
       const bearerToken =
         response.headers.Authorization || response.headers.authorization;
@@ -41,7 +44,17 @@ const LogInPage = () => {
         email: email,
       };
       loginFn(user);
-      navigate("/students", { replace: true });
+      // Redirect to the url that the user was trying to access
+
+      // If url path is /login, redirect to /students
+      if (window.location.pathname === "/login") {
+        navigate("/students", { replace: true });
+        return;
+      }
+      // If url path is not /login, redirect to the url path
+      navigate(window.location.pathname, { replace: true });
+
+      // navigate("/students", { replace: true });
     } catch (error) {
       console.error("Error logging in", error);
     }

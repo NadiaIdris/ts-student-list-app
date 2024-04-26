@@ -12,12 +12,13 @@ export interface UserType {
 interface AuthContextType {
   user: UserType | null;
   logIn: (user: UserType) => void;
-  logOut?: () => void;
+  logOut: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   logIn: (user) => {},
+  logOut: () => {},
 });
 
 const AuthContextProvider = ({ children }: { children: JSX.Element }) => {
