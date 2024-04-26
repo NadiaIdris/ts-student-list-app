@@ -4,9 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 import { AuthContextProvider } from "./context/AuthContext";
 import { StudentsPage } from "./pages/StudentsPage";
-const LogInPage = React.lazy(() =>
-  import("./pages/LogInPage").then((exp) => ({ default: exp.LogInPage }))
-);
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -16,28 +14,24 @@ function App() {
           <Route
             path="/"
             element={
-              <Suspense fallback={<LoadingSpinner />}>
-                <LogInPage />
-              </Suspense>
+              <ProtectedRoute>
+                <Suspense fallback={<LoadingSpinner />}>
+                  <StudentsPage />
+                </Suspense>
+              </ProtectedRoute>
             }
           />
-          <Route
-            path="/login"
-            element={
-              <Suspense fallback={<LoadingSpinner />}>
-                <LogInPage />
-              </Suspense>
-            }
-          />
-          {/* <Route path="/signup" element={<SignUp />} /> */}
           <Route
             path="/students"
             element={
-              <Suspense fallback={<LoadingSpinner />}>
-                <StudentsPage />
-              </Suspense>
+              <ProtectedRoute>
+                <Suspense fallback={<LoadingSpinner />}>
+                  <StudentsPage />
+                </Suspense>
+              </ProtectedRoute>
             }
           />
+          {/* <Route path="/signup" element={<SignUp />} /> */}
           {/* <Route path="/students/add-student" element={<AddStudent />} /> */}
           {/* <Route path="/students/:id" element={<Student />} /> */}
           {/* <Route path="/students/:id/edit" element={<Student />} /> */}
