@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiEndpoints } from "../../apiEndpoints";
 import { UserType } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
-import { apiEndpoints } from "../../apiEndpoints/apiEndpoints";
 
 interface UserLogInDetailsType {
   email: string;
@@ -12,10 +12,10 @@ interface UserLogInDetailsType {
 
 interface LogInPageProps {
   /* Url to navigate to if user requested other than login page, but are not authenticated yet */
-  url?: string;
+  nextUrl?: string;
 }
 
-const LogInPage = ({ url }: LogInPageProps) => {
+const LogInPage = ({ nextUrl }: LogInPageProps) => {
   const { logIn } = useAuthContext();
   const navigate = useNavigate();
   const [userLogInDetails, setUserLogInDetails] =
@@ -47,7 +47,7 @@ const LogInPage = ({ url }: LogInPageProps) => {
         email: email,
       };
       loginFn(user);
-      navigate(url || "/students", { replace: true });
+      navigate(nextUrl || "/students", { replace: true });
     } catch (error) {
       console.error("Error logging in", error);
     }
