@@ -1,7 +1,7 @@
-import axios from "axios";
+import { axiosInstance } from "../../api/axiosConfig";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiEndpoints } from "../../apiEndpoints";
+import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
 import { UserType } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
@@ -10,12 +10,7 @@ interface UserLogInDetailsType {
   password: string;
 }
 
-interface LogInPageProps {
-  /* Url to navigate to if user requested other than login page, but are not authenticated yet */
-  nextUrl?: string;
-}
-
-const LogInPage = ({ nextUrl }: LogInPageProps) => {
+const LogInPage = () => {
   const { logIn } = useAuthContext();
   const navigate = useNavigate();
   const [userLogInDetails, setUserLogInDetails] =
@@ -30,8 +25,7 @@ const LogInPage = ({ nextUrl }: LogInPageProps) => {
   ) => {
     // Make a post request to the server
     try {
-      const reqUrl = `http://localhost:4000${apiEndpoints.logInEndpoint}`;
-      const response = await axios.post(reqUrl, userLogInDetails);
+      const response = await axiosInstance.post(LOGIN_ENDPOINT, userLogInDetails);
       // Extract the token and user details from the response
       const bearerToken =
         response.headers.Authorization || response.headers.authorization;
@@ -47,7 +41,7 @@ const LogInPage = ({ nextUrl }: LogInPageProps) => {
         email: email,
       };
       loginFn(user);
-      navigate(nextUrl || "/students", { replace: true });
+      navigate("/students", { replace: true });
     } catch (error) {
       console.error("Error logging in", error);
     }
@@ -95,7 +89,7 @@ const LogInPage = ({ nextUrl }: LogInPageProps) => {
       </form>
       <div>
         <p>
-          Not a member? <a href={apiEndpoints.signUpEndpoint}>Sign up now</a>
+          Not a member? <a href={SIGNUP_ENDPOINT}>Sign up now</a>
         </p>
         <p>* Required fields</p>
       </div>
