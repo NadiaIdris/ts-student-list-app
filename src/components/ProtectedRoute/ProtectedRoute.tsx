@@ -1,5 +1,4 @@
 import { useAuthContext } from "../../hooks/useAuthContext";
-import { LogInPage } from "../../pages/LogInPage";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 

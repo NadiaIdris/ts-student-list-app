@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
@@ -11,7 +11,7 @@ interface UserLogInDetailsType {
 }
 
 const LogInPage = () => {
-  const { user, logIn } = useAuthContext();
+  const { logIn } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
   const [userLogInDetails, setUserLogInDetails] =
