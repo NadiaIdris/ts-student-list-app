@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
 
-export interface UserType {
+export interface IUser {
   isAuthenticated: boolean;
   token: string;
   userId: string;
@@ -9,32 +9,34 @@ export interface UserType {
   email: string;
 }
 
-interface AuthContextType {
-  user: UserType | null;
-  logIn: (user: UserType) => void;
+interface IAuthContext {
+  user: IUser | null;
+  logIn: (user: IUser) => void;
   logOut: () => void;
 }
 
-const AuthContext = createContext<AuthContextType>({
+const AuthContext = createContext<IAuthContext>({
   user: null,
   logIn: (user) => {},
   logOut: () => {},
 });
 
-const AuthContextProvider = ({ children }: { children: JSX.Element }) => {
+type AuthContextProviderProps = { children: JSX.Element };
+
+const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const localStorageUser = localStorage.getItem("user");
-  const [user, setUser] = useState<UserType | null>(
+  const [user, setUser] = useState<IUser | null>(
     localStorageUser ? JSON.parse(localStorageUser) : null
   );
 
-  const logIn = (user: UserType) => {
+  const logIn = (user: IUser) => {
     setUser(user);
     localStorage.setItem("user", JSON.stringify(user));
   };
 
   const logOut = () => {
     setUser(null);
-    localStorage.removeItem("user");
+    localStorage.clear()
   };
 
   return (
