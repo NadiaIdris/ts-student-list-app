@@ -5,6 +5,7 @@ import { axiosInstance } from "../../api/axiosConfig";
 import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { StudentsPage } from "../StudentsPage";
+import { PasswordInput } from "../../components/PasswordInput";
 
 interface UserLogInDetailsType {
   email: string;
@@ -105,20 +106,16 @@ const LogInPage = () => {
             }
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="password">Password*</label>
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={userLogInDetails.password}
-            onChange={(event) =>
-              setUserLogInDetails({
-                ...userLogInDetails,
-                password: event.target.value,
-              })
-            }
-          />
-        </div>
+        <PasswordInput
+          value={userLogInDetails.password}
+          onChange={(event) =>
+            setUserLogInDetails({
+              ...userLogInDetails,
+              password: event.target.value,
+            })
+          }
+        />
+      
         <button type="submit">Log in</button>
       </form>
       <div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { FiEye, FiEyeOff } from "react-icons/fi";
 import "./SignUpPage.css";
 import { Link } from "react-router-dom";
+import { PasswordInput } from "../../components/PasswordInput";
 
 const SignUpPage = () => {
   // TODO: Implement sign up form
@@ -12,7 +12,6 @@ const SignUpPage = () => {
     email: "",
     password: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <>
@@ -31,35 +30,20 @@ const SignUpPage = () => {
           <label htmlFor="email">Email*</label>
           <input type="email" placeholder="Enter your email" />
         </div>
-        <div className="form-group ">
-          <label htmlFor="password">Password*</label>
-          <div className="password-input">
-            <input
-              type={showPassword ? "text" : "password"}
-              value={userSignUpDetails.password}
-              onChange={(event) =>
-                setUserSignUpDetails({
-                  ...userSignUpDetails,
-                  password: event.target.value,
-                })
-              }
-              placeholder="Enter your password"
-            />
-            <span
-              className={`eye-icon ${showPassword ? "show" : ""}`}
-              onClick={() => {
-                setShowPassword(!showPassword);
-              }}
-            >
-              {showPassword ? <FiEyeOff /> : <FiEye />}
-            </span>
-          </div>
-        </div>
+        <PasswordInput
+          value={userSignUpDetails.password}
+          onChange={(event) =>
+            setUserSignUpDetails({
+              ...userSignUpDetails,
+              password: event.target.value,
+            })
+          }
+        />
         <button type="submit">Sign up</button>
       </form>
       <div>
         <p>
-        Already a member? <Link to="/login">Log in now</Link>
+          Already a member? <Link to="/login">Log in now</Link>
         </p>
         <p>* Required fields</p>
       </div>
