@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
 import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { StudentsPage } from "../StudentsPage";
 
 interface UserLogInDetailsType {
   email: string;
@@ -11,7 +12,7 @@ interface UserLogInDetailsType {
 }
 
 const LogInPage = () => {
-  const { logIn } = useAuthContext();
+  const { user, logIn } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
   const [userLogInDetails, setUserLogInDetails] =
@@ -63,8 +64,26 @@ const LogInPage = () => {
     }
   };
 
+  const isAuthenticated = user?.isAuthenticated;
+
+  // The use effect hook below checks if the user is authenticated and redirects them to the students page if they are.
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
+  /*
+   * If the user is authenticated, render the StudentsPage component, so that there will not be any
+   * flicker in the UI when the user is redirected to the students page.
+   */
+  if (isAuthenticated) {
+    // navigate("/students", { replace: true });
+    return <StudentsPage />;
+  }
+
   return (
-    <>
+    <div>
       <h1>Welcome to students app</h1>
       <h2>Log in</h2>
       <form
@@ -109,7 +128,7 @@ const LogInPage = () => {
         </p>
         <p>* Required fields</p>
       </div>
-    </>
+    </div>
   );
 };
 
