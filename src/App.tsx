@@ -5,6 +5,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthContextProvider } from "./context/AuthContext";
 import { LogInPage } from "./pages/LogInPage";
 import { StudentsPage } from "./pages/StudentsPage";
+import { SignUpPage } from "./pages/SignUpPage";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,14 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LogInPage />,
+  },
+  {
+    path: "/signup",
+    element: <SignUpPage />,
+  },
+  {
+    path: "*",
+    element: <div>404 Not Found</div>,
   },
 ]);
 

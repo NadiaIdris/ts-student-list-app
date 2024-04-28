@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { LOGIN_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
 import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
@@ -78,12 +78,11 @@ const LogInPage = () => {
    * flicker in the UI when the user is redirected to the students page.
    */
   if (isAuthenticated) {
-    // navigate("/students", { replace: true });
     return <StudentsPage />;
   }
 
   return (
-    <div>
+    <>
       <h1>Welcome to students app</h1>
       <h2>Log in</h2>
       <form
@@ -124,11 +123,11 @@ const LogInPage = () => {
       </form>
       <div>
         <p>
-          Not a member? <a href={SIGNUP_ENDPOINT}>Sign up now</a>
+          Not a member? <Link to="/signup">Sign up now</Link>
         </p>
         <p>* Required fields</p>
       </div>
-    </div>
+    </>
   );
 };
 

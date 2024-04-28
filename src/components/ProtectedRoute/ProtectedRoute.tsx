@@ -10,8 +10,10 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const location = useLocation();
   const endpoint = location.pathname;
 
-  // If user is trying to access a protected route, save the endpoint in case they log in
-  // successfully and need to be redirected back to the endpoint they were trying to access
+  /*
+   * If user is trying to access a protected route, save the endpoint in case they log in
+   * successfully and need to be redirected back to the endpoint they were trying to access
+   */
   if (!isAuthenticated) {
     localStorage.setItem("endpoint", location.pathname);
   }
