@@ -108,6 +108,7 @@ const LogInPage = () => {
         </div>
         {/* TODO: fix the component below */}
         <PasswordInput
+          id="password"
           value={userLogInDetails.password}
           onChange={(event) =>
             setUserLogInDetails({

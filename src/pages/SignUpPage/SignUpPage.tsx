@@ -9,6 +9,7 @@ export interface IUserSignUpData {
   last_name: string;
   email: string;
   password: string;
+  repeat_password: string
 }
 
 const SignUpPage = () => {
@@ -17,28 +18,75 @@ const SignUpPage = () => {
     last_name: "",
     email: "",
     password: "",
+    repeat_password: "",
   });
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<IUserSignUpData>({
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+    repeat_password: "",
+  });
 
   const handleOnSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     // Validate the user sign up data
-    // const errors = validateForm(signUpSchema, formData);
     const { error, value } = validateSignUpForm(formData);
-    console.log("name:   ", error?.name);
-    console.log("details: ", error?.details);
-    console.log("details[0].message:   ", error?.details[ 0 ].message);
-    console.log("details[0].path:   ", error?.details[ 0 ].path)
-    console.log("details[0].type:  ", error?.details[ 0 ].type);
-    console.log("details[0].context:   ", error?.details[ 0 ].context);
-    console.log("details[0].context.key:  ", error?.details[ 0 ].context?.key);
-    console.log("details[0].context.label:   ", error?.details[ 0 ].context?.label);
-    console.log("details[0].context.value:   ", error?.details[ 0 ].context?.value);
-    console.log("value:  ", value);
 
-    // Send the user sign up data to the server
-    console.log("Sign up form submitted");
+    if (error) {
+      // Make an error object with the error messages
+      let errorMsgs = {
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+        repeat_password: "",
+      };
+
+      error.details.forEach((detail) => {
+        console.log(detail.context?.key, detail.message);
+        const key = detail.context?.key;
+        if (key === "first_name") {
+          errorMsgs.first_name = detail.message;
+        }
+        if (key === "last_name") {
+          errorMsgs.last_name = detail.message;
+        }
+        if (key === "email") {
+          errorMsgs.email = detail.message;
+        }
+        if (key === "password") {
+          errorMsgs.password = detail.message;
+        }
+        if (key === "repeat_password") {
+          errorMsgs.repeat_password = detail.message;
+        }
+      });
+
+      setErrors({ ...errorMsgs });
+    }
+    // Send the user data to the server if there are no errors
+    // try {
+    //   // Send the data to the server
+
+    //   // Clear the form
+    //   setFormData({
+    //     first_name: "",
+    //     last_name: "",
+    //     email: "",
+    //     password: "",
+    //   });
+    //   // Clear the errors
+    //   setErrors({
+    //     first_name: "",
+    //     last_name: "",
+    //     email: "",
+    //     password: "",
+    //   });
+    // } catch (error) {
+    //   console.error("Error signing up", error);
+    // }
   };
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +101,7 @@ const SignUpPage = () => {
       <h2>Sign in</h2>
       <form onSubmit={handleOnSubmit} autoComplete="true">
         <div className="form-group">
-          <label htmlFor="firstName">First name*</label>
+          <label htmlFor="first_name">First name*</label>
           <input
             id="first_name"
             type="text"
@@ -61,6 +109,7 @@ const SignUpPage = () => {
             value={formData.first_name}
             onChange={handleOnChange}
           />
+          {errors.first_name && <div>{errors.first_name}</div>}
         </div>
         <div className="form-group">
           <label htmlFor="last_name">Last name*</label>
@@ -71,6 +120,7 @@ const SignUpPage = () => {
             value={formData.last_name}
             onChange={handleOnChange}
           />
+          {errors.last_name && <div>{errors.last_name}</div>}
         </div>
         <div className="form-group">
           <label htmlFor="email">Email*</label>
@@ -81,8 +131,21 @@ const SignUpPage = () => {
             value={formData.email}
             onChange={handleOnChange}
           />
+          {errors.email && <div>{errors.email}</div>}
         </div>
-        <PasswordInput value={formData.password} onChange={handleOnChange} />
+        <PasswordInput
+          id="password"
+          value={formData.password}
+          onChange={handleOnChange}
+          passwordErrorMsg={errors.password}
+        />
+        <PasswordInput
+          id="repeat_password"
+          label="Confirm password*"
+          value={formData.repeat_password}
+          onChange={handleOnChange}
+          passwordErrorMsg={errors.repeat_password}
+        />
         <button type="submit">Sign up</button>
       </form>
       <div>
