@@ -107,7 +107,7 @@ const LogInPage = () => {
           />
         </div>
         {/* TODO: fix the component below */}
-        {/* <PasswordInput
+        <PasswordInput
           value={userLogInDetails.password}
           onChange={(event) =>
             setUserLogInDetails({
@@ -115,9 +115,7 @@ const LogInPage = () => {
               password: event.target.value,
             })
           }
-          required={true}
-          register={() => {}}
-        /> */}
+        />
       
         <button type="submit">Log in</button>
       </form>

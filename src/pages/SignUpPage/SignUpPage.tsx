@@ -2,49 +2,64 @@ import { useState } from "react";
 import "./SignUpPage.css";
 import { Link } from "react-router-dom";
 import { PasswordInput } from "../../components/PasswordInput";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { validateSignUpForm } from "../../validation/validate";
 
 export interface IUserSignUpData {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
   password: string;
 }
 
 const SignUpPage = () => {
-  // TODO: Implement sign up form
-  const handleOnSubmit: SubmitHandler<IUserSignUpData> = (data) => {
-    console.log(data);
-  };
-  const [userSignUpData, setUserSignUpData] = useState({
-    firstName: "",
-    lastName: "",
+  const [formData, setFormData] = useState<IUserSignUpData>({
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
   });
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<IUserSignUpData>();
 
+  const [errors, setErrors] = useState({});
+
+  const handleOnSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    // Validate the user sign up data
+    // const errors = validateForm(signUpSchema, formData);
+    const { error, value } = validateSignUpForm(formData);
+    console.log("name:   ", error?.name);
+    console.log("details: ", error?.details);
+    console.log("details[0].message:   ", error?.details[ 0 ].message);
+    console.log("details[0].path:   ", error?.details[ 0 ].path)
+    console.log("details[0].type:  ", error?.details[ 0 ].type);
+    console.log("details[0].context:   ", error?.details[ 0 ].context);
+    console.log("details[0].context.key:  ", error?.details[ 0 ].context?.key);
+    console.log("details[0].context.label:   ", error?.details[ 0 ].context?.label);
+    console.log("details[0].context.value:   ", error?.details[ 0 ].context?.value);
+    console.log("value:  ", value);
+
+    // Send the user sign up data to the server
+    console.log("Sign up form submitted");
+  };
+
+  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [event.target.id]: event.target.value,
+    });
+  };
   return (
     <>
       <h1>Welcome to students app</h1>
       <h2>Sign in</h2>
-      <form
-        onSubmit={handleSubmit(handleOnSubmit)}
-        autoComplete="true"
-      >
+      <form onSubmit={handleOnSubmit} autoComplete="true">
         <div className="form-group">
-          <label htmlFor="first_name">First name*</label>
+          <label htmlFor="firstName">First name*</label>
           <input
             id="first_name"
             type="text"
             placeholder="Enter your first name"
-            {...register("firstName", { required: true })}
-            aria-invalid={errors.firstName ? "true" : "false"}
+            value={formData.first_name}
+            onChange={handleOnChange}
           />
         </div>
         <div className="form-group">
@@ -53,7 +68,8 @@ const SignUpPage = () => {
             id="last_name"
             type="text"
             placeholder="Enter your last name"
-            {...register("lastName", { required: true })}
+            value={formData.last_name}
+            onChange={handleOnChange}
           />
         </div>
         <div className="form-group">
@@ -62,18 +78,11 @@ const SignUpPage = () => {
             id="email"
             type="email"
             placeholder="Enter your email"
-            {...register("email", { required: true })}
+            value={formData.email}
+            onChange={handleOnChange}
           />
         </div>
-        <PasswordInput
-          onChange={(event) =>
-            setUserSignUpData({
-              ...userSignUpData,
-              password: event.target.value,
-            })
-          }
-          register={register}
-        />
+        <PasswordInput value={formData.password} onChange={handleOnChange} />
         <button type="submit">Sign up</button>
       </form>
       <div>

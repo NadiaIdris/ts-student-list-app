@@ -1,20 +1,21 @@
 import { useState } from "react";
-import { UseFormRegister } from "react-hook-form";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { IUserSignUpData } from "../../pages/SignUpPage/SignUpPage";
+import "./PasswordInput.css";
 
 interface PasswordInputProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  value: string;
   label?: string;
   placeholder?: string;
-  register: UseFormRegister<IUserSignUpData>;
+  // Add the rest of the props here
+  [key: string]: any;
 }
 
 const PasswordInput = ({
   onChange,
+  value,
   label = "Password",
   placeholder = "Enter your password",
-  register,
   ...props
 }: PasswordInputProps) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,7 +28,8 @@ const PasswordInput = ({
           id="password"
           type={showPassword ? "text" : "password"}
           placeholder={placeholder}
-          {...register("password", { required: true })}
+          value={value}
+          onChange={onChange}
           {...props}
         />
         <span
