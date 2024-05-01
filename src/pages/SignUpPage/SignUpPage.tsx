@@ -1,8 +1,9 @@
 import { useState } from "react";
 import "./SignUpPage.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PasswordInput } from "../../components/PasswordInput";
 import { validateSignUpForm } from "../../validation/validate";
+import axios from "axios";
 
 export interface IUserSignUpData {
   first_name: string;
@@ -28,8 +29,9 @@ const SignUpPage = () => {
     password: "",
     repeat_password: "",
   });
+  const navigate = useNavigate();
 
-  const handleOnSubmit = (event: React.FormEvent) => {
+  const handleOnSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     // Validate the user sign up data
     const { error, value } = validateSignUpForm(formData);
@@ -57,9 +59,9 @@ const SignUpPage = () => {
       );
 
       setErrors({ ...errorMsgs });
-
-      console.log("errorMsgs: ", errorMsgs);
+      return;
     } else {
+      // If no errors, clear the errors
       setErrors({
         first_name: "",
         last_name: "",
@@ -69,29 +71,34 @@ const SignUpPage = () => {
       });
     }
 
-    // //Send the user data to the server if there are no errors
-    // try {
-    //   // Send the data to the server
+    // Delete the repeat_password key from the formData
+    delete (formData as Partial<IUserSignUpData>).repeat_password;
+    console.log("formData: ", formData)
 
-    //   // Clear the form
-    //   setFormData({
-    //     first_name: "",
-    //     last_name: "",
-    //     email: "",
-    //     password: "",
-    //     repeat_password: "",
-    //   });
-    //   // Clear the errors
-    //   setErrors({
-    //     first_name: "",
-    //     last_name: "",
-    //     email: "",
-    //     password: "",
-    //     repeat_password: "",
-    //   });
-    // } catch (error) {
-    //   console.error("Error signing up", error);
-    // }
+    //Send the user data to the server if there are no errors
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/v1/user/signup",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("User signed up", response.data);
+      // Clear the form
+      setFormData({
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+        repeat_password: "",
+      });
+      navigate("/students/");
+    } catch (error) {
+      console.error("Error signing up", error);
+    }
   };
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {

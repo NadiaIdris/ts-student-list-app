@@ -40,7 +40,7 @@ const validateSignUpForm = (data: IUserSignUpData) => {
     });
   }
 
-  return { error, value };
+  return { error, value: value as IUserSignUpData};
 };
 
 export { validateSignUpForm };
