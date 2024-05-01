@@ -15,4 +15,13 @@ const signUpSchema = Joi.object<IUserSignUpData>({
   }),
 });
 
-export { signUpSchema };
+const logInSchema = Joi.object({
+  email: Joi.string()
+    .email({ tlds: { allow: false } })
+    .min(3)
+    .max(255)
+    .required(),
+  password: Joi.string().min(6).max(1024).required(),
+});
+
+export { signUpSchema, logInSchema };

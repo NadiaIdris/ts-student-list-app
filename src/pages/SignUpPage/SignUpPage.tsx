@@ -3,7 +3,8 @@ import "./SignUpPage.css";
 import { Link, useNavigate } from "react-router-dom";
 import { PasswordInput } from "../../components/PasswordInput";
 import { validateSignUpForm } from "../../validation/validate";
-import axios from "axios";
+import { axiosInstance } from "../../api/axiosConfig";
+import { SIGNUP_ENDPOINT } from "../../api/apiConstants";
 
 export interface IUserSignUpData {
   first_name: string;
@@ -34,7 +35,7 @@ const SignUpPage = () => {
   const handleOnSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     // Validate the user sign up data
-    const { error, value } = validateSignUpForm(formData);
+    const { error } = validateSignUpForm(formData);
 
     if (error) {
       // Make an object with the error messages
@@ -73,12 +74,11 @@ const SignUpPage = () => {
 
     // Delete the repeat_password key from the formData
     delete (formData as Partial<IUserSignUpData>).repeat_password;
-    console.log("formData: ", formData)
 
     //Send the user data to the server if there are no errors
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/v1/user/signup",
+      await axiosInstance.post(
+        SIGNUP_ENDPOINT,
         formData,
         {
           headers: {
@@ -86,7 +86,6 @@ const SignUpPage = () => {
           },
         }
       );
-      console.log("User signed up", response.data);
       // Clear the form
       setFormData({
         first_name: "",

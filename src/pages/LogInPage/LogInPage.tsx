@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LOGIN_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
@@ -6,8 +6,9 @@ import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { StudentsPage } from "../StudentsPage";
 import { PasswordInput } from "../../components/PasswordInput";
+import { validateLoginForm } from "../../validation/validate";
 
-interface UserLogInDetailsType {
+export interface IUserLogInData {
   email: string;
   password: string;
 }
@@ -17,16 +18,22 @@ const LogInPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [userLogInDetails, setUserLogInDetails] =
-    useState<UserLogInDetailsType>({
+    useState<IUserLogInData>({
       email: "",
       password: "",
     });
+  const [errors, setErrors] = useState<IUserLogInData>({
+    email: "",
+    password: "",
+  });
 
-  const handleSubmit = async (
-    userLogInDetails: UserLogInDetailsType,
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>,
+    userLogInDetails: IUserLogInData,
     loginFn: (user: IUser) => void
   ) => {
+    event.preventDefault();
     // Make a post request to the server
+    const {error, value} = validateLoginForm(userLogInDetails);
     try {
       const response = await axiosInstance.post(
         LOGIN_ENDPOINT,
@@ -58,11 +65,16 @@ const LogInPage = () => {
           navigate("/students");
         }
       }
-
-      // navigate("/students", { replace: true });
     } catch (error) {
       console.error("Error logging in", error);
     }
+  };
+
+  const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => { 
+    setUserLogInDetails({
+      ...userLogInDetails,
+      [event.target.id]: event.target.value,
+    })
   };
 
   const isAuthenticated = user?.isAuthenticated;
@@ -87,26 +99,19 @@ const LogInPage = () => {
       <h1>Welcome to students app</h1>
       <h2>Log in</h2>
       <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          handleSubmit(userLogInDetails, logIn);
-        }}
+        onSubmit={(event) => handleSubmit(event, userLogInDetails, logIn)}
+        autoComplete="true"
       >
         <div className="form-group">
           <label htmlFor="email">Email*</label>
           <input
+            id="email"
             type="email"
             placeholder="Enter your email"
             value={userLogInDetails.email}
-            onChange={(event) =>
-              setUserLogInDetails({
-                ...userLogInDetails,
-                email: event.target.value,
-              })
-            }
+            onChange={(event) => handleOnChange(event)        }
           />
         </div>
-        {/* TODO: fix the component below */}
         <PasswordInput
           id="password"
           value={userLogInDetails.password}

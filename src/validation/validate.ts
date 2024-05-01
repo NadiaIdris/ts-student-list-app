@@ -1,6 +1,7 @@
 import { ValidationErrorItem } from "joi";
 import { IUserSignUpData } from "../pages/SignUpPage";
-import { signUpSchema } from "./schemas";
+import { logInSchema, signUpSchema } from "./schemas";
+import { IUserLogInData } from "../pages/LogInPage/LogInPage";
 
 const formatErrorMessages = (
   errorDetails: ValidationErrorItem[],
@@ -40,7 +41,27 @@ const validateSignUpForm = (data: IUserSignUpData) => {
     });
   }
 
-  return { error, value: value as IUserSignUpData};
+  return { error, value: value as IUserSignUpData };
 };
 
-export { validateSignUpForm };
+const validateLoginForm = (data: IUserLogInData) => {
+  const { error, value } = logInSchema.validate(data, { abortEarly: false });
+
+  const logInFormErrorLabels = {
+    email: "Email",
+    password: "Password",
+  };
+
+  if (error) {
+    const updatedErrorMessages = formatErrorMessages(
+      error.details,
+      logInFormErrorLabels
+    );
+    error.details.forEach((detail, index) => {
+      detail.message = updatedErrorMessages[index];
+    });
+  }
+  return { error, value: value as IUserLogInData };
+};
+
+export { validateSignUpForm, validateLoginForm };
