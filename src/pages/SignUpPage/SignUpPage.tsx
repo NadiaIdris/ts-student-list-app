@@ -9,7 +9,7 @@ export interface IUserSignUpData {
   last_name: string;
   email: string;
   password: string;
-  repeat_password: string
+  repeat_password: string;
 }
 
 const SignUpPage = () => {
@@ -65,7 +65,18 @@ const SignUpPage = () => {
       });
 
       setErrors({ ...errorMsgs });
+
+      console.log("errorMsgs: ", errorMsgs);
+    } else {
+      setErrors({
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+        repeat_password: "",
+      });
     }
+
     // //Send the user data to the server if there are no errors
     // try {
     //   // Send the data to the server
@@ -100,7 +111,7 @@ const SignUpPage = () => {
   return (
     <>
       <h1>Welcome to students app</h1>
-      <h2>Sign in</h2>
+      <h2>Sign up</h2>
       <form onSubmit={handleOnSubmit} autoComplete="true">
         <div className="form-group">
           <label htmlFor="first_name">First name*</label>
@@ -143,7 +154,7 @@ const SignUpPage = () => {
         />
         <PasswordInput
           id="repeat_password"
-          label="Confirm password*"
+          label="Confirm password"
           value={formData.repeat_password}
           onChange={handleOnChange}
           passwordErrorMsg={errors.repeat_password}
