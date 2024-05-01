@@ -35,34 +35,26 @@ const SignUpPage = () => {
     const { error, value } = validateSignUpForm(formData);
 
     if (error) {
-      // Make an error object with the error messages
-      let errorMsgs = {
-        first_name: "",
-        last_name: "",
-        email: "",
-        password: "",
-        repeat_password: "",
-      };
-
-      error.details.forEach((detail) => {
-        console.log(detail.context?.key, detail.message);
-        const key = detail.context?.key;
-        if (key === "first_name") {
-          errorMsgs.first_name = detail.message;
+      // Make an object with the error messages
+      const errorMsgs = error.details.reduce(
+        (acc, detail) => {
+          const key = detail.context?.key;
+          if (key) {
+            return {
+              ...acc,
+              [key]: detail.message,
+            };
+          }
+          return acc;
+        },
+        {
+          first_name: "",
+          last_name: "",
+          email: "",
+          password: "",
+          repeat_password: "",
         }
-        if (key === "last_name") {
-          errorMsgs.last_name = detail.message;
-        }
-        if (key === "email") {
-          errorMsgs.email = detail.message;
-        }
-        if (key === "password") {
-          errorMsgs.password = detail.message;
-        }
-        if (key === "repeat_password") {
-          errorMsgs.repeat_password = detail.message;
-        }
-      });
+      );
 
       setErrors({ ...errorMsgs });
 

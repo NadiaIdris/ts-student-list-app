@@ -1,5 +1,6 @@
-import Joi, { ValidationErrorItem } from "joi";
+import { ValidationErrorItem } from "joi";
 import { IUserSignUpData } from "../pages/SignUpPage";
+import { signUpSchema } from "./schemas";
 
 const formatErrorMessages = (
   errorDetails: ValidationErrorItem[],
@@ -17,20 +18,6 @@ const formatErrorMessages = (
 };
 
 const validateSignUpForm = (data: IUserSignUpData) => {
-  const signUpSchema = Joi.object<IUserSignUpData>({
-    first_name: Joi.string().alphanum().min(1).max(100).required(),
-    last_name: Joi.string().alphanum().min(2).max(100).required(),
-    email: Joi.string()
-      .email({ tlds: { allow: false } })
-      .min(3)
-      .max(255)
-      .required(),
-    password: Joi.string().min(6).max(1024).required(),
-    repeat_password: Joi.any().valid(Joi.ref("password")).required().messages({
-      "any.only": "Password must match",
-    }),
-  });
-
   const { error, value } = signUpSchema.validate(data, { abortEarly: false });
 
   const signUpFormErrorLabels = {
@@ -44,11 +31,11 @@ const validateSignUpForm = (data: IUserSignUpData) => {
   // Format the error messages
   if (error) {
     const updatedErrorMessages = formatErrorMessages(
-      error?.details,
+      error.details,
       signUpFormErrorLabels
     );
     // Update error with the new error messages.
-    error?.details.forEach((detail, index) => {
+    error.details.forEach((detail, index) => {
       detail.message = updatedErrorMessages[index];
     });
   }
