@@ -66,7 +66,7 @@ const SignUpPage = () => {
 
       setErrors({ ...errorMsgs });
     }
-    // Send the user data to the server if there are no errors
+    // //Send the user data to the server if there are no errors
     // try {
     //   // Send the data to the server
 
@@ -76,6 +76,7 @@ const SignUpPage = () => {
     //     last_name: "",
     //     email: "",
     //     password: "",
+    //     repeat_password: "",
     //   });
     //   // Clear the errors
     //   setErrors({
@@ -83,6 +84,7 @@ const SignUpPage = () => {
     //     last_name: "",
     //     email: "",
     //     password: "",
+    //     repeat_password: "",
     //   });
     // } catch (error) {
     //   console.error("Error signing up", error);

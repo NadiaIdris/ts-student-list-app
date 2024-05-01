@@ -8,8 +8,7 @@ const formatErrorMessages = (
   const formattedErrorMessages = errorDetails.map((detail) => {
     // Get the detail.message. Replace the text in "" with the label from errorLabels.
     if (detail.context) {
-      const label = errorLabels[ detail.context.label! ];
-      // if (label === "Repeat password") return "Passwords do not match.";
+      const label = errorLabels[detail.context.label!];
       return detail.message.replace(/"(.*?)"/g, label);
     }
     return detail.message;
@@ -19,15 +18,17 @@ const formatErrorMessages = (
 
 const validateSignUpForm = (data: IUserSignUpData) => {
   const signUpSchema = Joi.object<IUserSignUpData>({
-    first_name: Joi.string().min(1).max(100).required(),
-    last_name: Joi.string().min(2).max(100).required(),
+    first_name: Joi.string().alphanum().min(1).max(100).required(),
+    last_name: Joi.string().alphanum().min(2).max(100).required(),
     email: Joi.string()
       .email({ tlds: { allow: false } })
       .min(3)
       .max(255)
       .required(),
     password: Joi.string().min(6).max(1024).required(),
-    repeat_password: Joi.ref('password'),
+    repeat_password: Joi.any().valid(Joi.ref("password")).required().messages({
+      "any.only": "Password must match",
+    }),
   });
 
   const { error, value } = signUpSchema.validate(data, { abortEarly: false });
