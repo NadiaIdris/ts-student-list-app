@@ -2,7 +2,6 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LOGIN_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
-import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { StudentsPage } from "../StudentsPage";
 import { PasswordInput } from "../../components/PasswordInput";
@@ -17,23 +16,37 @@ const LogInPage = () => {
   const { user, logIn } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const [userLogInDetails, setUserLogInDetails] =
-    useState<IUserLogInData>({
-      email: "",
-      password: "",
-    });
+  const [userLogInDetails, setUserLogInDetails] = useState<IUserLogInData>({
+    email: "",
+    password: "",
+  });
   const [errors, setErrors] = useState<IUserLogInData>({
     email: "",
     password: "",
   });
+  const [wrongCredentials, setWrongCredentials] = useState(false);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>,
-    userLogInDetails: IUserLogInData,
-    loginFn: (user: IUser) => void
-  ) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Make a post request to the server
-    const {error, value} = validateLoginForm(userLogInDetails);
+    // Validate the user login data, before sending it to the server
+    const { error } = validateLoginForm(userLogInDetails);
+    if (error) {
+      const errorMsgs = error.details.reduce(
+        (acc, detail) => {
+          if (detail.context?.key) {
+            return { ...acc, [detail.context.key]: detail.message };
+          }
+          return acc;
+        },
+        { email: "", password: "" }
+      );
+      setErrors({ ...errorMsgs });
+      // Don't continue with the login process if there are errors.
+      return;
+    } else {
+      setErrors({ email: "", password: "" });
+    }
+
     try {
       const response = await axiosInstance.post(
         LOGIN_ENDPOINT,
@@ -53,28 +66,28 @@ const LogInPage = () => {
         lastName: last_name,
         email: email,
       };
-      loginFn(user);
+      logIn(user);
       // Redirect to the url that the user was trying to access
-
-      if (user) {
-        const intendedUrl = location.state?.from;
-        // Redirect to the intended URL if it exists or to the students page
-        if (intendedUrl) {
-          navigate(intendedUrl);
-        } else {
-          navigate("/students");
-        }
+      const intendedUrl = location.state?.from;
+      if (intendedUrl) {
+        navigate(intendedUrl);
+      } else {
+        navigate("/students");
       }
-    } catch (error) {
-      console.error("Error logging in", error);
+    } catch (error: any) {
+      console.error(error);
+      if (error.response.status === 401) {
+        setWrongCredentials(true);
+      }
     }
   };
 
-  const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => { 
+  const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
     setUserLogInDetails({
       ...userLogInDetails,
       [event.target.id]: event.target.value,
-    })
+    });
   };
 
   const isAuthenticated = user?.isAuthenticated;
@@ -98,10 +111,7 @@ const LogInPage = () => {
     <>
       <h1>Welcome to students app</h1>
       <h2>Log in</h2>
-      <form
-        onSubmit={(event) => handleSubmit(event, userLogInDetails, logIn)}
-        autoComplete="true"
-      >
+      <form onSubmit={(event) => handleSubmit(event)} autoComplete="true">
         <div className="form-group">
           <label htmlFor="email">Email*</label>
           <input
@@ -109,20 +119,22 @@ const LogInPage = () => {
             type="email"
             placeholder="Enter your email"
             value={userLogInDetails.email}
-            onChange={(event) => handleOnChange(event)        }
+            onChange={(event) => handleOnChange(event)}
+            autoComplete="true"
           />
+          {errors.email && <span>{errors.email}</span>}
         </div>
         <PasswordInput
           id="password"
           value={userLogInDetails.password}
-          onChange={(event) =>
-            setUserLogInDetails({
-              ...userLogInDetails,
-              password: event.target.value,
-            })
-          }
+          onChange={handleOnChange}
+          passwordErrorMsg={errors.password}
         />
-      
+        {wrongCredentials && (
+          <p>
+            Please check your credentials. The email or password is incorrect.
+          </p>
+        )}
         <button type="submit">Log in</button>
       </form>
       <div>
