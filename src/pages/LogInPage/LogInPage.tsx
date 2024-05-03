@@ -12,24 +12,32 @@ export interface IUserLogInData {
   password: string;
 }
 
+const defaultUserLogInData = {
+  email: "",
+  password: "",
+};
+
 const LogInPage = () => {
   const { user, logIn } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const [userLogInDetails, setUserLogInDetails] = useState<IUserLogInData>({
-    email: "",
-    password: "",
-  });
-  const [errors, setErrors] = useState<IUserLogInData>({
-    email: "",
-    password: "",
-  });
+  const [userLogInData, setUserLogInData] =
+    useState<IUserLogInData>(defaultUserLogInData);
+  const [errors, setErrors] = useState<IUserLogInData>(defaultUserLogInData);
   const [wrongCredentials, setWrongCredentials] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    // Trim the white spaces from the email and password
+    const trimmedUserLogInData = Object.keys(userLogInData).reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: userLogInData[key as keyof IUserLogInData].trim(),
+      }),
+      defaultUserLogInData
+    );
     // Validate the user login data, before sending it to the server
-    const { error } = validateLoginForm(userLogInDetails);
+    const { error } = validateLoginForm(trimmedUserLogInData);
     if (error) {
       const errorMsgs = error.details.reduce(
         (acc, detail) => {
@@ -48,10 +56,7 @@ const LogInPage = () => {
     }
 
     try {
-      const response = await axiosInstance.post(
-        LOGIN_ENDPOINT,
-        userLogInDetails
-      );
+      const response = await axiosInstance.post(LOGIN_ENDPOINT, userLogInData);
       // Extract the token and user details from the response
       const bearerToken =
         response.headers.Authorization || response.headers.authorization;
@@ -84,8 +89,8 @@ const LogInPage = () => {
 
   const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
-    setUserLogInDetails({
-      ...userLogInDetails,
+    setUserLogInData({
+      ...userLogInData,
       [event.target.id]: event.target.value,
     });
   };
@@ -118,7 +123,7 @@ const LogInPage = () => {
             id="email"
             type="email"
             placeholder="Enter your email"
-            value={userLogInDetails.email}
+            value={userLogInData.email}
             onChange={(event) => handleOnChange(event)}
             autoComplete="true"
           />
@@ -126,7 +131,7 @@ const LogInPage = () => {
         </div>
         <PasswordInput
           id="password"
-          value={userLogInDetails.password}
+          value={userLogInData.password}
           onChange={handleOnChange}
           passwordErrorMsg={errors.password}
         />

@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { PasswordInput } from "../../components/PasswordInput";
 import { validateSignUpForm } from "../../validation/validate";
 import { axiosInstance } from "../../api/axiosConfig";
-import { SIGNUP_ENDPOINT } from "../../api/apiConstants";
-import { error } from "console";
+import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 export interface IUserSignUpData {
   first_name: string;
@@ -20,28 +20,26 @@ interface IShowSignUpErrorMsg {
   errorMsg: JSX.Element | null;
 }
 
-const SignUpPage = () => {
-  const [formData, setFormData] = useState<IUserSignUpData>({
-    first_name: "",
-    last_name: "",
-    email: "",
-    password: "",
-    repeat_password: "",
-  });
+const defaultUserSignUpData = {
+  first_name: "",
+  last_name: "",
+  email: "",
+  password: "",
+  repeat_password: "",
+};
 
-  const [errors, setErrors] = useState<IUserSignUpData>({
-    first_name: "",
-    last_name: "",
-    email: "",
-    password: "",
-    repeat_password: "",
-  });
-  const navigate = useNavigate();
+const SignUpPage = () => {
+  const [formData, setFormData] = useState<IUserSignUpData>(
+    defaultUserSignUpData
+  );
+  const [errors, setErrors] = useState<IUserSignUpData>(defaultUserSignUpData);
   const [showSignUpErrorMsg, setShowSignUpErrorMsg] =
     useState<IShowSignUpErrorMsg>({
       showErrorMsg: false,
       errorMsg: null,
     });
+  const navigate = useNavigate();
+  const { logIn } = useAuthContext();
 
   const showCorrectErrorMsg = (error: any) => {
     if (error.response.status === 409) {
@@ -57,8 +55,16 @@ const SignUpPage = () => {
 
   const handleOnSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    // Trim the white spaces from all the form data
+    const trimmedFormData = Object.keys(formData).reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: formData[key as keyof IUserSignUpData].trim(),
+      }),
+      defaultUserSignUpData
+    );
     // Validate the user sign up data
-    const { error } = validateSignUpForm(formData);
+    const { error } = validateSignUpForm(trimmedFormData);
 
     if (error) {
       // Make an object with the error messages
@@ -97,7 +103,7 @@ const SignUpPage = () => {
     }
 
     // Delete the repeat_password key from the formData
-    const formDataWithoutRepeatPassword = { ...formData };
+    const formDataWithoutRepeatPassword = { ...trimmedFormData };
     delete (formDataWithoutRepeatPassword as Partial<IUserSignUpData>)
       .repeat_password;
 
@@ -116,7 +122,37 @@ const SignUpPage = () => {
         password: "",
         repeat_password: "",
       });
-      navigate("/students/");
+
+      try {
+        const userLogInDetails = {
+          email: trimmedFormData.email,
+          password: trimmedFormData.password,
+        };
+        // Automatically log in the user after signing up
+        const response = await axiosInstance.post(
+          LOGIN_ENDPOINT,
+          userLogInDetails
+        );
+        // Extract the token and user details from the response
+        const bearerToken =
+          response.headers.Authorization || response.headers.authorization;
+        const token = bearerToken.split(" ")[1];
+        const { registered_user_uid, first_name, last_name, email } =
+          response.data;
+        const user = {
+          isAuthenticated: true,
+          token: token,
+          userId: registered_user_uid,
+          firstName: first_name,
+          lastName: last_name,
+          email: email,
+        };
+        logIn(user);
+
+        navigate("/students/");
+      } catch (error: any) {
+        console.error(error);
+      }
     } catch (error: any) {
       const errorMsg = showCorrectErrorMsg(error);
       setShowSignUpErrorMsg({ showErrorMsg: true, errorMsg });
