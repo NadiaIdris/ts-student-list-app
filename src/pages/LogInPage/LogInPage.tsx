@@ -6,6 +6,8 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { StudentsPage } from "../StudentsPage";
 import { PasswordInput } from "../../components/PasswordInput";
 import { validateLoginForm } from "../../validation/validate";
+import { Label } from "../../components/Label";
+import { TextField } from "../../components/TextField";
 
 export interface IUserLogInData {
   email: string;
@@ -113,15 +115,29 @@ const LogInPage = () => {
     <>
       <h1>Welcome to students app</h1>
       <h2>Log in</h2>
-      <form onSubmit={(event) => handleSubmit(event)} autoComplete="true">
-        <div className="form-group">
+      <form onSubmit={handleSubmit} className="form-group">
+        <>
+          <Label htmlFor="email">Email*</Label>
+          {/* <TextField
+            id="email"
+            type="email"
+            placeholder="Enter your email"
+            value={userLogInData.email}
+            onChange={(event) => handleOnChange(event)}
+            autoComplete="true"
+            size="large" // 'small' | 'medium' | 'large'
+            isDisabled={false}
+          /> */}
+          {errors.email && <span>{errors.email}</span>}
+        </>
+        <div>
           <label htmlFor="email">Email*</label>
           <input
             id="email"
             type="email"
             placeholder="Enter your email"
             value={userLogInData.email}
-            onChange={(event) => handleOnChange(event)}
+            onChange={handleOnChange}
             autoComplete="true"
           />
           {errors.email && <span>{errors.email}</span>}
