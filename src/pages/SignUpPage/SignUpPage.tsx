@@ -5,6 +5,7 @@ import { PasswordInput } from "../../components/PasswordInput";
 import { validateSignUpForm } from "../../validation/validate";
 import { axiosInstance } from "../../api/axiosConfig";
 import { SIGNUP_ENDPOINT } from "../../api/apiConstants";
+import { error } from "console";
 
 export interface IUserSignUpData {
   first_name: string;
@@ -12,6 +13,11 @@ export interface IUserSignUpData {
   email: string;
   password: string;
   repeat_password: string;
+}
+
+interface IShowSignUpErrorMsg {
+  showErrorMsg: boolean;
+  errorMsg: JSX.Element | null;
 }
 
 const SignUpPage = () => {
@@ -31,6 +37,23 @@ const SignUpPage = () => {
     repeat_password: "",
   });
   const navigate = useNavigate();
+  const [showSignUpErrorMsg, setShowSignUpErrorMsg] =
+    useState<IShowSignUpErrorMsg>({
+      showErrorMsg: false,
+      errorMsg: null,
+    });
+
+  const showCorrectErrorMsg = (error: any) => {
+    if (error.response.status === 409) {
+      return (
+        <>
+          Email already exists. Please <Link to="/login">log in</Link>.
+        </>
+      );
+    } else {
+      return <>An error occurred. Please try again later.</>;
+    }
+  };
 
   const handleOnSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -60,6 +83,7 @@ const SignUpPage = () => {
       );
 
       setErrors({ ...errorMsgs });
+      // Don't continue with the sign up process if there are errors.
       return;
     } else {
       // If no errors, clear the errors
@@ -73,19 +97,17 @@ const SignUpPage = () => {
     }
 
     // Delete the repeat_password key from the formData
-    delete (formData as Partial<IUserSignUpData>).repeat_password;
+    const formDataWithoutRepeatPassword = { ...formData };
+    delete (formDataWithoutRepeatPassword as Partial<IUserSignUpData>)
+      .repeat_password;
 
     //Send the user data to the server if there are no errors
     try {
-      await axiosInstance.post(
-        SIGNUP_ENDPOINT,
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await axiosInstance.post(SIGNUP_ENDPOINT, formDataWithoutRepeatPassword, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       // Clear the form
       setFormData({
         first_name: "",
@@ -95,8 +117,9 @@ const SignUpPage = () => {
         repeat_password: "",
       });
       navigate("/students/");
-    } catch (error) {
-      console.error("Error signing up", error);
+    } catch (error: any) {
+      const errorMsg = showCorrectErrorMsg(error);
+      setShowSignUpErrorMsg({ showErrorMsg: true, errorMsg });
     }
   };
 
@@ -157,6 +180,7 @@ const SignUpPage = () => {
           onChange={handleOnChange}
           passwordErrorMsg={errors.repeat_password}
         />
+        {showSignUpErrorMsg.showErrorMsg && showSignUpErrorMsg.errorMsg}
         <button type="submit">Sign up</button>
       </form>
       <div>

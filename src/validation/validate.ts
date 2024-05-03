@@ -26,7 +26,7 @@ const validateSignUpForm = (data: IUserSignUpData) => {
     last_name: "Last name",
     email: "Email",
     password: "Password",
-    repeat_password: "Repeat password",
+    repeat_password: "Confirm password",
   };
 
   // Format the error messages
