@@ -68,38 +68,23 @@ const SignUpPage = () => {
 
     if (error) {
       // Make an object with the error messages
-      const errorMsgs = error.details.reduce(
-        (acc, detail) => {
-          const key = detail.context?.key;
-          if (key) {
-            return {
-              ...acc,
-              [key]: detail.message,
-            };
-          }
-          return acc;
-        },
-        {
-          first_name: "",
-          last_name: "",
-          email: "",
-          password: "",
-          repeat_password: "",
+      const errorMsgs = error.details.reduce((acc, detail) => {
+        const key = detail.context?.key;
+        if (key) {
+          return {
+            ...acc,
+            [key]: detail.message,
+          };
         }
-      );
+        return acc;
+      }, defaultUserSignUpData);
 
       setErrors({ ...errorMsgs });
       // Don't continue with the sign up process if there are errors.
       return;
     } else {
       // If no errors, clear the errors
-      setErrors({
-        first_name: "",
-        last_name: "",
-        email: "",
-        password: "",
-        repeat_password: "",
-      });
+      setErrors(defaultUserSignUpData);
     }
 
     // Delete the repeat_password key from the formData
@@ -115,13 +100,7 @@ const SignUpPage = () => {
         },
       });
       // Clear the form
-      setFormData({
-        first_name: "",
-        last_name: "",
-        email: "",
-        password: "",
-        repeat_password: "",
-      });
+      setFormData(defaultUserSignUpData);
 
       try {
         const userLogInDetails = {

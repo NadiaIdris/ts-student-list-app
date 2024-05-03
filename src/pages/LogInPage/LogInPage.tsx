@@ -39,20 +39,17 @@ const LogInPage = () => {
     // Validate the user login data, before sending it to the server
     const { error } = validateLoginForm(trimmedUserLogInData);
     if (error) {
-      const errorMsgs = error.details.reduce(
-        (acc, detail) => {
-          if (detail.context?.key) {
-            return { ...acc, [detail.context.key]: detail.message };
-          }
-          return acc;
-        },
-        { email: "", password: "" }
-      );
+      const errorMsgs = error.details.reduce((acc, detail) => {
+        if (detail.context?.key) {
+          return { ...acc, [detail.context.key]: detail.message };
+        }
+        return acc;
+      }, defaultUserLogInData);
       setErrors({ ...errorMsgs });
       // Don't continue with the login process if there are errors.
       return;
     } else {
-      setErrors({ email: "", password: "" });
+      setErrors(defaultUserLogInData);
     }
 
     try {
