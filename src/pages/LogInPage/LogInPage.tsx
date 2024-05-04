@@ -2,12 +2,14 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LOGIN_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
-import { useAuthContext } from "../../hooks/useAuthContext";
-import { StudentsPage } from "../StudentsPage";
-import { PasswordInput } from "../../components/PasswordInput";
-import { validateLoginForm } from "../../validation/validate";
-import { Label } from "../../components/Label";
+import { Label } from "../../components/form/Label";
+import { PasswordInput } from "../../components/form/PasswordInput";
 import { TextField } from "../../components/TextField";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { validateLoginForm } from "../../validation/validate";
+import { StudentsPage } from "../StudentsPage";
+import { HelperMessage } from "../../components/form/HelperMessage";
+import { Form } from "../../components/form/Form";
 
 export interface IUserLogInData {
   email: string;
@@ -28,7 +30,7 @@ const LogInPage = () => {
   const [errors, setErrors] = useState<IUserLogInData>(defaultUserLogInData);
   const [wrongCredentials, setWrongCredentials] = useState(false);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleOnSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // Trim the white spaces from the email and password
     const trimmedUserLogInData = Object.keys(userLogInData).reduce(
@@ -115,23 +117,23 @@ const LogInPage = () => {
     <>
       <h1>Welcome to students app</h1>
       <h2>Log in</h2>
-      {/* <Form>
-      </Form> */}
-      <form onSubmit={handleSubmit} className="form-group">
-        <>
-          <Label htmlFor="email">Email*</Label>
-          <TextField
-            id="email"
-            type="email"
-            placeholder="Enter your email"
-            value={userLogInData.email}
-            onChange={handleOnChange}
-            autoComplete="true"
-            size="large" // 'small' | 'medium' | 'large'
-            isDisabled={false}
-          />
-          {errors.email && <span>{errors.email}</span>}
-        </>
+      <Form onSubmit={handleOnSubmit}>
+        <Field>
+          <>
+            {/* <Label htmlFor="email">Email*</Label> */}
+            <TextField
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              value={userLogInData.email}
+              onChange={handleOnChange}
+              autoComplete="true"
+              size="large" // 'small' | 'medium' | 'large'
+              isDisabled={false}
+            />
+            <HelperMessage>{errors.email && "Helper message"}</HelperMessage>
+          </>
+        </Field>
         <div>
           <label htmlFor="email">Email*</label>
           <input
@@ -156,7 +158,7 @@ const LogInPage = () => {
           </p>
         )}
         <button type="submit">Log in</button>
-      </form>
+      </Form>
       <div>
         <p>
           Not a member? <Link to="/signup">Sign up now</Link>

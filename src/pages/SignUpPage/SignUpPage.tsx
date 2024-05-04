@@ -1,11 +1,11 @@
 import { useState } from "react";
-import "./SignUpPage.css";
 import { Link, useNavigate } from "react-router-dom";
-import { PasswordInput } from "../../components/PasswordInput";
-import { validateSignUpForm } from "../../validation/validate";
-import { axiosInstance } from "../../api/axiosConfig";
 import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
+import { axiosInstance } from "../../api/axiosConfig";
+import { PasswordInput } from "../../components/form/PasswordInput";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { validateSignUpForm } from "../../validation/validate";
+import "./SignUpPage.css";
 
 export interface IUserSignUpData {
   first_name: string;
