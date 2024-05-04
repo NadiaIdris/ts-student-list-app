@@ -15,7 +15,7 @@ const LabelStyles = styled.label`
 
 const Label = ({ htmlFor, children, ...props }: LabelProps) => {
   return (
-    <LabelStyles htmlFor="email" {...props}>
+    <LabelStyles htmlFor={htmlFor} {...props}>
       {children}
     </LabelStyles>
   );

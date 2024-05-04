@@ -8,8 +8,9 @@ import { TextField } from "../../components/TextField";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateLoginForm } from "../../validation/validate";
 import { StudentsPage } from "../StudentsPage";
-import { HelperMessage } from "../../components/form/HelperMessage";
 import { Form } from "../../components/form/Form";
+import { Field } from "../../components/form/Field";
+import { ErrorMessage } from "../../components/form/ErrorMessage";
 
 export interface IUserLogInData {
   email: string;
@@ -113,6 +114,12 @@ const LogInPage = () => {
     return <StudentsPage />;
   }
 
+  // If fieldId is not provided, generate a unique id
+  // const fieldId = useMemo(
+  //   () => (id ? id : `${name}-${uid({ id: name })}`),
+  //   [id, name]
+  // );
+
   return (
     <>
       <h1>Welcome to students app</h1>
@@ -120,18 +127,23 @@ const LogInPage = () => {
       <Form onSubmit={handleOnSubmit}>
         <Field>
           <>
-            {/* <Label htmlFor="email">Email*</Label> */}
+            <Label htmlFor="login-email" id={`login-email-label`}>
+              Email
+              {/* {isRequired && <RequiredAsterisk />}
+              {elementAfterLabel} */}
+            </Label>
             <TextField
-              id="email"
+              id="login-email"
               type="email"
               placeholder="Enter your email"
               value={userLogInData.email}
+              name="email"
               onChange={handleOnChange}
               autoComplete="true"
               size="large" // 'small' | 'medium' | 'large'
               isDisabled={false}
             />
-            <HelperMessage>{errors.email && "Helper message"}</HelperMessage>
+            {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
           </>
         </Field>
         <div>

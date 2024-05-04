@@ -16,7 +16,6 @@ const Form = ({ children, onSubmit, testId, ...props }: FormProps) => {
     <StyledForm
       onSubmit={onSubmit}
       data-testId={testId}
-      method="post"
       {...props}
     >
       {children}

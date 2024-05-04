@@ -8,6 +8,7 @@ interface TextFieldProps {
   id?: string;
   type?: string;
   value: string;
+  name: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   autoComplete?: string;
@@ -17,16 +18,18 @@ interface TextFieldProps {
 
 const TextFieldStyles = styled.input`
   // Add your styles here
-  border: 2px solid blue;
+  
 `;
 
 const TextField = ({
+  id,
   type = "text", // Default value for type prop
   size = "medium", // Default value for size prop
   value,
+  name,
   onChange,
 }: TextFieldProps) => {
-  return <TextFieldStyles></TextFieldStyles>;
+  return <TextFieldStyles id={id} name={name}></TextFieldStyles>;
 };
 
 export { TextField };
