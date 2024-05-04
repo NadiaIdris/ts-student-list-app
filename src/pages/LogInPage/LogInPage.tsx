@@ -115,19 +115,21 @@ const LogInPage = () => {
     <>
       <h1>Welcome to students app</h1>
       <h2>Log in</h2>
+      {/* <Form>
+      </Form> */}
       <form onSubmit={handleSubmit} className="form-group">
         <>
           <Label htmlFor="email">Email*</Label>
-          {/* <TextField
+          <TextField
             id="email"
             type="email"
             placeholder="Enter your email"
             value={userLogInData.email}
-            onChange={(event) => handleOnChange(event)}
+            onChange={handleOnChange}
             autoComplete="true"
             size="large" // 'small' | 'medium' | 'large'
             isDisabled={false}
-          /> */}
+          />
           {errors.email && <span>{errors.email}</span>}
         </>
         <div>
