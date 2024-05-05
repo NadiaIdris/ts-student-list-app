@@ -2,7 +2,13 @@ import { FormEvent, ReactNode } from "react";
 import styled from "styled-components";
 
 interface FormProps {
+  /*
+   * The content of the form
+   */
   children: ReactNode;
+  /*
+   * The function to call when the form is submitted
+   */
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   /**
    * A `testId` prop is provided for specified elements, which is a unique string that appears as a data attribute `data-testid` in the rendered code, serving as a hook for automated tests

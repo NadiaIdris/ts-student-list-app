@@ -2,6 +2,9 @@ import { ReactNode } from "react";
 import styled from "styled-components";
 
 interface ErrorMessageProps {
+  /**
+   * The content of the error message
+   */
   children: ReactNode | string;
   /**
    * A `testId` prop is provided for specified elements, which is a unique string that appears as a data attribute `data-testid` in the rendered code, serving as a hook for automated tests

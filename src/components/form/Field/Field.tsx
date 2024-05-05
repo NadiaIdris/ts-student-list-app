@@ -7,6 +7,9 @@ interface FieldProps {
    * Sets whether the field is disabled. Users cannot edit or focus on the fields. If the parent form component is disabled, then the field will always be disabled.
    */
   isDisabled?: boolean;
+  /**
+   * Sets whether the field is invalid. An invalid field is marked with a red border and the error message is displayed below the field.
+   */
   isInvalid?: boolean; // Boolean(state.error),
   /**
    * Sets whether the field is required for submission. Required fields are marked with a red asterisk.
