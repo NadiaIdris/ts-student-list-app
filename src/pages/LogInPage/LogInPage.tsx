@@ -10,7 +10,6 @@ import { StudentsPage } from "../StudentsPage";
 import { Form } from "../../components/form/Form";
 import { Field } from "../../components/form/Field";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
-import { FiEye, FiEyeOff } from "react-icons/fi";
 
 export interface IUserLogInData {
   email: string;
@@ -138,9 +137,7 @@ const LogInPage = () => {
             value={userLogInData.email} // This is the data value
             name="email" // This is the data key
             onChange={handleOnChange}
-            autoComplete="true"
-            size="large"
-            isDisabled={false}
+            autoComplete="email"
           />
           {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
         </Field>
@@ -157,7 +154,6 @@ const LogInPage = () => {
             value={userLogInData.password} // This is the data value
             name="password" // This is the data key
             onChange={handleOnChange}
-            size="large"
           />
           {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
         </Field>

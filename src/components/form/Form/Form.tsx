@@ -4,6 +4,9 @@ import styled from "styled-components";
 interface FormProps {
   children: ReactNode;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  /**
+   * A `testId` prop is provided for specified elements, which is a unique string that appears as a data attribute `data-testid` in the rendered code, serving as a hook for automated tests
+   */
   testId?: string;
 }
 
@@ -13,11 +16,7 @@ const StyledForm = styled.form`
 
 const Form = ({ children, onSubmit, testId, ...props }: FormProps) => {
   return (
-    <StyledForm
-      onSubmit={onSubmit}
-      data-testId={testId}
-      {...props}
-    >
+    <StyledForm onSubmit={onSubmit} data-testid={testId} {...props}>
       {children}
     </StyledForm>
   );

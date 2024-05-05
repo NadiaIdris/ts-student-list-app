@@ -10,7 +10,6 @@ interface LabelProps {
 
 const LabelStyles = styled.label`
   // Add your styles here
-  background-color: red;
 `;
 
 const Label = ({ htmlFor, children, ...props }: LabelProps) => {
