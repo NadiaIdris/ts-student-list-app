@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from "react";
+import { ReactNode } from "react";
 import styled from "styled-components";
 
 interface FieldProps {
@@ -44,6 +44,8 @@ interface FieldProps {
 
 const StyledField = styled.div`
   background-color: yellow;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Field = ({ children, testId, label, id }: FieldProps) => {

@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LOGIN_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
 import { Label } from "../../components/form/Label";
-import { PasswordInput } from "../../components/form/PasswordInput";
 import { TextField } from "../../components/TextField";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateLoginForm } from "../../validation/validate";
@@ -11,6 +10,7 @@ import { StudentsPage } from "../StudentsPage";
 import { Form } from "../../components/form/Form";
 import { Field } from "../../components/form/Field";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 export interface IUserLogInData {
   email: string;
@@ -93,7 +93,7 @@ const LogInPage = () => {
     event.preventDefault();
     setUserLogInData({
       ...userLogInData,
-      [event.target.id]: event.target.value,
+      [event.target.name]: event.target.value,
     });
   };
 
@@ -126,44 +126,41 @@ const LogInPage = () => {
       <h2>Log in</h2>
       <Form onSubmit={handleOnSubmit}>
         <Field>
-          <>
-            <Label htmlFor="login-email" id={`login-email-label`}>
-              Email
-              {/* {isRequired && <RequiredAsterisk />}
+          <Label htmlFor="login-email">
+            Email
+            {/* {isRequired && <RequiredAsterisk />}
               {elementAfterLabel} */}
-            </Label>
-            <TextField
-              id="login-email"
-              type="email"
-              placeholder="Enter your email"
-              value={userLogInData.email}
-              name="email"
-              onChange={handleOnChange}
-              autoComplete="true"
-              size="large" // 'small' | 'medium' | 'large'
-              isDisabled={false}
-            />
-            {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
-          </>
-        </Field>
-        <div>
-          <label htmlFor="email">Email*</label>
-          <input
-            id="email"
+          </Label>
+          <TextField
+            id="login-email"
             type="email"
             placeholder="Enter your email"
-            value={userLogInData.email}
+            value={userLogInData.email} // This is the data value
+            name="email" // This is the data key
             onChange={handleOnChange}
             autoComplete="true"
+            size="large"
+            isDisabled={false}
           />
-          {errors.email && <span>{errors.email}</span>}
-        </div>
-        <PasswordInput
-          id="password"
-          value={userLogInData.password}
-          onChange={handleOnChange}
-          passwordErrorMsg={errors.password}
-        />
+          {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
+        </Field>
+        <Field>
+          <Label htmlFor="login-password">
+            Password
+            {/* {isRequired && <RequiredAsterisk />}
+              {elementAfterLabel} */}
+          </Label>
+          <TextField
+            id="login-password"
+            type="password"
+            placeholder="Enter your password"
+            value={userLogInData.password} // This is the data value
+            name="password" // This is the data key
+            onChange={handleOnChange}
+            size="large"
+          />
+          {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
+        </Field>
         {wrongCredentials && (
           <p>
             Please check your credentials. The email or password is incorrect.
