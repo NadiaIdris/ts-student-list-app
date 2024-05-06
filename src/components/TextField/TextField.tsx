@@ -37,8 +37,7 @@ interface TextFieldProps {
     | "tel"
     | "name"
     | "given-name"
-    | "family-name"
-    | AutoCompleteOptions;
+    | "family-name";
   /**
    * The `size` prop specifies the size of the input field. The default value is "large".
    */
@@ -63,14 +62,6 @@ const StyledTextFieldWrapper = styled.div`
   flex-direction: column;
 `;
 
-// const StyledTextField = styled.input<{ type: string; $showPassword?: boolean }>`
-//   // If type is password, add padding-right to the input field to accommodate the eye icon.
-//   padding-right: ${({ type, $showPassword }) =>
-//     type === "password" ? "30px" : $showPassword ? "30px" : "0px"};
-// `;
-
-const StyledTextField = styled.input<{ $showPassword?: boolean }>``;
-
 /**
  *
  * The `TextField` component is used to render an input field. It accepts the following prop:
@@ -91,8 +82,6 @@ const TextField = ({
   showPassword,
   ...props
 }: TextFieldProps) => {
-  // const [showPassword, setShowPassword] = useState(false);
-
   let passwordType = showPassword ? "text" : "password";
 
   useLayoutEffect(() => {
@@ -107,12 +96,10 @@ const TextField = ({
 
   return (
     <StyledTextFieldWrapper>
-      <StyledTextField
+      <input
         id={id}
         name={name}
         autoComplete={autoComplete}
-        /* showPassword is a transient prop that is not passed to the input field. More info: https://styled-components.com/docs/api#transient-props */
-        $showPassword={showPassword}
         type={type === "password" ? passwordType : type}
         value={value}
         onChange={onChange}
@@ -125,45 +112,5 @@ const TextField = ({
     </StyledTextFieldWrapper>
   );
 };
-
-type AutoCompleteOptions =
-  | "new-password"
-  | "current-password"
-  | "url"
-  | "one-time-code"
-  | "honorific-prefix"
-  | "additional-name"
-  | "honorific-suffix"
-  | "nickname"
-  | "organization-title"
-  | "organization"
-  | "street-address"
-  | "address-line1"
-  | "address-line2"
-  | "address-line3"
-  | "address-level4"
-  | "address-level3"
-  | "address-level2"
-  | "address-level1"
-  | "country"
-  | "country-name"
-  | "postal-code"
-  | "cc-name"
-  | "cc-given-name"
-  | "cc-additional-name"
-  | "cc-family-name"
-  | "cc-number"
-  | "cc-exp"
-  | "cc-exp-month"
-  | "cc-exp-year"
-  | "cc-csc"
-  | "cc-type"
-  | "transaction-currency"
-  | "transaction-amount"
-  | "language"
-  | "bday"
-  | "bday-day"
-  | "bday-month"
-  | "bday-year";
 
 export { TextField };
