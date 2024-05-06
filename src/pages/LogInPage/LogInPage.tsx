@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LOGIN_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
@@ -10,11 +10,36 @@ import { StudentsPage } from "../StudentsPage";
 import { Form } from "../../components/form/Form";
 import { Field } from "../../components/form/Field";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
+import styled from "styled-components";
 
 export interface IUserLogInData {
   email: string;
   password: string;
 }
+
+const StyledWrapperSpan = styled.span`
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  cursor: pointer;
+`;
+
+const StyledIconSpan = styled.span`
+  padding: 8px;
+  background-color: transparent;
+  border-radius: 100px;
+  // Add margin-right to all the spans except the last one
+  &:not(:last-child) {
+    margin-right: 4px;
+  }
+  // On hover, change the background color
+  &:hover {
+    background-color: lightgray;
+  }
+`;
 
 const defaultUserLogInData = {
   email: "",
@@ -29,6 +54,7 @@ const LogInPage = () => {
     useState<IUserLogInData>(defaultUserLogInData);
   const [errors, setErrors] = useState<IUserLogInData>(defaultUserLogInData);
   const [wrongCredentials, setWrongCredentials] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleOnSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -96,6 +122,19 @@ const LogInPage = () => {
     });
   };
 
+  const handleTogglePasswordIcon = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const passwordIcons = (id: string) => (
+    <StyledWrapperSpan
+      id={`${id}-icon`} // This is useful measuring the width of the icons wrapper span to add the correct padding-right to the input field.
+      onClick={handleTogglePasswordIcon}
+    >
+      <StyledIconSpan>{showPassword ? <FiEyeOff /> : <FiEye />}</StyledIconSpan>
+    </StyledWrapperSpan>
+  );
+
   const isAuthenticated = user?.isAuthenticated;
 
   // The use effect hook below checks if the user is authenticated and redirects them to the students page if they are.
@@ -113,7 +152,7 @@ const LogInPage = () => {
     return <StudentsPage />;
   }
 
-  // If fieldId is not provided, generate a unique id
+  //If fieldId is not provided, generate a unique id
   // const fieldId = useMemo(
   //   () => (id ? id : `${name}-${uid({ id: name })}`),
   //   [id, name]
@@ -127,15 +166,14 @@ const LogInPage = () => {
         <Field>
           <Label htmlFor="login-email">
             Email
-            {/* {isRequired && <RequiredAsterisk />}
-              {elementAfterLabel} */}
+            <RequiredAsterisk />
           </Label>
           <TextField
             id="login-email"
             type="email"
             placeholder="Enter your email"
-            value={userLogInData.email} // This is the data value
-            name="email" // This is the data key
+            name="email" // This is the form field key
+            value={userLogInData.email} // This is the form field value
             onChange={handleOnChange}
             autoComplete="email"
           />
@@ -144,16 +182,17 @@ const LogInPage = () => {
         <Field>
           <Label htmlFor="login-password">
             Password
-            {/* {isRequired && <RequiredAsterisk />}
-              {elementAfterLabel} */}
+            <RequiredAsterisk />
           </Label>
           <TextField
             id="login-password"
             type="password"
             placeholder="Enter your password"
-            value={userLogInData.password} // This is the data value
-            name="password" // This is the data key
+            name="password" // This is the form field key
+            value={userLogInData.password} // This is the form field value
             onChange={handleOnChange}
+            renderIcon={() => passwordIcons("login-password")}
+            showPassword={showPassword}
           />
           {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
         </Field>

@@ -1,5 +1,4 @@
-import { ChangeEvent, useState } from "react";
-import { FiEyeOff, FiEye } from "react-icons/fi";
+import { ChangeEvent, useLayoutEffect } from "react";
 import styled from "styled-components";
 
 interface TextFieldProps {
@@ -48,6 +47,14 @@ interface TextFieldProps {
    * The `isDisabled` prop specifies whether the input field is disabled. Users cannot edit or focus on the fields. If the parent form component is disabled, then the field will always be disabled.
    */
   isDisabled?: boolean;
+  /**
+   * The `renderIcon` prop specifies a custom icon to render beside the input field.
+   */
+  renderIcon?: () => JSX.Element;
+  /**
+   * The `showPassword` prop specifies whether the password is visible or not. This prop is only used when the type is "password".
+   */
+  showPassword?: boolean;
 }
 
 const StyledTextFieldWrapper = styled.div`
@@ -56,20 +63,13 @@ const StyledTextFieldWrapper = styled.div`
   flex-direction: column;
 `;
 
-const StyledTextField = styled.input<{ type: string; $showPassword?: boolean }>`
-  // If type is password, add padding-right to the input field to accommodate the eye icon.
-  padding-right: ${({ type, $showPassword }) =>
-    type === "password" ? "30px" : $showPassword ? "30px" : "0px"};
-`;
+// const StyledTextField = styled.input<{ type: string; $showPassword?: boolean }>`
+//   // If type is password, add padding-right to the input field to accommodate the eye icon.
+//   padding-right: ${({ type, $showPassword }) =>
+//     type === "password" ? "30px" : $showPassword ? "30px" : "0px"};
+// `;
 
-const StyledIcon = styled.span`
-  position: absolute;
-  top: 50%;
-  right: 6px;
-  transform: translateY(-50%);
-  cursor: pointer;
-  padding: 4px;
-`;
+const StyledTextField = styled.input<{ $showPassword?: boolean }>``;
 
 /**
  *
@@ -87,11 +87,23 @@ const TextField = ({
   onChange,
   placeholder,
   isDisabled,
+  renderIcon,
+  showPassword,
   ...props
 }: TextFieldProps) => {
-  const [showPassword, setShowPassword] = useState(false);
+  // const [showPassword, setShowPassword] = useState(false);
 
   let passwordType = showPassword ? "text" : "password";
+
+  useLayoutEffect(() => {
+    // Measure the renderIcon width and set the padding-right of the input field
+    if (!id) return;
+    const inputField = document.getElementById(id);
+    const icon = document.getElementById(`${id}-icon`);
+    if (inputField && icon) {
+      inputField.style.paddingRight = `${icon.offsetWidth + 10}px`;
+    }
+  });
 
   return (
     <StyledTextFieldWrapper>
@@ -99,6 +111,7 @@ const TextField = ({
         id={id}
         name={name}
         autoComplete={autoComplete}
+        /* showPassword is a transient prop that is not passed to the input field. More info: https://styled-components.com/docs/api#transient-props */
         $showPassword={showPassword}
         type={type === "password" ? passwordType : type}
         value={value}
@@ -107,11 +120,8 @@ const TextField = ({
         disabled={isDisabled}
         {...props}
       />
-      {type === "password" && (
-        <StyledIcon onClick={() => setShowPassword(!showPassword)}>
-          {showPassword ? <FiEyeOff /> : <FiEye />}
-        </StyledIcon>
-      )}
+      {type === "password" && renderIcon && renderIcon()}
+      {type !== "password" && renderIcon && renderIcon()}
     </StyledTextFieldWrapper>
   );
 };

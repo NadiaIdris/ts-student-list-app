@@ -17,7 +17,7 @@ interface LabelProps {
 }
 
 const LabelStyles = styled.label`
-  // Add your styles here
+  width: fit-content;
 `;
 
 const Label = ({ htmlFor, children, ...props }: LabelProps) => {
