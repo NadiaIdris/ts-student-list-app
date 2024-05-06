@@ -62,6 +62,11 @@ const StyledTextFieldWrapper = styled.div`
   flex-direction: column;
 `;
 
+const StyledTextField = styled.input`
+  height: 36px;
+  border-radius: 12px;
+`;
+
 /**
  *
  * The `TextField` component is used to render an input field. It accepts the following prop:
@@ -96,7 +101,7 @@ const TextField = ({
 
   return (
     <StyledTextFieldWrapper>
-      <input
+      <StyledTextField
         id={id}
         name={name}
         autoComplete={autoComplete}

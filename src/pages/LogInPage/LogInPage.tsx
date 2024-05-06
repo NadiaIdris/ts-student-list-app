@@ -19,18 +19,21 @@ export interface IUserLogInData {
   password: string;
 }
 
-const StyledWrapperSpan = styled.span`
+const StyledWrapperSpan = styled.div`
   position: absolute;
   top: 50%;
   right: 6px;
   transform: translateY(-50%);
   cursor: pointer;
+  display: flex;
+  flex-direction: row;
 `;
 
-const StyledIconSpan = styled.span`
+const StyledIconSpan = styled.div`
   padding: 8px;
   background-color: transparent;
   border-radius: 100px;
+  display: flex;
   // Add margin-right to all the spans except the last one
   &:not(:last-child) {
     margin-right: 4px;
