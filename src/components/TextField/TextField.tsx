@@ -64,8 +64,9 @@ const StyledTextFieldWrapper = styled.div`
 
 const StyledTextField = styled.input`
   height: 36px;
-  border-radius: 12px;
-  border: 1px solid var(--color-black-100);
+  border-radius: var(--border-radius);
+  border: 2px solid var(--color-black);
+  padding-left: 8px;
 `;
 
 /**
@@ -96,7 +97,7 @@ const TextField = ({
     const inputField = document.getElementById(id);
     const icon = document.getElementById(`${id}-icon`);
     if (inputField && icon) {
-      inputField.style.paddingRight = `${icon.offsetWidth + 10}px`;
+      inputField.style.paddingRight = `${icon.offsetWidth + 2}px`;
     }
   });
 

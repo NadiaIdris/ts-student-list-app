@@ -1,6 +1,7 @@
 @import "sanitize.css";
 
 :root {
+  /* colors */
   --color-primary: #007bff;
   --color-secondary: #6c757d;
   --color-success: rgba(40, 167, 69, 1);
@@ -38,6 +39,8 @@
   --color-black-800: rgba(0, 0, 0, 0.8);
   --color-black-900: rgba(0, 0, 0, 0.9);
   --color-black-1000: rgba(0, 0, 0, 1);
+  /* border radius */
+  --border-radius: 8px;
 }
 
 /* whole app background color */

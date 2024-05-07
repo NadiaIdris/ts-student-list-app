@@ -19,10 +19,10 @@ export interface IUserLogInData {
   password: string;
 }
 
-const StyledWrapperSpan = styled.div`
+const StyledWrapperDiv = styled.div`
   position: absolute;
   top: 50%;
-  right: 6px;
+  right: 2px;
   transform: translateY(-50%);
   cursor: pointer;
   display: flex;
@@ -35,8 +35,10 @@ const StyledIconSpan = styled.span`
   background-color: transparent;
   border-radius: 100px;
   display: flex;
+  color: var(--color-black-700);
   &:hover {
     background-color: var(--color-gray-600);
+    color: var(--color-black);
   }
 `;
 
@@ -126,12 +128,12 @@ const LogInPage = () => {
   };
 
   const passwordIcons = (id: string) => (
-    <StyledWrapperSpan
+    <StyledWrapperDiv
       id={`${id}-icon`} // This is useful measuring the width of the icons wrapper span to add the correct padding-right to the input field.
       onClick={handleTogglePasswordIcon}
     >
       <StyledIconSpan>{showPassword ? <FiEyeOff /> : <FiEye />}</StyledIconSpan>
-    </StyledWrapperSpan>
+    </StyledWrapperDiv>
   );
 
   const isAuthenticated = user?.isAuthenticated;
