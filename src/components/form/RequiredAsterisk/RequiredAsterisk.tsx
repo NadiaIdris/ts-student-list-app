@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledAsteriskSpan = styled.span`
-  color: red;
+  color: var(--color-danger);
   font-family: monospace;
   padding-inline-start: 2px;
   `;

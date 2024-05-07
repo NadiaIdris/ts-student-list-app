@@ -20,7 +20,7 @@ export interface IUserLogInData {
   password: string;
 }
 
-const StyledWrapperDiv = styled.div`
+const StyledWrapperDiv = styled.div<{ $isDisabled: boolean }>`
   position: absolute;
   top: 50%;
   right: 2px;
@@ -29,6 +29,8 @@ const StyledWrapperDiv = styled.div`
   display: flex;
   flex-direction: row;
   gap: 2px;
+  ${({ $isDisabled }) =>
+    $isDisabled && "pointer-events: none; opacity: 0.5; cursor: disabled;"};
 `;
 
 const StyledIconSpan = styled.span`
@@ -57,9 +59,11 @@ const LogInPage = () => {
   const [errors, setErrors] = useState<IUserLogInData>(defaultUserLogInData);
   const [wrongCredentials, setWrongCredentials] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleOnSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setSubmitting(true);
     // Trim the white spaces from the email and password
     const trimmedUserLogInData = Object.keys(userLogInData).reduce(
       (acc, key) => ({
@@ -113,6 +117,8 @@ const LogInPage = () => {
       if (error.response.status === 401) {
         setWrongCredentials(true);
       }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -128,10 +134,11 @@ const LogInPage = () => {
     setShowPassword(!showPassword);
   };
 
-  const passwordIcons = (id: string) => (
+  const passwordIcons = (id: string, $isDisabled: boolean) => (
     <StyledWrapperDiv
       id={`${id}-icon`} // This is useful measuring the width of the icons wrapper span to add the correct padding-right to the input field.
       onClick={handleTogglePasswordIcon}
+      $isDisabled={$isDisabled}
     >
       <StyledIconSpan>{showPassword ? <FiEyeOff /> : <FiEye />}</StyledIconSpan>
     </StyledWrapperDiv>
@@ -189,21 +196,30 @@ const LogInPage = () => {
           <TextField
             id="login-password"
             type="password"
-            placeholder="Enter your password"
             name="password" // This is the form field key
             value={userLogInData.password} // This is the form field value
             onChange={handleOnChange}
-            renderIcon={() => passwordIcons("login-password")}
+            placeholder="Enter your password"
+            $isInvalid={Boolean(errors.password)}
+            isDisabled={submitting}
+            renderIcon={(isDisabled) =>
+              passwordIcons("login-password", isDisabled)
+            }
             showPassword={showPassword}
           />
-          {errors.email && <ErrorMessage>{errors.password}</ErrorMessage>}
+          {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
         </Field>
         {wrongCredentials && (
           <p>
             Please check your credentials. The email or password is incorrect.
           </p>
         )}
-        <Button type="submit" $appearance="primary" $fullWidth>
+        <Button
+          type="submit"
+          $appearance="primary"
+          $fullWidth
+          isDisabled={submitting}
+        >
           Log in
         </Button>
       </Form>

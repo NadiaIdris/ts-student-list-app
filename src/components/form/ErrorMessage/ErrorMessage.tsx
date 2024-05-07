@@ -13,7 +13,7 @@ interface ErrorMessageProps {
 }
 
 const StyledError = styled.div`
-  color: red;
+  color: var(--color-danger);
   font-size: 0.8em;
 `;
 

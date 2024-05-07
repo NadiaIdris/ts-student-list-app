@@ -10,6 +10,7 @@ interface ButtonProps {
   $appearance?: Appearance;
   $size?: Size;
   $fullWidth?: boolean;
+  isDisabled?: boolean;
   /**
    * A `testId` prop is provided for specified elements, which is a unique string that appears as a data attribute `data-testid` in the rendered code, serving as a hook for automated tests
    */
@@ -26,6 +27,10 @@ const StyledButton = styled.button<{
   font: inherit;
   font-weight: 900;
   cursor: pointer;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
   height: ${({ $size }) => {
     if ($size === "medium") return "36px";
     else if ($size === "large") return "42px";
@@ -75,6 +80,7 @@ const Button = ({
   $appearance = "default",
   $size = "medium",
   $fullWidth = false,
+  isDisabled = false,
   testId,
 }: ButtonProps) => {
   return (
@@ -83,6 +89,7 @@ const Button = ({
       $appearance={$appearance}
       $size={$size}
       $fullWidth={$fullWidth}
+      disabled={isDisabled}
       data-testid={testId}
     >
       {children}
