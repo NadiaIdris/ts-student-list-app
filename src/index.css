@@ -2,11 +2,23 @@
 
 :root {
   /* colors */
-  --color-primary: #007bff;
+  --color-primary: rgba(21, 227, 255, 1);
   --color-secondary: #6c757d;
   --color-success: rgba(40, 167, 69, 1);
   --color-warning: rgba(255, 193, 7, 1);
-  --color-danger: rgba(234, 26, 151, 1);
+  --color-danger: var(--color-danger-1000);
+  --color-danger-100: rgba(234, 26, 151, 0.1);
+  --color-danger-200: rgba(234, 26, 151, 0.2);
+  --color-danger-300: rgba(234, 26, 151, 0.3);
+  --color-danger-400: rgba(234, 26, 151, 0.4);
+  --color-danger-500: rgba(234, 26, 151, 0.5);
+  --color-danger-600: rgba(234, 26, 151, 0.6);
+  --color-danger-700: rgba(234, 26, 151, 0.7);
+  --color-danger-800: rgba(234, 26, 151, 0.8);
+  --color-danger-900: rgba(234, 26, 151, 0.9);
+  --color-danger-1000: rgba(234, 26, 151, 1);
+  --color-danger-darker: rgba(230, 12, 143, 1);
+  --color-selection: rgba(0, 244, 141, 1);
   --color-white: var(--color-white-1000);
   --color-black: var(--color-black-1000);
   --color-white-100: rgba(255, 255, 255, 0.1);
@@ -39,6 +51,30 @@
   --color-black-800: rgba(0, 0, 0, 0.8);
   --color-black-900: rgba(0, 0, 0, 0.9);
   --color-black-1000: rgba(0, 0, 0, 1);
+
+  /* button colors */
+  --color-button-primary-bg: var(--color-black);
+  --color-button-secondary-bg: var(--color-gray-600);
+  --color-button-default-bg: transparent;
+  --color-button-warning-bg: var(--color-danger);
+
+  /* button text colors */
+  --color-button-primary-fg: var(--color-white);
+  --color-button-secondary-fg: var(--color-black);
+  --color-button-default-fg: var(--color-black-700);
+  --color-button-warning-fg: var(--color-white);
+
+  /* button hover colors */
+  --color-button-primary-bg-hover: var(--color-black-900);
+  --color-button-secondary-bg-hover: var(--color-gray-1000);
+  --color-button-default-bg-hover: transparent;
+  --color-button-warning-bg-hover: var(--color-danger-darker);
+
+  /* text colors */
+  --text-white: var(--color-white);
+  --text-black: var(--color-black);
+  --text-gray: var(--color-black-800);
+
   /* border radius */
   --border-radius: 8px;
 }
@@ -46,4 +82,14 @@
 /* whole app background color */
 body {
   background-color: var(--color-white);
+  caret-color: var(--color-primary);
+  font: normal normal 400 14px/1.5 'Poppins', sans-serif;
+}
+
+::selection {
+  background-color: var(--color-selection);
+}
+
+::placeholder {
+  color: var(--color-black-600);
 }

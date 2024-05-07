@@ -67,6 +67,10 @@ const StyledTextField = styled.input`
   border-radius: var(--border-radius);
   border: 2px solid var(--color-black);
   padding-left: 8px;
+  &:focus {
+    outline: none;
+    border-color: var(--color-black);
+  }
 `;
 
 /**

@@ -13,6 +13,7 @@ import { ErrorMessage } from "../../components/form/ErrorMessage";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 import styled from "styled-components";
+import { Button } from "../../components/Button";
 
 export interface IUserLogInData {
   email: string;
@@ -195,14 +196,16 @@ const LogInPage = () => {
             renderIcon={() => passwordIcons("login-password")}
             showPassword={showPassword}
           />
-          {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
+          {errors.email && <ErrorMessage>{errors.password}</ErrorMessage>}
         </Field>
         {wrongCredentials && (
           <p>
             Please check your credentials. The email or password is incorrect.
           </p>
         )}
-        <button type="submit">Log in</button>
+        <Button type="submit" $appearance="primary" $fullWidth>
+          Log in
+        </Button>
       </Form>
       <div>
         <p>
