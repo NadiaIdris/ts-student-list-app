@@ -22,7 +22,6 @@ interface FieldProps {
 }
 
 const StyledField = styled.div`
-  background-color: yellow;
   display: flex;
   flex-direction: column;
 `;

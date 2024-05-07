@@ -65,6 +65,7 @@ const StyledTextFieldWrapper = styled.div`
 const StyledTextField = styled.input`
   height: 36px;
   border-radius: 12px;
+  border: 1px solid var(--color-black-100);
 `;
 
 /**

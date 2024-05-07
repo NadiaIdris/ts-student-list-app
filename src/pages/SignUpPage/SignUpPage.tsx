@@ -5,7 +5,6 @@ import { axiosInstance } from "../../api/axiosConfig";
 import { PasswordInput } from "../../components/form/PasswordInput";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateSignUpForm } from "../../validation/validate";
-import "./SignUpPage.css";
 
 export interface IUserSignUpData {
   first_name: string;

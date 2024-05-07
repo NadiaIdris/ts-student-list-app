@@ -27,20 +27,16 @@ const StyledWrapperSpan = styled.div`
   cursor: pointer;
   display: flex;
   flex-direction: row;
+  gap: 2px;
 `;
 
-const StyledIconSpan = styled.div`
+const StyledIconSpan = styled.span`
   padding: 8px;
   background-color: transparent;
   border-radius: 100px;
   display: flex;
-  // Add margin-right to all the spans except the last one
-  &:not(:last-child) {
-    margin-right: 4px;
-  }
-  // On hover, change the background color
   &:hover {
-    background-color: lightgray;
+    background-color: var(--color-gray-600);
   }
 `;
 
