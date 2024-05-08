@@ -182,27 +182,8 @@ const LogInPage = () => {
       <Heading1>Welcome to students app</Heading1>
       <Heading2>Log in</Heading2>{" "}
       <Form onSubmit={handleOnSubmit}>
-        {/* <Field>
-          <Label htmlFor="login-email">
-            Email
-            <RequiredAsterisk />
-          </Label>
-          <TextField
-            id="login-email"
-            type="email"
-            name="email" // This is the form field key
-            value={userLogInData.email} // This is the form field value
-            onChange={handleOnChange}
-            placeholder="Enter your email"
-            $isInvalid={Boolean(errors.email)}
-            isDisabled={submitting}
-          />
-          {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
-        </Field> */}
         <Field
-          $direction="row"
           id="login-email"
-          $size="small"
           label="Email"
           isRequired
           invalidFieldMessage={errors.email}
@@ -210,8 +191,8 @@ const LogInPage = () => {
           {(inputProps) => (
             <TextField
               type="email"
-              name="email" // This is the form field key
-              value={userLogInData.email} // This is the form field value
+              name="email" 
+              value={userLogInData.email} 
               onChange={handleOnChange}
               placeholder="Enter your email"
               $isInvalid={Boolean(errors.email)}
@@ -220,28 +201,30 @@ const LogInPage = () => {
             />
           )}
         </Field>
+        <Field
+          id="login-password"
+          label="Password"
+          isRequired
+          invalidFieldMessage={errors.password}
+        >
+          {(inputProps) => (
+            <TextField
+              type="password"
+              name="password" 
+              value={userLogInData.password} 
+              onChange={handleOnChange}
+              placeholder="Enter your password"
+              $isInvalid={Boolean(errors.password)}
+              isDisabled={submitting}
+              renderIcon={(isDisabled, $size) =>
+                passwordIcons("login-password", isDisabled, $size)
+              }
+              showPassword={showPassword}
+              {...inputProps}
+            />
+          )}
+        </Field>
 
-        {/* <Field>
-          <Label htmlFor="login-password">
-            Password
-            <RequiredAsterisk />
-          </Label>
-          <TextField
-            id="login-password"
-            type="password"
-            name="password" // This is the form field key
-            value={userLogInData.password} // This is the form field value
-            onChange={handleOnChange}
-            placeholder="Enter your password"
-            $isInvalid={Boolean(errors.password)}
-            isDisabled={submitting}
-            renderIcon={(isDisabled, $size) =>
-              passwordIcons("login-password", isDisabled, $size)
-            }
-            showPassword={showPassword}
-          />
-          {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
-        </Field> */}
         {wrongCredentials && (
           <p>
             Please check your credentials. The email or password is incorrect.

@@ -53,7 +53,6 @@ const Field = ({
   return (
     <StyledField data-testid={testId}>
       <StyledWrapper $direction={$direction}>
-        {/** We need this wrapper div, so that $direction row is applied correctly. */}
         <Label htmlFor={id} $direction={$direction} $size={$size}>
           {label}
           {isRequired && <RequiredAsterisk />}

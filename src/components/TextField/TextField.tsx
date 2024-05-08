@@ -67,6 +67,7 @@ const StyledTextField = styled.input<{
   border-radius: var(--border-radius);
   border: 2px solid var(--color-black);
   padding-left: 8px;
+  width: 100%;
   &:focus {
     outline: none;
     border-color: ${({ $isInvalid }) =>
