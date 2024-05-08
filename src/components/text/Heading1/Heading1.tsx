@@ -6,7 +6,7 @@ interface Heading1Props {
 }
 
 const StyledHeading1 = styled.h1`
-  font-size: 2.938rem;
+  font-size: 2.5rem; // 40px
 `;
 
 const Heading1 = ({ children }: Heading1Props) => {

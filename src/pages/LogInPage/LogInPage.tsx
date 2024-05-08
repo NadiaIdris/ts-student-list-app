@@ -16,6 +16,7 @@ import styled from "styled-components";
 import { Button } from "../../components/Button";
 import { Size } from "../../components/TextField/TextField";
 import { Heading1 } from "../../components/text/Heading1";
+import { Heading2 } from "../../components/text/Heading2";
 
 export interface IUserLogInData {
   email: string;
@@ -179,7 +180,7 @@ const LogInPage = () => {
   return (
     <>
       <Heading1>Welcome to students app</Heading1>
-      <h2>Log in</h2>
+      <Heading2>Log in</Heading2>{" "}
       <Form onSubmit={handleOnSubmit}>
         <Field>
           <Label htmlFor="login-email">
