@@ -41,7 +41,7 @@ interface TextFieldProps {
     | "given-name"
     | "family-name";
   /**
-   * The `size` prop specifies the size of the input field. The default value is "large".
+   * The `size` prop specifies the size of the input field. The default value is "medium".
    */
   $size?: Size;
   /**
@@ -69,21 +69,20 @@ const StyledTextFieldWrapper = styled.div`
 `;
 
 const StyledTextField = styled.input<{ $size?: Size; $isInvalid?: boolean }>`
-  height: 36px;
   border-radius: var(--border-radius);
   border: 2px solid var(--color-black);
   padding-left: 8px;
   &:focus {
     outline: none;
-    border-color: ${({$isInvalid}) => ($isInvalid ? "var(--color-danger);" : "var(--color-black);")}
+    border-color: ${({ $isInvalid }) =>
+      $isInvalid ? "var(--color-danger);" : "var(--color-black);"};
   }
   &:disabled {
     background-color: var(--color-gray-1000);
   }
   ${({ $size }) => {
-    if ($size === "small") return "height: 30px;";
-    else if ($size === "medium") return "height: 36px;";
-    else if ($size === "large") return "height: 42px; font-size: 1rem;";
+    if ($size === "small") return "height: 30px; font-size: 0.875rem"; // 0.875rem is ~14px
+    else if ($size === "medium") return "height: 36px; font-size: 1rem;";  // 1rem is ~16px
   }}
   ${({ $isInvalid }) => $isInvalid && `border-color: var(--color-danger);`}
 `;

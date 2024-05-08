@@ -37,8 +37,8 @@ const StyledButton = styled.button<{
   }};
   width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "auto")};
   font-size: ${({ $size }) => {
-    if ($size === "medium") return "0.875rem"; // 14px
-    else if ($size === "large") return "1rem"; // 16px
+    if ($size === "medium") return "0.875rem"; // 0.875rem is ~14px
+    else if ($size === "large") return "1rem"; // 1rem is ~16px
   }};
   padding: ${({ $size }) => {
     if ($size === "medium") return "0 16px";
