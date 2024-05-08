@@ -1,17 +1,16 @@
 import { ChangeEvent, useLayoutEffect } from "react";
 import styled from "styled-components";
-
-export type Size = "small" | "medium";
+import { FieldSize } from "../form/Field";
 
 interface TextFieldProps {
   /**
    * The `id` prop specifies a unique id for the input field. If you are using <Label> component, the `htmlFor` prop should match the `id` prop of the input field.
    */
-  id?: string;
+  id: string;
   /**
    * The `type` prop specifies the type of input field. The default value is "text".
    */
-  type: "text" | "password" | "number" | "email" | "url" | "tel" | "search";
+  type: "text" | "password" | "number" | "email" | "url" | "tel";
   /**
    * The `name` prop specifies the name of the input field. Important: name is used as key to identify the input field when submitting the form.
    */
@@ -31,19 +30,11 @@ interface TextFieldProps {
   /**
    * The `autoComplete` prop specifies whether the browser should automatically complete the input value based on the user's previous inputs.
    */
-  autoComplete?:
-    | "on"
-    | "off"
-    | "username"
-    | "email"
-    | "tel"
-    | "name"
-    | "given-name"
-    | "family-name";
+  autoComplete?: "on" | "off";
   /**
    * The `size` prop specifies the size of the input field. The default value is "medium".
    */
-  $size?: Size;
+  $size?: FieldSize;
   /**
    * Sets whether the field is invalid. An invalid field is marked with a --color-danger color border and the error message is displayed below the field.
    */
@@ -55,7 +46,7 @@ interface TextFieldProps {
   /**
    * The `renderIcon` prop specifies a custom icon to render beside the input field.
    */
-  renderIcon?: (isDisabled: boolean, $size: Size) => JSX.Element;
+  renderIcon?: (isDisabled: boolean, $size: FieldSize) => JSX.Element;
   /**
    * The `showPassword` prop specifies whether the password is visible or not. This prop is only used when the type is "password".
    */
@@ -69,7 +60,10 @@ const StyledTextFieldWrapper = styled.div`
   flex-grow: 1;
 `;
 
-const StyledTextField = styled.input<{ $size?: Size; $isInvalid?: boolean }>`
+const StyledTextField = styled.input<{
+  $size?: FieldSize;
+  $isInvalid?: boolean;
+}>`
   border-radius: var(--border-radius);
   border: 2px solid var(--color-black);
   padding-left: 8px;
@@ -83,8 +77,9 @@ const StyledTextField = styled.input<{ $size?: Size; $isInvalid?: boolean }>`
   }
   ${({ $size }) => {
     if ($size === "small")
-      return "height: 30px; font-size: 0.875rem"; // 0.875rem is ~14px
-    else if ($size === "medium") return "height: 36px; font-size: 1rem;"; // 1rem is ~16px
+      return "height: 30px; font: 0.875rem Poppins, sans-serif;"; // 0.875rem is ~14px
+    else if ($size === "medium")
+      return "height: 36px; font: 1rem Poppins, sans-serif;"; // 1rem is ~16px
   }}
   ${({ $isInvalid }) => $isInvalid && `border-color: var(--color-danger);`}
 `;
@@ -102,7 +97,7 @@ const TextField = ({
   value,
   onChange,
   placeholder,
-  autoComplete = "off",
+  autoComplete = "on",
   $size = "medium",
   $isInvalid = false,
   isDisabled = false,

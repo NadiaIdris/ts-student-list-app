@@ -1,7 +1,9 @@
 import { ReactNode } from "react";
 import styled from "styled-components";
+import { FormFieldDirection } from "../Field";
 
 interface ErrorMessageProps {
+  $direction?: FormFieldDirection;
   /**
    * The content of the error message
    */
@@ -12,13 +14,22 @@ interface ErrorMessageProps {
   testId?: string;
 }
 
-const StyledError = styled.div`
+const StyledError = styled.div<{ $direction: FormFieldDirection }>`
   color: var(--color-danger);
   font-size: 0.8em;
+  ${({ $direction }) => $direction === "row" && "margin-left: 113px;"}
 `;
 
-const ErrorMessage = ({ children, testId }: ErrorMessageProps) => {
-  return <StyledError data-testid={testId}>{children}</StyledError>;
+const ErrorMessage = ({
+  $direction = "column",
+  children,
+  testId,
+}: ErrorMessageProps) => {
+  return (
+    <StyledError $direction={$direction} data-testid={testId}>
+      {children}
+    </StyledError>
+  );
 };
 
 export { ErrorMessage };

@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 import styled from "styled-components";
-import { Size } from "../../TextField";
-import { FormFieldDirection } from "../Field/Field";
+import { FieldSize, FormFieldDirection } from "../Field";
 
 interface LabelProps {
   /*
@@ -19,7 +18,7 @@ interface LabelProps {
   /**
    * The `size` prop specifies the size of the label text. The default value is "medium".
    */
-  $size?: Size;
+  $size?: FieldSize;
   /*
    * A `testId` prop is provided for specified elements, which is a unique string that appears as a data attribute `data-testid` in the rendered code, serving as a hook for automated tests
    */
@@ -27,7 +26,7 @@ interface LabelProps {
 }
 
 const LabelStyles = styled.label<{
-  $size: Size;
+  $size: FieldSize;
   $direction: FormFieldDirection;
 }>`
   font-size: ${({ $size }) => ($size === "small" ? "0.875rem" : "1rem")};

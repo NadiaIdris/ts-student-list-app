@@ -1,29 +1,25 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { LOGIN_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
-import { Label } from "../../components/form/Label";
+import { Button } from "../../components/Button";
+import { Field, FieldSize } from "../../components/form/Field";
+import { Form } from "../../components/form/Form";
+import { Heading1 } from "../../components/text/Heading1";
+import { Heading2 } from "../../components/text/Heading2";
 import { TextField } from "../../components/TextField";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateLoginForm } from "../../validation/validate";
 import { StudentsPage } from "../StudentsPage";
-import { Form } from "../../components/form/Form";
-import { Field } from "../../components/form/Field";
-import { ErrorMessage } from "../../components/form/ErrorMessage";
-import { FiEye, FiEyeOff } from "react-icons/fi";
-import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
-import styled from "styled-components";
-import { Button } from "../../components/Button";
-import { Size } from "../../components/TextField/TextField";
-import { Heading1 } from "../../components/text/Heading1";
-import { Heading2 } from "../../components/text/Heading2";
 
 export interface IUserLogInData {
   email: string;
   password: string;
 }
 
-const StyledWrapperDiv = styled.div<{ $isDisabled: boolean; $size: Size }>`
+const StyledWrapperDiv = styled.div<{ $isDisabled: boolean; $size: FieldSize }>`
   position: absolute;
   top: 50%;
   right: ${({ $size }) => ($size === "small" ? "4px" : "2px")};
@@ -36,7 +32,7 @@ const StyledWrapperDiv = styled.div<{ $isDisabled: boolean; $size: Size }>`
     $isDisabled && "pointer-events: none; opacity: 0.5; cursor: disabled;"};
 `;
 
-const StyledIconSpan = styled.span<{ $size: Size }>`
+const StyledIconSpan = styled.span<{ $size: FieldSize }>`
   padding: ${({ $size }) => ($size === "small" ? "4px" : "8px")};
   background-color: transparent;
   border-radius: 100px;
@@ -137,7 +133,11 @@ const LogInPage = () => {
     setShowPassword(!showPassword);
   };
 
-  const passwordIcons = (id: string, $isDisabled: boolean, $size: Size) => (
+  const passwordIcons = (
+    id: string,
+    $isDisabled: boolean,
+    $size: FieldSize
+  ) => (
     <StyledWrapperDiv
       id={`${id}-icon`} // This is useful measuring the width of the icons wrapper span to add the correct padding-right to the input field.
       onClick={handleTogglePasswordIcon}
@@ -182,7 +182,7 @@ const LogInPage = () => {
       <Heading1>Welcome to students app</Heading1>
       <Heading2>Log in</Heading2>{" "}
       <Form onSubmit={handleOnSubmit}>
-        <Field>
+        {/* <Field>
           <Label htmlFor="login-email">
             Email
             <RequiredAsterisk />
@@ -194,13 +194,34 @@ const LogInPage = () => {
             value={userLogInData.email} // This is the form field value
             onChange={handleOnChange}
             placeholder="Enter your email"
-            autoComplete="email"
             $isInvalid={Boolean(errors.email)}
             isDisabled={submitting}
           />
           {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
+        </Field> */}
+        <Field
+          $direction="row"
+          id="login-email"
+          $size="small"
+          label="Email"
+          isRequired
+          invalidFieldMessage={errors.email}
+        >
+          {(inputProps) => (
+            <TextField
+              type="email"
+              name="email" // This is the form field key
+              value={userLogInData.email} // This is the form field value
+              onChange={handleOnChange}
+              placeholder="Enter your email"
+              $isInvalid={Boolean(errors.email)}
+              isDisabled={submitting}
+              {...inputProps}
+            />
+          )}
         </Field>
-        <Field>
+
+        {/* <Field>
           <Label htmlFor="login-password">
             Password
             <RequiredAsterisk />
@@ -220,7 +241,7 @@ const LogInPage = () => {
             showPassword={showPassword}
           />
           {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
-        </Field>
+        </Field> */}
         {wrongCredentials && (
           <p>
             Please check your credentials. The email or password is incorrect.

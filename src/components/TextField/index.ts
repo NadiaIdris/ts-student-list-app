@@ -1,3 +1,2 @@
-import { TextField, Size } from "./TextField";
+import { TextField } from "./TextField";
 export { TextField };
-export type { Size };
