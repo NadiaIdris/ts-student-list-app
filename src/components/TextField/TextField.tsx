@@ -66,6 +66,7 @@ const StyledTextFieldWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 `;
 
 const StyledTextField = styled.input<{ $size?: Size; $isInvalid?: boolean }>`
@@ -81,8 +82,9 @@ const StyledTextField = styled.input<{ $size?: Size; $isInvalid?: boolean }>`
     background-color: var(--color-gray-1000);
   }
   ${({ $size }) => {
-    if ($size === "small") return "height: 30px; font-size: 0.875rem"; // 0.875rem is ~14px
-    else if ($size === "medium") return "height: 36px; font-size: 1rem;";  // 1rem is ~16px
+    if ($size === "small")
+      return "height: 30px; font-size: 0.875rem"; // 0.875rem is ~14px
+    else if ($size === "medium") return "height: 36px; font-size: 1rem;"; // 1rem is ~16px
   }}
   ${({ $isInvalid }) => $isInvalid && `border-color: var(--color-danger);`}
 `;
