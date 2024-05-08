@@ -1,7 +1,7 @@
 import { ChangeEvent, useLayoutEffect } from "react";
 import styled from "styled-components";
 
-type Size = "compact" | "small" | "medium" | "large";
+export type Size = "small" | "medium";
 
 interface TextFieldProps {
   /**
@@ -55,7 +55,7 @@ interface TextFieldProps {
   /**
    * The `renderIcon` prop specifies a custom icon to render beside the input field.
    */
-  renderIcon?: (isDisabled: boolean) => JSX.Element;
+  renderIcon?: (isDisabled: boolean, $size: Size) => JSX.Element;
   /**
    * The `showPassword` prop specifies whether the password is visible or not. This prop is only used when the type is "password".
    */
@@ -81,10 +81,9 @@ const StyledTextField = styled.input<{ $size?: Size; $isInvalid?: boolean }>`
     background-color: var(--color-gray-1000);
   }
   ${({ $size }) => {
-    if ($size === "compact") return "height: 24px;";
-    else if ($size === "small") return "height: 30px;";
+    if ($size === "small") return "height: 30px;";
     else if ($size === "medium") return "height: 36px;";
-    else if ($size === "large") return "height: 42px;";
+    else if ($size === "large") return "height: 42px; font-size: 1rem;";
   }}
   ${({ $isInvalid }) => $isInvalid && `border-color: var(--color-danger);`}
 `;
@@ -137,8 +136,8 @@ const TextField = ({
         disabled={isDisabled}
         {...props}
       />
-      {type === "password" && renderIcon && renderIcon(isDisabled)}
-      {type !== "password" && renderIcon && renderIcon(isDisabled)}
+      {type === "password" && renderIcon && renderIcon(isDisabled, $size)}
+      {type !== "password" && renderIcon && renderIcon(isDisabled, $size)}
     </StyledTextFieldWrapper>
   );
 };

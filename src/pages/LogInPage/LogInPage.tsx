@@ -14,16 +14,17 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 import styled from "styled-components";
 import { Button } from "../../components/Button";
+import { Size } from "../../components/TextField/TextField";
 
 export interface IUserLogInData {
   email: string;
   password: string;
 }
 
-const StyledWrapperDiv = styled.div<{ $isDisabled: boolean }>`
+const StyledWrapperDiv = styled.div<{ $isDisabled: boolean; $size: Size }>`
   position: absolute;
   top: 50%;
-  right: 2px;
+  right: ${({ $size }) => ($size === "small" ? "4px" : "2px")};
   transform: translateY(-50%);
   cursor: pointer;
   display: flex;
@@ -33,8 +34,8 @@ const StyledWrapperDiv = styled.div<{ $isDisabled: boolean }>`
     $isDisabled && "pointer-events: none; opacity: 0.5; cursor: disabled;"};
 `;
 
-const StyledIconSpan = styled.span`
-  padding: 8px;
+const StyledIconSpan = styled.span<{ $size: Size }>`
+  padding: ${({ $size }) => ($size === "small" ? "4px" : "8px")};
   background-color: transparent;
   border-radius: 100px;
   display: flex;
@@ -63,7 +64,6 @@ const LogInPage = () => {
 
   const handleOnSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitting(true);
     // Trim the white spaces from the email and password
     const trimmedUserLogInData = Object.keys(userLogInData).reduce(
       (acc, key) => ({
@@ -89,6 +89,7 @@ const LogInPage = () => {
     }
 
     try {
+      setSubmitting(true);
       const response = await axiosInstance.post(LOGIN_ENDPOINT, userLogInData);
       // Extract the token and user details from the response
       const bearerToken =
@@ -134,13 +135,20 @@ const LogInPage = () => {
     setShowPassword(!showPassword);
   };
 
-  const passwordIcons = (id: string, $isDisabled: boolean) => (
+  const passwordIcons = (id: string, $isDisabled: boolean, $size: Size) => (
     <StyledWrapperDiv
       id={`${id}-icon`} // This is useful measuring the width of the icons wrapper span to add the correct padding-right to the input field.
       onClick={handleTogglePasswordIcon}
       $isDisabled={$isDisabled}
+      $size={$size}
     >
-      <StyledIconSpan>{showPassword ? <FiEyeOff /> : <FiEye />}</StyledIconSpan>
+      <StyledIconSpan $size={$size}>
+        {showPassword ? (
+          <FiEyeOff style={{ width: "16px", height: "16px" }} />
+        ) : (
+          <FiEye style={{ width: "16px", height: "16px" }} />
+        )}
+      </StyledIconSpan>
     </StyledWrapperDiv>
   );
 
@@ -180,11 +188,13 @@ const LogInPage = () => {
           <TextField
             id="login-email"
             type="email"
-            placeholder="Enter your email"
             name="email" // This is the form field key
             value={userLogInData.email} // This is the form field value
             onChange={handleOnChange}
+            placeholder="Enter your email"
             autoComplete="email"
+            $isInvalid={Boolean(errors.email)}
+            isDisabled={submitting}
           />
           {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
         </Field>
@@ -202,8 +212,8 @@ const LogInPage = () => {
             placeholder="Enter your password"
             $isInvalid={Boolean(errors.password)}
             isDisabled={submitting}
-            renderIcon={(isDisabled) =>
-              passwordIcons("login-password", isDisabled)
+            renderIcon={(isDisabled, $size) =>
+              passwordIcons("login-password", isDisabled, $size)
             }
             showPassword={showPassword}
           />
