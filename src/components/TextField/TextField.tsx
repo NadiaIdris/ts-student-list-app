@@ -1,4 +1,4 @@
-import { ChangeEvent, useLayoutEffect } from "react";
+import { ChangeEvent, CSSProperties, useLayoutEffect } from "react";
 import styled from "styled-components";
 import { FieldSize } from "../form/Field";
 
@@ -51,6 +51,11 @@ interface TextFieldProps {
    * The `showPassword` prop specifies whether the password is visible or not. This prop is only used when the type is "password".
    */
   showPassword?: boolean;
+  /**
+   * The `style` prop specifies the style of the text field. It will add the style inline. It's great to use it to add margin or padding to the text field.
+   */
+  style?: CSSProperties;
+  className?: string;
 }
 
 const StyledTextFieldWrapper = styled.div`
@@ -104,6 +109,8 @@ const TextField = ({
   isDisabled = false,
   renderIcon,
   showPassword = false,
+  style,
+  className,
   ...props
 }: TextFieldProps) => {
   let passwordType = showPassword ? "text" : "password";
@@ -119,7 +126,7 @@ const TextField = ({
   });
 
   return (
-    <StyledTextFieldWrapper>
+    <StyledTextFieldWrapper style={style} className={className}>
       <StyledTextField
         id={id}
         type={type === "password" ? passwordType : type}

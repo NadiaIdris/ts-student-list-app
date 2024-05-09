@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
 import styled from "styled-components";
 
 type Appearance = "primary" | "secondary" | "warning" | "default";
@@ -15,6 +15,14 @@ interface ButtonProps {
    * A `testId` prop is provided for specified elements, which is a unique string that appears as a data attribute `data-testid` in the rendered code, serving as a hook for automated tests
    */
   testId?: string;
+  /**
+   * The `style` prop specifies the style of the button. It will add the style inline. It's great to use it to add margin or padding to the button.
+   */
+  style?: CSSProperties;
+  /**
+   * The `className` prop specifies the class of the button. It will add the class to the button. It's great to use it to add margin or padding to the button.
+   */
+  className?: string;
 }
 
 const StyledButton = styled.button<{
@@ -82,6 +90,9 @@ const Button = ({
   $fullWidth = false,
   isDisabled = false,
   testId,
+  style,
+  className,
+  ...props
 }: ButtonProps) => {
   return (
     <StyledButton
@@ -91,6 +102,9 @@ const Button = ({
       $fullWidth={$fullWidth}
       disabled={isDisabled}
       data-testid={testId}
+      style={style}
+      className={className}
+      {...props}
     >
       {children}
     </StyledButton>

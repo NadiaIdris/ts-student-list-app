@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
 import styled from "styled-components";
+import { ErrorMessage } from "../ErrorMessage";
 import { Label } from "../Label";
 import { RequiredAsterisk } from "../RequiredAsterisk";
-import { ErrorMessage } from "../ErrorMessage";
 
 export type FormFieldDirection = "row" | "column";
 export type FieldSize = "small" | "medium";
@@ -12,11 +12,11 @@ interface FieldProps {
   label: ReactNode | string;
   isRequired?: boolean;
   invalidFieldMessage?: string;
-  /*
+  /**
    * Form field direction.
    */
   $direction?: FormFieldDirection;
-  /*
+  /**
    * The size of the field.
    */
   $size?: FieldSize;
@@ -25,6 +25,12 @@ interface FieldProps {
    * A `testId` prop is provided for specified elements, which is a unique string that appears as a data attribute `data-testid` in the rendered code, serving as a hook for automated tests
    */
   testId?: string;
+  /**
+   * The `style` prop specifies the style of the field. It will add the style inline. It's great to
+   * use it to add margin or padding to the field.
+   */
+  style?: CSSProperties;
+  className?: string;
 }
 
 const StyledField = styled.div`
@@ -49,9 +55,17 @@ const Field = ({
   $size = "medium",
   children,
   testId,
+  style,
+  className,
+  ...props
 }: FieldProps) => {
   return (
-    <StyledField data-testid={testId}>
+    <StyledField
+      data-testid={testId}
+      style={style}
+      className={className}
+      {...props}
+    >
       <StyledWrapper $direction={$direction}>
         <Label htmlFor={id} $direction={$direction} $size={$size}>
           {label}
@@ -62,7 +76,9 @@ const Field = ({
           : children}
       </StyledWrapper>
       {invalidFieldMessage && (
-        <ErrorMessage $direction={$direction}>{invalidFieldMessage}</ErrorMessage>
+        <ErrorMessage $direction={$direction}>
+          {invalidFieldMessage}
+        </ErrorMessage>
       )}
     </StyledField>
   );

@@ -92,6 +92,10 @@ body {
   font: normal normal 400 14px/1.5 "Poppins", sans-serif;
 }
 
+#root {
+  height: 100vh;
+}
+
 ::selection {
   background-color: var(--color-selection);
 }

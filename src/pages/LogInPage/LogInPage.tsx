@@ -19,6 +19,15 @@ export interface IUserLogInData {
   password: string;
 }
 
+const StyledLoginPageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: 100%;
+`;
+
 const StyledWrapperDiv = styled.div<{ $isDisabled: boolean; $size: FieldSize }>`
   position: absolute;
   top: 50%;
@@ -42,6 +51,19 @@ const StyledIconSpan = styled.span<{ $size: FieldSize }>`
     background-color: var(--color-gray-600);
     color: var(--color-black);
   }
+`;
+
+const StyledFormWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 340px;
+  width: 100%;
+`;
+
+const StyledNotAMemberDiv = styled.div`
+  margin-top: 8px;
+  text-align: center;
 `;
 
 const defaultUserLogInData = {
@@ -178,74 +200,78 @@ const LogInPage = () => {
   // );
 
   return (
-    <>
-      <Heading1>Welcome to students app</Heading1>
-      <Heading2>Log in</Heading2>{" "}
-      <Form onSubmit={handleOnSubmit}>
-        <Field
-          id="login-email"
-          label="Email"
-          isRequired
-          invalidFieldMessage={errors.email}
-        >
-          {(inputProps) => (
-            <TextField
-              type="email"
-              name="email" 
-              value={userLogInData.email} 
-              onChange={handleOnChange}
-              placeholder="Enter your email"
-              $isInvalid={Boolean(errors.email)}
-              isDisabled={submitting}
-              {...inputProps}
-            />
-          )}
-        </Field>
-        <Field
-          id="login-password"
-          label="Password"
-          isRequired
-          invalidFieldMessage={errors.password}
-        >
-          {(inputProps) => (
-            <TextField
-              type="password"
-              name="password" 
-              value={userLogInData.password} 
-              onChange={handleOnChange}
-              placeholder="Enter your password"
-              $isInvalid={Boolean(errors.password)}
-              isDisabled={submitting}
-              renderIcon={(isDisabled, $size) =>
-                passwordIcons("login-password", isDisabled, $size)
-              }
-              showPassword={showPassword}
-              {...inputProps}
-            />
-          )}
-        </Field>
+    <StyledLoginPageWrapper>
+      <Heading1 style={{ textAlign: 'center'}}>
+        Welcome to students app
+      </Heading1>
+      <StyledFormWrapper>
+        <Heading2>Log in</Heading2>
+        <Form onSubmit={handleOnSubmit} style={{ padding: "0 12px" }}>
+          <Field
+            id="login-email"
+            label="Email"
+            isRequired
+            invalidFieldMessage={errors.email}
+            style={{ margin: "0 0 12px 0" }}
+          >
+            {(inputProps) => (
+              <TextField
+                type="email"
+                name="email"
+                value={userLogInData.email}
+                onChange={handleOnChange}
+                placeholder="Enter your email"
+                $isInvalid={Boolean(errors.email)}
+                isDisabled={submitting}
+                {...inputProps}
+              />
+            )}
+          </Field>
+          <Field
+            id="login-password"
+            label="Password"
+            isRequired
+            invalidFieldMessage={errors.password}
+            style={{ margin: "0 0 12px 0" }}
+          >
+            {(inputProps) => (
+              <TextField
+                type="password"
+                name="password"
+                value={userLogInData.password}
+                onChange={handleOnChange}
+                placeholder="Enter your password"
+                $isInvalid={Boolean(errors.password)}
+                isDisabled={submitting}
+                renderIcon={(isDisabled, $size) =>
+                  passwordIcons("login-password", isDisabled, $size)
+                }
+                showPassword={showPassword}
+                {...inputProps}
+              />
+            )}
+          </Field>
 
-        {wrongCredentials && (
-          <p>
-            Please check your credentials. The email or password is incorrect.
-          </p>
-        )}
-        <Button
-          type="submit"
-          $appearance="primary"
-          $fullWidth
-          isDisabled={submitting}
-        >
-          Log in
-        </Button>
-      </Form>
-      <div>
-        <p>
+          {wrongCredentials && (
+            <p>
+              Please check your credentials. The email or password is incorrect.
+            </p>
+          )}
+          <Button
+            type="submit"
+            $appearance="primary"
+            $fullWidth
+            isDisabled={submitting}
+          >
+            Log in
+          </Button>
+        </Form>
+        <StyledNotAMemberDiv>
           Not a member? <Link to="/signup">Sign up now</Link>
-        </p>
-        <p>* Required fields</p>
-      </div>
-    </>
+          <br />* Required fields
+        </StyledNotAMemberDiv>
+      </StyledFormWrapper>
+    </StyledLoginPageWrapper>
   );
 };
 
