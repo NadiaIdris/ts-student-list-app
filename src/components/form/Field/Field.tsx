@@ -76,7 +76,10 @@ const Field = ({
           : children}
       </StyledWrapper>
       {invalidFieldMessage && (
-        <ErrorMessage $direction={$direction}>
+        <ErrorMessage
+          $direction={$direction}
+          $isVisible={Boolean(invalidFieldMessage)}
+        >
           {invalidFieldMessage}
         </ErrorMessage>
       )}

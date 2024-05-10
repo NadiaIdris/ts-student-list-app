@@ -23,7 +23,7 @@ const StyledLoginPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  padding-top: 100px;
   gap: 16px;
   height: 100%;
 `;
@@ -56,6 +56,7 @@ const StyledIconSpan = styled.span<{ $size: FieldSize }>`
 const StyledFormWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   max-width: 340px;
   width: 100%;
@@ -201,7 +202,7 @@ const LogInPage = () => {
 
   return (
     <StyledLoginPageWrapper>
-      <Heading1 style={{ textAlign: 'center'}}>
+      <Heading1 style={{ textAlign: "center" }}>
         Welcome to students app
       </Heading1>
       <StyledFormWrapper>
@@ -262,6 +263,7 @@ const LogInPage = () => {
             $appearance="primary"
             $fullWidth
             isDisabled={submitting}
+            style={{ marginTop: "24px" }}
           >
             Log in
           </Button>

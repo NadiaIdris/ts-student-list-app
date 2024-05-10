@@ -1,7 +1,7 @@
 import { CSSProperties, ReactNode } from "react";
 import styled from "styled-components";
 
-type Appearance = "primary" | "secondary" | "warning" | "default";
+type Appearance = "primary" | "secondary" | "warning" | "link";
 type Size = "medium" | "large";
 
 interface ButtonProps {
@@ -77,7 +77,7 @@ const StyledButton = styled.button<{
       else return "var(--color-button-default-bg-hover)";
     }};
     color: ${({ $appearance }) => {
-      if ($appearance === "default") return "var(--text-black)";
+      if ($appearance === "link") return "var(--text-black)";
     }};
   }
 `;
@@ -85,7 +85,7 @@ const StyledButton = styled.button<{
 const Button = ({
   children,
   type = "button",
-  $appearance = "default",
+  $appearance = "link",
   $size = "medium",
   $fullWidth = false,
   isDisabled = false,
