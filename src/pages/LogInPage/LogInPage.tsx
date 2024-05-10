@@ -13,6 +13,7 @@ import { TextField } from "../../components/TextField";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateLoginForm } from "../../validation/validate";
 import { StudentsPage } from "../StudentsPage";
+import { ErrorMessage } from "../../components/form/ErrorMessage";
 
 export interface IUserLogInData {
   email: string;
@@ -254,9 +255,9 @@ const LogInPage = () => {
           </Field>
 
           {wrongCredentials && (
-            <p>
+            <ErrorMessage $isVisible={wrongCredentials}>
               Please check your credentials. The email or password is incorrect.
-            </p>
+            </ErrorMessage>
           )}
           <Button
             type="submit"

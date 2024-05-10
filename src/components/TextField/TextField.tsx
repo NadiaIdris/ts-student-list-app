@@ -73,11 +73,6 @@ const StyledTextField = styled.input<{
   border: 2px solid var(--color-black);
   padding-left: 8px;
   width: 100%;
-  &:focus {
-    outline: none;
-    border-color: ${({ $isInvalid }) =>
-      $isInvalid ? "var(--color-danger);" : "var(--color-black);"};
-  }
   &:disabled {
     background-color: var(--color-gray-1000);
   }

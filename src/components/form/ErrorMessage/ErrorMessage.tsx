@@ -28,7 +28,8 @@ const StyledError = styled.div<{
   font-size: 0.8em;
   ${({ $direction }) => $direction === "row" && "margin-left: 113px;"}
   height: ${({ $isVisible, $height }) => ($isVisible ? `auto` : "0")};
-  max-height: ${({ $isVisible, $height }) => ($isVisible ? `${$height}px` : "0")};
+  max-height: ${({ $isVisible, $height }) =>
+    $isVisible ? `${$height}px` : "0"};
   overflow: hidden; /* Hide the content that overflows the height during animation */
   transform: translateY(${({ $isVisible }) => ($isVisible ? "0" : "-20px")});
   transition: transform 0.3s ease-in-out, max-height 0.3s ease-in-out;

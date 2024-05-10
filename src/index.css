@@ -19,6 +19,7 @@
   --color-danger-1000: rgba(234, 26, 151, 1);
   --color-danger-darker: rgb(197, 3, 119);
   --color-selection: rgba(0, 244, 141, 1);
+  --color-focus: rgb(0, 208, 255);
   --color-white: var(--color-white-1000);
   --color-black: var(--color-black-1000);
   --color-white-100: rgba(255, 255, 255, 0.1);
@@ -102,4 +103,16 @@ body {
 
 ::placeholder {
   color: var(--color-black-600);
+}
+
+/* global focus styles */
+:focus {
+  outline: var(--color-focus) solid 2px;
+}
+
+:-webkit-autofill,
+:-webkit-autofill:hover,
+:-webkit-autofill:focus,
+:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-white) inset; /* change the color to white background color from the default light blue */
 }
