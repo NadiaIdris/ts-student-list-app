@@ -14,6 +14,7 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateLoginForm } from "../../validation/validate";
 import { StudentsPage } from "../StudentsPage";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
+import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 
 export interface IUserLogInData {
   email: string;
@@ -64,8 +65,17 @@ const StyledFormWrapper = styled.div`
 `;
 
 const StyledNotAMemberDiv = styled.div`
-  margin-top: 8px;
+  margin-top: 40px;
   text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-black-400);
+  a {
+    color: var(--color-danger-500);
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 const defaultUserLogInData = {
@@ -271,7 +281,8 @@ const LogInPage = () => {
         </Form>
         <StyledNotAMemberDiv>
           Not a member? <Link to="/signup">Sign up now</Link>
-          <br />* Required fields
+          <br />
+          <RequiredAsterisk /> Required fields
         </StyledNotAMemberDiv>
       </StyledFormWrapper>
     </StyledLoginPageWrapper>
