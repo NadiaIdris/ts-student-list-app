@@ -25,7 +25,7 @@ const StyledLoginPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 100px;
+  padding: 100px 12px 12px;
   gap: 16px;
   height: 100%;
 `;
@@ -218,7 +218,7 @@ const LogInPage = () => {
       </Heading1>
       <StyledFormWrapper>
         <Heading2>Log in</Heading2>
-        <Form onSubmit={handleOnSubmit} style={{ padding: "0 12px" }}>
+        <Form onSubmit={handleOnSubmit}>
           <Field
             id="login-email"
             label="Email"
