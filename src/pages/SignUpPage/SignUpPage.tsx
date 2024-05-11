@@ -2,9 +2,18 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
-import { PasswordInput } from "../../components/form/PasswordInput";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateSignUpForm } from "../../validation/validate";
+import styled from "styled-components";
+import { Heading1 } from "../../components/text/Heading1";
+import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
+import { Heading2 } from "../../components/text/Heading2";
+import { Form } from "../../components/form/Form";
+import { Field, FieldSize } from "../../components/form/Field";
+import { TextField } from "../../components/TextField";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { ErrorMessage } from "../../components/form/ErrorMessage";
+import { Button } from "../../components/Button";
 
 export interface IUserSignUpData {
   first_name: string;
@@ -27,8 +36,64 @@ const defaultUserSignUpData = {
   repeat_password: "",
 };
 
+const StyledLoginPageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100px 12px 50px 12px;
+  gap: 16px;
+`;
+
+const StyledFormWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  max-width: 340px;
+  width: 100%;
+`;
+
+const StyledWrapperDiv = styled.div<{ $isDisabled: boolean; $size: FieldSize }>`
+  position: absolute;
+  top: 50%;
+  right: ${({ $size }) => ($size === "small" ? "4px" : "2px")};
+  transform: translateY(-50%);
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+  ${({ $isDisabled }) =>
+    $isDisabled && "pointer-events: none; opacity: 0.5; cursor: disabled;"};
+`;
+
+const StyledIconSpan = styled.span<{ $size: FieldSize }>`
+  padding: ${({ $size }) => ($size === "small" ? "4px" : "8px")};
+  background-color: transparent;
+  border-radius: 100px;
+  display: flex;
+  color: var(--color-black-700);
+  &:hover {
+    background-color: var(--color-gray-600);
+    color: var(--color-black);
+  }
+`;
+
+const StyledAlreadyAMemberDiv = styled.div`
+  margin-top: 40px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-black-400);
+  a {
+    color: var(--color-danger-500);
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
 const SignUpPage = () => {
-  const [formData, setFormData] = useState<IUserSignUpData>(
+  const [userSignUpData, setUserSignUpData] = useState<IUserSignUpData>(
     defaultUserSignUpData
   );
   const [errors, setErrors] = useState<IUserSignUpData>(defaultUserSignUpData);
@@ -37,28 +102,34 @@ const SignUpPage = () => {
       showErrorMsg: false,
       errorMsg: null,
     });
+  const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { logIn } = useAuthContext();
 
   const showCorrectErrorMsg = (error: any) => {
     if (error.response.status === 409) {
       return (
-        <>
+        <ErrorMessage $isVisible={true}>
           Email already exists. Please <Link to="/login">log in</Link>.
-        </>
+        </ErrorMessage>
       );
     } else {
-      return <>An error occurred. Please try again later.</>;
+      return (
+        <ErrorMessage $isVisible={true}>
+          An error occurred. Please try again later.
+        </ErrorMessage>
+      );
     }
   };
 
   const handleOnSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     // Trim the white spaces from all the form data
-    const trimmedFormData = Object.keys(formData).reduce(
+    const trimmedFormData = Object.keys(userSignUpData).reduce(
       (acc, key) => ({
         ...acc,
-        [key]: formData[key as keyof IUserSignUpData].trim(),
+        [key]: userSignUpData[key as keyof IUserSignUpData].trim(),
       }),
       defaultUserSignUpData
     );
@@ -93,13 +164,14 @@ const SignUpPage = () => {
 
     //Send the user data to the server if there are no errors
     try {
+      setSubmitting(true);
       await axiosInstance.post(SIGNUP_ENDPOINT, formDataWithoutRepeatPassword, {
         headers: {
           "Content-Type": "application/json",
         },
       });
       // Clear the form
-      setFormData(defaultUserSignUpData);
+      setUserSignUpData(defaultUserSignUpData);
 
       try {
         const userLogInDetails = {
@@ -134,76 +206,177 @@ const SignUpPage = () => {
     } catch (error: any) {
       const errorMsg = showCorrectErrorMsg(error);
       setShowSignUpErrorMsg({ showErrorMsg: true, errorMsg });
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [event.target.id]: event.target.value,
+    setUserSignUpData({
+      ...userSignUpData,
+      [event.target.name]: event.target.value,
     });
   };
+
+  const handleTogglePasswordIcon = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const passwordIcons = (
+    id: string,
+    $isDisabled: boolean,
+    $size: FieldSize
+  ) => (
+    <StyledWrapperDiv
+      id={`${id}-icon`} // This is useful measuring the width of the icons wrapper span to add the correct padding-right to the input field.
+      onClick={handleTogglePasswordIcon}
+      $isDisabled={$isDisabled}
+      $size={$size}
+    >
+      <StyledIconSpan $size={$size}>
+        {showPassword ? (
+          <FiEyeOff style={{ width: "16px", height: "16px" }} />
+        ) : (
+          <FiEye style={{ width: "16px", height: "16px" }} />
+        )}
+      </StyledIconSpan>
+    </StyledWrapperDiv>
+  );
+
   return (
-    <>
-      <h1>Welcome to students app</h1>
-      <h2>Sign up</h2>
-      <form onSubmit={handleOnSubmit} autoComplete="true">
-        <div className="form-group">
-          <label htmlFor="first_name">First name*</label>
-          <input
-            id="first_name"
-            type="text"
-            placeholder="Enter your first name"
-            value={formData.first_name}
-            onChange={handleOnChange}
-          />
-          {errors.first_name && <div>{errors.first_name}</div>}
-        </div>
-        <div className="form-group">
-          <label htmlFor="last_name">Last name*</label>
-          <input
-            id="last_name"
-            type="text"
-            placeholder="Enter your last name"
-            value={formData.last_name}
-            onChange={handleOnChange}
-          />
-          {errors.last_name && <div>{errors.last_name}</div>}
-        </div>
-        <div className="form-group">
-          <label htmlFor="email">Email*</label>
-          <input
+    <StyledLoginPageWrapper>
+      <Heading1 style={{ textAlign: "center" }}>
+        Welcome to students app
+      </Heading1>
+      <StyledFormWrapper>
+        <Heading2>Sign up</Heading2>
+        <Form onSubmit={handleOnSubmit}>
+          <Field
+            id="first-name"
+            label="First name"
+            isRequired
+            invalidFieldMessage={errors.first_name}
+            style={{ margin: "0 0 12px 0" }}
+          >
+            {(inputProps) => (
+              <TextField
+                type="text"
+                name="first_name"
+                value={userSignUpData.first_name}
+                onChange={handleOnChange}
+                placeholder="Enter your first name"
+                $isInvalid={Boolean(errors.first_name)}
+                isDisabled={submitting}
+                {...inputProps}
+              />
+            )}
+          </Field>
+          <Field
+            id="last-name"
+            label="Last name"
+            isRequired
+            invalidFieldMessage={errors.last_name}
+            style={{ margin: "0 0 12px 0" }}
+          >
+            {(inputProps) => (
+              <TextField
+                type="text"
+                name="last_name"
+                value={userSignUpData.last_name}
+                onChange={handleOnChange}
+                placeholder="Enter your last name"
+                $isInvalid={Boolean(errors.last_name)}
+                isDisabled={submitting}
+                {...inputProps}
+              />
+            )}
+          </Field>
+          <Field
             id="email"
-            type="email"
-            placeholder="Enter your email"
-            value={formData.email}
-            onChange={handleOnChange}
-          />
-          {errors.email && <div>{errors.email}</div>}
-        </div>
-        <PasswordInput
-          id="password"
-          value={formData.password}
-          onChange={handleOnChange}
-          passwordErrorMsg={errors.password}
-        />
-        <PasswordInput
-          id="repeat_password"
-          label="Confirm password"
-          value={formData.repeat_password}
-          onChange={handleOnChange}
-          passwordErrorMsg={errors.repeat_password}
-        />
-        {showSignUpErrorMsg.showErrorMsg && showSignUpErrorMsg.errorMsg}
-        <button type="submit">Sign up</button>
-      </form>
-      <div>
-        <p>
+            label="Email"
+            isRequired
+            invalidFieldMessage={errors.email}
+            style={{ margin: "0 0 12px 0" }}
+          >
+            {(inputProps) => (
+              <TextField
+                type="email"
+                name="email"
+                value={userSignUpData.email}
+                onChange={handleOnChange}
+                placeholder="Enter your email"
+                $isInvalid={Boolean(errors.email)}
+                isDisabled={submitting}
+                {...inputProps}
+              />
+            )}
+          </Field>
+          <Field
+            id="password"
+            label="Password"
+            isRequired
+            invalidFieldMessage={errors.password}
+            style={{ margin: "0 0 12px 0" }}
+          >
+            {(inputProps) => (
+              <TextField
+                type="password"
+                name="password"
+                value={userSignUpData.password}
+                onChange={handleOnChange}
+                placeholder="Enter your password"
+                $isInvalid={Boolean(errors.password)}
+                isDisabled={submitting}
+                renderIcon={(isDisabled, $size) =>
+                  passwordIcons("login-password", isDisabled, $size)
+                }
+                showPassword={showPassword}
+                {...inputProps}
+              />
+            )}
+          </Field>
+          <Field
+            id="repeat-password"
+            label="Confirm password"
+            isRequired
+            invalidFieldMessage={errors.repeat_password}
+            style={{ margin: "0 0 12px 0" }}
+          >
+            {(inputProps) => (
+              <TextField
+                type="password"
+                name="repeat_password"
+                value={userSignUpData.repeat_password}
+                onChange={handleOnChange}
+                placeholder="Enter your password again"
+                $isInvalid={Boolean(errors.repeat_password)}
+                isDisabled={submitting}
+                renderIcon={(isDisabled, $size) =>
+                  passwordIcons("login-password", isDisabled, $size)
+                }
+                showPassword={showPassword}
+                {...inputProps}
+              />
+            )}
+          </Field>
+          {showSignUpErrorMsg.showErrorMsg && showSignUpErrorMsg.errorMsg}
+          <Button
+            type="submit"
+            $appearance="primary"
+            $fullWidth
+            isDisabled={submitting}
+            style={{ marginTop: "24px" }}
+          >
+            Sign up
+          </Button>
+        </Form>
+        <StyledAlreadyAMemberDiv>
           Already a member? <Link to="/login">Log in now</Link>
-        </p>
-        <p>* Required fields</p>
-      </div>
-    </>
+          <br />
+          <RequiredAsterisk /> Required fields
+        </StyledAlreadyAMemberDiv>
+      </StyledFormWrapper>
+    </StyledLoginPageWrapper>
   );
 };
 

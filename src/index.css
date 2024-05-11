@@ -86,15 +86,14 @@
   --border-radius: 8px;
 }
 
-/* whole app background color */
-body {
+:root {
   background-color: var(--color-white);
-  caret-color: var(--color-danger-darker);
-  font: normal normal 400 14px/1.5 "Poppins", sans-serif;
 }
 
-#root {
-  height: 100vh;
+/* whole app background color */
+body {
+  caret-color: var(--color-danger-darker);
+  font: normal normal 400 14px/1.5 "Poppins", sans-serif;
 }
 
 ::selection {

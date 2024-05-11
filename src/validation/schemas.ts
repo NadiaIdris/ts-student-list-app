@@ -11,6 +11,7 @@ const signUpSchema = Joi.object<IUserSignUpData>({
     .required(),
   password: Joi.string().min(6).max(1024).required(),
   repeat_password: Joi.any().valid(Joi.ref("password")).required().messages({
+    // Add custom error messages
     "any.only": "Password must match",
   }),
 });

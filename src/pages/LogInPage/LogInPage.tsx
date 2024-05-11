@@ -25,9 +25,8 @@ const StyledLoginPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 100px 12px 12px;
+  padding: 100px 12px 50px 12px;
   gap: 16px;
-  height: 100%;
 `;
 
 const StyledWrapperDiv = styled.div<{ $isDisabled: boolean; $size: FieldSize }>`

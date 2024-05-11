@@ -19,7 +19,9 @@ const formatErrorMessages = (
 };
 
 const validateSignUpForm = (data: IUserSignUpData) => {
+  // Add the abortEarly option to show all the errors at once. The abortEarly option stops validation on the first error.
   const { error, value } = signUpSchema.validate(data, { abortEarly: false });
+  console.log(error);
 
   const signUpFormErrorLabels = {
     first_name: "First name",
