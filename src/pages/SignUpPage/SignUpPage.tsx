@@ -362,7 +362,6 @@ const SignUpPage = () => {
           {showSignUpErrorMsg.showErrorMsg && showSignUpErrorMsg.errorMsg}
           <Button
             type="submit"
-            $appearance="primary"
             $fullWidth
             isDisabled={submitting}
             style={{ marginTop: "24px" }}

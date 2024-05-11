@@ -7,6 +7,7 @@ type Size = "medium" | "large";
 interface ButtonProps {
   children: ReactNode;
   type?: "button" | "submit" | "reset";
+  onClick?: () => void;
   $appearance?: Appearance;
   $size?: Size;
   $fullWidth?: boolean;
@@ -85,7 +86,8 @@ const StyledButton = styled.button<{
 const Button = ({
   children,
   type = "button",
-  $appearance = "link",
+  onClick,
+  $appearance = "primary",
   $size = "medium",
   $fullWidth = false,
   isDisabled = false,
@@ -97,6 +99,7 @@ const Button = ({
   return (
     <StyledButton
       type={type}
+      onClick={onClick}
       $appearance={$appearance}
       $size={$size}
       $fullWidth={$fullWidth}

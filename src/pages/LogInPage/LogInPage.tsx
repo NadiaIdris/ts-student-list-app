@@ -270,7 +270,6 @@ const LogInPage = () => {
           )}
           <Button
             type="submit"
-            $appearance="primary"
             $fullWidth
             isDisabled={submitting}
             style={{ marginTop: "24px" }}
