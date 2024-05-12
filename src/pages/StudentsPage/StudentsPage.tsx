@@ -7,7 +7,7 @@ import { Button } from "../../components/buttons/Button";
 import { Heading1 } from "../../components/text/Heading1";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { IconButton } from "../../components/buttons/IconButton";
-import { MdEdit } from "react-icons/md";
+import { LuPencil } from "react-icons/lu";
 import { RiDeleteBinLine } from "react-icons/ri";
 
 const StyledHeader = styled.header`
@@ -40,7 +40,20 @@ const StudentsPage = () => {
   };
 
   // TODO: Implement openDropdown function
-  const openDropdown = () => {};
+  const openDropdown = () => {
+    console.log("Open dropdown");
+  };
+
+  // TODO: Implement handleEditStudent function
+  const handleEditStudent = (studentId: string) => {
+    console.log("Edit student with id: ", studentId);
+    navigate(`/students/${studentId}  `);
+  };
+
+  // TODO: Implement handleDeleteStudent function
+  const handleDeleteStudent = (studentId: string) => {
+    console.log("Delete student with id: ", studentId);
+  };
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -89,19 +102,64 @@ const StudentsPage = () => {
                 <td>{student.last_name}</td>
                 <td>{student.email}</td>
                 <td>
-                  <IconButton
-                    icon={<MdEdit />}
-                    onClick={() => navigate(`/students/${student.student_uid}`)}
-                  />
-                  <IconButton
-                    icon={<RiDeleteBinLine />}
-                    onClick={() => navigate(`/students/${student.student_uid}`)}
-                    $appearance="secondary"
-                    // TODO: test all of these buttons:
-                    // $size='large'
-                    // isDisabled={true}
-                    // $isSubmitting={true}
-                  />
+                  <div style={{ display: "flex" }}>
+                    <IconButton
+                      icon={
+                        <LuPencil style={{ width: "14px", height: "14px" }} />
+                      }
+                      onClick={() => handleEditStudent(student.student_uid)}
+                      $appearance="secondary"
+                      $size="medium"
+                    />
+                    <IconButton
+                      icon={
+                        <RiDeleteBinLine
+                          style={{ width: "14px", height: "14px" }}
+                        />
+                      }
+                      onClick={() => handleDeleteStudent(student.student_uid)}
+                      $appearance="secondary"
+                    />
+                  </div>
+                </td>
+                <td>
+                  <div style={{ display: "flex" }}>
+                    {/* <IconButton
+                      icon={
+                        <LuPencil style={{ width: "16px", height: "16px" }} />
+                      }
+                      $size="large"
+                      onClick={() =>
+                        navigate(`/students/${student.student_uid}`)
+                      }
+                    />
+                    <IconButton
+                      icon={
+                        <RiDeleteBinLine
+                          style={{ width: "16px", height: "16px" }}
+                        />
+                      }
+                      $size="large"
+                      $isSubmitting={true}
+                      onClick={() =>
+                        navigate(`/students/${student.student_uid}`)
+                      }
+                      $appearance="secondary"
+                    />
+                    <IconButton
+                      icon={
+                        <RiDeleteBinLine
+                          style={{ width: "16px", height: "16px" }}
+                        />
+                      }
+                      $size="large"
+                      isDisabled={true}
+                      onClick={() =>
+                        navigate(`/students/${student.student_uid}`)
+                      }
+                      $appearance="secondary"
+                    /> */}
+                  </div>
                 </td>
               </tr>
             ))}

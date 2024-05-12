@@ -2,73 +2,83 @@ import { CSSProperties, ReactNode } from "react";
 import { Size } from "../Button";
 import styled from "styled-components";
 
-type Appearance = "secondary" | "link";
+type Appearance = "subtle" | "secondary";
 
 interface IconButtonProps {
+  /**
+   * The icon to be displayed in the button. IMPORTANT! You must pass in style prop with width and height to
+   * the icon. If you want display medium size icon, pass the icon with 14px width and height. If you
+   * want display large size icon, pass the icon with 16px width and height. E.g. <MyIcon style={{ width: "16px", height: "16px" }} />
+   */
   icon: ReactNode;
-  onClick?: () => void;
+  label: string;
+  onClick: () => void;
   $appearance?: Appearance;
   $size?: Size;
   isDisabled?: boolean;
-  $isSubmitting?: boolean;
+  $isLoading?: boolean;
   testId?: string;
   style?: CSSProperties;
   className?: string;
 }
 
-// TODO: check all the styling
-const StyledIconButton = styled.button<{
-  $appearance: Appearance;
+const StyledButton = styled.button<{
+  $isDisabled: boolean;
+  $isLoading: boolean;
   $size: Size;
 }>`
+border: none;
+  background-color: transparent;
+  border-radius: 100px;
+  background-color: var(--color-black-600);
+  width: ${({ $size }) => ($size === "medium" ? "32px" : "40px")};
+  ${({ $isDisabled }) =>
+    $isDisabled && "pointer-events: none; opacity: 0.5; cursor: disabled;"};
+  ${({ $isLoading: $isSubmitting }) => $isSubmitting && "pointer-events: none; cursor: progress;"};
+`;
+
+const StyledIconSpan = styled.span<{ $size: Size }>`
+  padding: ${({ $size }) => ($size === "medium" ? "4px" : "8px")};
+  background-color: transparent;
+  border-radius: 100px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: ${({ $size }) => {
-    if ($size === "medium") return "0.25rem";
-    else if ($size === "large") return "0.5rem";
-    else return "0.75rem";
-  }};
-  border: none;
-  background: ${({ $appearance }) => { 
-    if ($appearance === "secondary") return "var(--color-button-secondary-bg)";
-    else return "transparent";
-  }};
-  color: ${({ $appearance }) => {
-    if ($appearance === "secondary") return "var(--color-button-secondary-fg)";
-    else  return "var(--color-button-default-fg)";
-  }};
-  cursor: pointer;
+  color: var(--color-black-700);
   &:hover {
-    color: ${({ $appearance }) => {
-      if ($appearance === "link") return "var(--color-text-black)";
-    }};
+    background-color: var(--color-gray-600);
+    color: var(--color-black);
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;
 
 const IconButton = ({
   icon,
+  label,
   onClick,
-  $appearance = "link",
+  $appearance = "subtle",
   $size = "medium",
   isDisabled = false,
-  $isSubmitting = false,
+  $isLoading= false,
   testId,
   style,
   className,
 }: IconButtonProps) => {
   return (
-    <StyledIconButton
+    <StyledButton
       onClick={onClick}
-      $appearance={$appearance}
+      $isDisabled={isDisabled}
+      $isLoading={$isLoading}
       $size={$size}
-      disabled={isDisabled}
-      data-testid={testId}
-      style={style}
-      className={className}
+      aria-label={label}
     >
-      {icon}
-    </StyledIconButton>
+      {!$isLoading && <StyledIconSpan $size={$size}>{icon}</StyledIconSpan>}
+    </StyledButton>
   );
 };
 

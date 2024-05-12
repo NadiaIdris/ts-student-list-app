@@ -32,10 +32,6 @@ const router = createBrowserRouter([
         path: ":id",
         element: <StudentsPage />,
       },
-      {
-        path: ":id/edit",
-        element: <StudentsPage />,
-      },
     ],
   },
   {
