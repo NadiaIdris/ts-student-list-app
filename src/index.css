@@ -104,11 +104,6 @@ body {
   color: var(--color-black-600);
 }
 
-/* global focus styles */
-:focus {
-  outline: var(--color-focus) solid 2px;
-}
-
 :-webkit-autofill,
 :-webkit-autofill:hover,
 :-webkit-autofill:focus,

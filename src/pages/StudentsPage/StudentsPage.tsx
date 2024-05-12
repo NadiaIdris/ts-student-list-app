@@ -9,11 +9,18 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { IconButton } from "../../components/buttons/IconButton";
 import { LuPencil } from "react-icons/lu";
 import { RiDeleteBinLine } from "react-icons/ri";
+import { FiChevronDown } from "react-icons/fi";
+import { GoTriangleDown } from "react-icons/go";
 
 const StyledHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+const NavButtonsWrapper = styled.div`
+  display: flex;
+  gap: 8px;
 `;
 
 type Student = {
@@ -75,14 +82,20 @@ const StudentsPage = () => {
     <div>
       <StyledHeader>
         <Heading1>All students</Heading1>
-        <div>
-          <Button $appearance="link" onClick={openDropdown}>
+        <NavButtonsWrapper>
+          <Button
+            $appearance="link"
+            onClick={openDropdown}
+            iconAfter={
+              <GoTriangleDown style={{ width: "16px", height: "16px" }} />
+            }
+          >
             {user?.firstName}
           </Button>
           <Button $appearance="secondary" onClick={handleLogOut}>
             Log out
           </Button>
-        </div>
+        </NavButtonsWrapper>
       </StyledHeader>
       <table>
         <thead>
@@ -168,7 +181,7 @@ const StudentsPage = () => {
       {isLoading && <p>Loading...</p>}
       {students.length === 0 && !isLoading && <p>No students found</p>}
       <Button $appearance="primary" onClick={() => navigate("/students/add")}>
-        Add student
+        Add new student
       </Button>
     </div>
   );

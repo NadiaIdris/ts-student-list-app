@@ -12,7 +12,27 @@ interface ButtonProps {
   $size?: Size;
   $fullWidth?: boolean;
   isDisabled?: boolean;
+  /**
+   * Causes the button to be in a loading state.
+   */
+  isLoading?: boolean;
   ref?: any;
+  /**
+   * Displays an icon before the button text.
+   * IMPORTANT! You must pass in style prop with width and height to the icon.
+   * If you want display medium size icon, pass the icon with 14px width and height.
+   * If you want display large size icon, pass the icon with 16px width and height.
+   * E.g. <MyIcon style={{ width: "16px", height: "16px" }} />
+   **/
+  iconBefore?: ReactNode;
+  /**
+   * Displays an icon after the button text.
+   * IMPORTANT! You must pass in style prop with width and height to the icon.
+   * If you want display medium size icon, pass the icon with 14px width and height.
+   * If you want display large size icon, pass the icon with 16px width and height.
+   * E.g. <MyIcon style={{ width: "16px", height: "16px" }} />
+   **/
+  iconAfter?: ReactNode;
   /**
    * A `testId` prop is provided for specified elements, which is a unique string that appears as a data attribute `data-testid` in the rendered code, serving as a hook for automated tests
    */
@@ -37,6 +57,10 @@ const StyledButton = styled.button<{
   font: inherit;
   font-weight: 900;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   &:disabled {
     cursor: not-allowed;
     opacity: 0.5;
@@ -93,6 +117,8 @@ const Button = ({
   $fullWidth = false,
   isDisabled = false,
   ref,
+  iconBefore,
+  iconAfter,
   testId,
   style,
   className,
@@ -112,7 +138,10 @@ const Button = ({
       className={className}
       {...props}
     >
+      {/* If text is from left to right, add iconBefore to the left of text and iconAfter to the right of text */}
+      {iconBefore}
       {children}
+      {iconAfter}
     </StyledButton>
   );
 };
