@@ -1,17 +1,18 @@
 import { CSSProperties, ReactNode } from "react";
 import styled from "styled-components";
 
-type Appearance = "primary" | "secondary" | "warning" | "link";
+export type Appearance = "primary" | "secondary" | "warning" | "link";
 export type Size = "medium" | "large";
 
 interface ButtonProps {
-  children: ReactNode;
+  children?: ReactNode;
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
   $appearance?: Appearance;
   $size?: Size;
   $fullWidth?: boolean;
   isDisabled?: boolean;
+  ref?: any;
   /**
    * A `testId` prop is provided for specified elements, which is a unique string that appears as a data attribute `data-testid` in the rendered code, serving as a hook for automated tests
    */
@@ -91,6 +92,7 @@ const Button = ({
   $size = "medium",
   $fullWidth = false,
   isDisabled = false,
+  ref,
   testId,
   style,
   className,
@@ -104,6 +106,7 @@ const Button = ({
       $size={$size}
       $fullWidth={$fullWidth}
       disabled={isDisabled}
+      ref={ref}
       data-testid={testId}
       style={style}
       className={className}

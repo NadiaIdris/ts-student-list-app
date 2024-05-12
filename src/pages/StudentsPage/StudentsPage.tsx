@@ -103,7 +103,7 @@ const StudentsPage = () => {
                 <td>{student.email}</td>
                 <td>
                   <div style={{ display: "flex" }}>
-                    <IconButton
+                    {/* <IconButton
                       icon={
                         <LuPencil style={{ width: "14px", height: "14px" }} />
                       }
@@ -119,7 +119,7 @@ const StudentsPage = () => {
                       }
                       onClick={() => handleDeleteStudent(student.student_uid)}
                       $appearance="secondary"
-                    />
+                    /> */}
                   </div>
                 </td>
                 <td>
