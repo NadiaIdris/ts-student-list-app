@@ -1,19 +1,19 @@
 import { useState } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
+import { Button } from "../../components/buttons/Button";
+import { ErrorMessage } from "../../components/form/ErrorMessage";
+import { Field, FieldSize } from "../../components/form/Field";
+import { Form } from "../../components/form/Form";
+import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
+import { Heading1 } from "../../components/text/Heading1";
+import { Heading2 } from "../../components/text/Heading2";
+import { TextField } from "../../components/TextField";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateSignUpForm } from "../../validation/validate";
-import styled from "styled-components";
-import { Heading1 } from "../../components/text/Heading1";
-import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
-import { Heading2 } from "../../components/text/Heading2";
-import { Form } from "../../components/form/Form";
-import { Field, FieldSize } from "../../components/form/Field";
-import { TextField } from "../../components/TextField";
-import { FiEye, FiEyeOff } from "react-icons/fi";
-import { ErrorMessage } from "../../components/form/ErrorMessage";
-import { Button } from "../../components/Button";
 
 export interface IUserSignUpData {
   first_name: string;

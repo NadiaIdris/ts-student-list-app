@@ -2,7 +2,7 @@ import { CSSProperties, ReactNode } from "react";
 import styled from "styled-components";
 
 type Appearance = "primary" | "secondary" | "warning" | "link";
-type Size = "medium" | "large";
+export type Size = "medium" | "large";
 
 interface ButtonProps {
   children: ReactNode;

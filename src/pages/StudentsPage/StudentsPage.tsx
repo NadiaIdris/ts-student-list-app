@@ -1,11 +1,14 @@
-import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "../../hooks/useAuthContext";
-import { Heading1 } from "../../components/text/Heading1";
-import { Button } from "../../components/Button";
-import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { axiosInstance } from "../../api/axiosConfig";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
+import { axiosInstance } from "../../api/axiosConfig";
+import { Button } from "../../components/buttons/Button";
+import { Heading1 } from "../../components/text/Heading1";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { IconButton } from "../../components/buttons/IconButton";
+import { MdEdit } from "react-icons/md";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 const StyledHeader = styled.header`
   display: flex;
@@ -78,28 +81,30 @@ const StudentsPage = () => {
           </tr>
         </thead>
         <tbody>
-          {students.length > 0 && students.map((student, index) => (
-            <tr key={student.student_uid}>
-              <td>{index}</td>
-              <td>{student.first_name}</td>
-              <td>{student.last_name}</td>
-              <td>{student.email}</td>
-              <td>
-                <Button
-                  $appearance="link"
-                  onClick={() => setStudentId(student.student_uid)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  $appearance="link"
-                  onClick={() => setStudentId(student.student_uid)}
-                >
-                  Delete
-                </Button>
-              </td>
-            </tr>
-          ))}
+          {students.length > 0 &&
+            students.map((student, index) => (
+              <tr key={student.student_uid}>
+                <td>{index}</td>
+                <td>{student.first_name}</td>
+                <td>{student.last_name}</td>
+                <td>{student.email}</td>
+                <td>
+                  <IconButton
+                    icon={<MdEdit />}
+                    onClick={() => navigate(`/students/${student.student_uid}`)}
+                  />
+                  <IconButton
+                    icon={<RiDeleteBinLine />}
+                    onClick={() => navigate(`/students/${student.student_uid}`)}
+                    $appearance="secondary"
+                    // TODO: test all of these buttons:
+                    // $size='large'
+                    // isDisabled={true}
+                    // $isSubmitting={true}
+                  />
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
       {isLoading && <p>Loading...</p>}
