@@ -6,7 +6,9 @@ import { axiosInstance } from "../../api/axiosConfig";
 import { Button } from "../../components/buttons/Button";
 import { Heading1 } from "../../components/text/Heading1";
 import { useAuthContext } from "../../hooks/useAuthContext";
-import { IconButton } from "../../components/buttons/IconButton";
+import {
+  IconButton,
+} from "../../components/buttons/IconButton";
 import { LuPencil } from "react-icons/lu";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FiChevronDown } from "react-icons/fi";
@@ -117,24 +119,22 @@ const StudentsPage = () => {
                 <td>
                   <div>
                     <IconButton
-                      iconBefore={
+                      icon={
                         <LuPencil style={{ width: "14px", height: "14px" }} />
                       }
                       onClick={() => handleEditStudent(student.student_uid)}
-                      appearance="secondary"
-                      size="medium"
                       tooltip="Edit student"
+                      label="Edit student"
                     />
                     <IconButton
-                      iconBefore={
+                      icon={
                         <RiDeleteBinLine
                           style={{ width: "16px", height: "16px" }}
                         />
                       }
                       onClick={() => handleDeleteStudent(student.student_uid)}
-                      appearance="secondary"
-                      size='large'
                       tooltip="Delete student"
+                      label="Delete student"
                     />
                   </div>
                 </td>

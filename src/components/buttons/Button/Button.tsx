@@ -1,10 +1,15 @@
 import { CSSProperties, ReactNode } from "react";
 import styled from "styled-components";
 
-export type Appearance = "primary" | "secondary" | "warning" | "link";
+export type Appearance =
+  | "primary"
+  | "secondary"
+  | "warning"
+  | "link"
+  | "link-with-background";
 export type Size = "medium" | "large";
 
-interface ButtonProps {
+export interface ButtonProps {
   children?: ReactNode;
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
@@ -15,7 +20,6 @@ interface ButtonProps {
    * Causes the button to be in a loading state.
    */
   isLoading?: boolean;
-  isIconOnly?: boolean;
   ref?: any;
   /**
    * Displays an icon before the button text.
@@ -33,6 +37,7 @@ interface ButtonProps {
    * E.g. <MyIcon style={{ width: "16px", height: "16px" }} />
    **/
   iconAfter?: ReactNode;
+  tooltip?: string;
   /**
    * A `testId` prop is provided for specified elements, which is a unique string that appears as a data attribute `data-testid` in the rendered code, serving as a hook for automated tests
    */
@@ -47,13 +52,22 @@ interface ButtonProps {
   className?: string;
 }
 
+const ButtonWrapper = styled.div`
+  display: inline-block;
+`;
+
 const StyledButton = styled.button<{
   $size: Size;
   $fullWidth: boolean;
   $appearance: Appearance;
-  $isIconOnly: boolean;
+  $iconBefore: ReactNode;
+  $children: ReactNode;
 }>`
-  border-radius: var(--border-radius);
+  border-radius: ${({ $size, $iconBefore, $children }) => {
+    if ($iconBefore && !$children && ($size === "medium" || $size === "large"))
+      return "100px";
+    else return "var(--border-radius)";
+  }};
   border: 1px solid transparent;
   font: inherit;
   font-weight: 900;
@@ -66,8 +80,10 @@ const StyledButton = styled.button<{
     cursor: not-allowed;
     opacity: 0.5;
   }
-  height: ${({ $size }) => {
-    if ($size === "medium") return "36px";
+  height: ${({ $size, $iconBefore, $children }) => {
+    if ($iconBefore && !$children && ($size === "medium" || $size === "large"))
+      return "auto";
+    else if ($size === "medium") return "36px";
     else if ($size === "large") return "42px";
   }};
   width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "auto")};
@@ -75,9 +91,9 @@ const StyledButton = styled.button<{
     if ($size === "medium") return "0.875rem"; // 0.875rem is ~14px
     else if ($size === "large") return "1rem"; // 1rem is ~16px
   }};
-  padding: ${({ $size, $isIconOnly }) => {
-    if ($isIconOnly && $size === "medium") return "4px";
-    else if ($isIconOnly && $size === "large") return "8px";
+  padding: ${({ $size, $iconBefore, $children }) => {
+    if ($iconBefore && !$children && $size === "medium") return "4px";
+    else if ($iconBefore && !$children && $size === "large") return "8px";
     else if ($size === "medium") return "0 16px";
     else if ($size === "large") return "0 24px";
   }};
@@ -103,10 +119,14 @@ const StyledButton = styled.button<{
         return "var(--color-button-secondary-bg-hover)";
       else if ($appearance === "warning")
         return "var(--color-button-warning-bg-hover)";
+      else if ($appearance === "link-with-background")
+        return "var(--color-gray-600)";
       else return "var(--color-button-default-bg-hover)";
     }};
     color: ${({ $appearance }) => {
       if ($appearance === "link") return "var(--text-black)";
+      else if ($appearance === "link-with-background")
+        return "var(--color-black)";
     }};
   }
 `;
@@ -119,35 +139,38 @@ const Button = ({
   size = "medium",
   fullWidth = false,
   isLoading = false,
-  isIconOnly = false,
   ref,
   iconBefore,
   iconAfter,
   testId,
+  tooltip,
   style,
   className,
   ...props
 }: ButtonProps) => {
   return (
-    <StyledButton
-      type={type}
-      onClick={onClick}
-      $appearance={appearance}
-      $size={size}
-      $fullWidth={fullWidth}
-      disabled={isLoading}
-      $isIconOnly={isIconOnly}
-      ref={ref}
-      data-testid={testId}
-      style={style}
-      className={className}
-      {...props}
-    >
-      {/* If text is from left to right, add iconBefore to the left of text and iconAfter to the right of text */}
-      {iconBefore}
-      {children}
-      {iconAfter}
-    </StyledButton>
+    <ButtonWrapper>
+      <StyledButton
+        type={type}
+        onClick={onClick}
+        $appearance={appearance}
+        $size={size}
+        $fullWidth={fullWidth}
+        $iconBefore={iconBefore}
+        $children={children}
+        title={tooltip}
+        disabled={isLoading}
+        ref={ref}
+        data-testid={testId}
+        style={style}
+        className={className}
+        {...props}
+      >
+        {iconBefore}
+        {children}
+        {iconAfter}
+      </StyledButton>
+    </ButtonWrapper>
   );
 };
 

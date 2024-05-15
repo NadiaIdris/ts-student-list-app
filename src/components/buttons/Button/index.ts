@@ -1,3 +1,3 @@
-import { Button, Size, Appearance } from "./Button";
+import { Button, Size, Appearance, ButtonProps } from "./Button";
 export { Button };
-export type { Size, Appearance };
+export type { Size, Appearance, ButtonProps };
