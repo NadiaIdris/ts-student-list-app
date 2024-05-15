@@ -115,24 +115,27 @@ const StudentsPage = () => {
                 <td>{student.last_name}</td>
                 <td>{student.email}</td>
                 <td>
-                  <div style={{ display: "flex" }}>
-                    {/* <IconButton
-                      icon={
+                  <div>
+                    <IconButton
+                      iconBefore={
                         <LuPencil style={{ width: "14px", height: "14px" }} />
                       }
                       onClick={() => handleEditStudent(student.student_uid)}
-                      $appearance="secondary"
-                      $size="medium"
+                      appearance="secondary"
+                      size="medium"
+                      tooltip="Edit student"
                     />
                     <IconButton
-                      icon={
+                      iconBefore={
                         <RiDeleteBinLine
-                          style={{ width: "14px", height: "14px" }}
+                          style={{ width: "16px", height: "16px" }}
                         />
                       }
                       onClick={() => handleDeleteStudent(student.student_uid)}
-                      $appearance="secondary"
-                    /> */}
+                      appearance="secondary"
+                      size='large'
+                      tooltip="Delete student"
+                    />
                   </div>
                 </td>
                 <td>

@@ -14,12 +14,6 @@ interface IconButtonProps {
    */
   id?: string;
   /**
-   * The icon to be displayed in the button. IMPORTANT! You must pass in style prop with width and height to
-   * the icon. If you want display medium size icon, pass the icon with 14px width and height. If you
-   * want display large size icon, pass the icon with 16px width and height. E.g. <MyIcon style={{ width: "16px", height: "16px" }} />
-   */
-  icon: ReactNode;
-  /**
    * Adds a label to the button for users of assistive technologies.
    */
   label?: string;
@@ -30,19 +24,21 @@ interface IconButtonProps {
   /**
    * The appearance of the button.
    */
-  $appearance?: Appearance;
+  appearance?: Appearance;
   /**
    * The size of the button.
    */
-  $size?: Size;
+  size?: Size;
   /**
-   * Causes the button to be disabled.
+   * The icon to be displayed in the button. IMPORTANT! You must pass in style prop with width and height to
+   * the icon. If you want display medium size icon, pass the icon with 14px width and height. If you
+   * want display large size icon, pass the icon with 16px width and height. E.g. <MyIcon style={{ width: "16px", height: "16px" }} />
    */
-  isDisabled?: boolean;
+  iconBefore: ReactNode;
   /**
    * Causes the button to be in a loading state.
    */
-  $isLoading?: boolean;
+  isLoading?: boolean;
   /**
    * A `testId` prop is provided for specified elements,
    * which is a unique string that appears as a data attribute `data-testid` in the rendered code,
@@ -51,8 +47,9 @@ interface IconButtonProps {
   testId?: string;
   /**
    * Text that will be displayed in the tooltip when hovered or focused on the button.
+   * TODO: make the tooltip non optional
    */
-  tooltip: ReactNode;
+  tooltip: string;
   /**
    * Called when the mouse is initially clicked on the element.
    */
@@ -83,19 +80,18 @@ interface IconButtonProps {
 }
 
 const StyledButton = styled.button<{
-  $isDisabled: boolean;
   $isLoading: boolean;
   $size: Size;
+  $iconBefore: ReactNode;
+  $appearance: Appearance;
 }>`
   border: none;
   background-color: transparent;
   border-radius: 100px;
   background-color: var(--color-black-600);
-  width: ${({ $size }) => ($size === "medium" ? "32px" : "40px")};
-  ${({ $isDisabled }) =>
-    $isDisabled && "pointer-events: none; opacity: 0.5; cursor: disabled;"};
-  ${({ $isLoading: $isSubmitting }) =>
-    $isSubmitting && "pointer-events: none; cursor: progress;"};
+  padding: 0;
+  ${({ $isLoading }) =>
+    $isLoading && "pointer-events: none; cursor: progress;"};
 `;
 
 const StyledIconSpan = styled.span<{ $size: Size }>`
@@ -136,8 +132,48 @@ const StyledIconSpan = styled.span<{ $size: Size }>`
 //   }
 // );
 
-const IconButton = () => { 
-  return <div>IconButton</div>;
+const IconButton = ({
+  id,
+  label,
+  onClick,
+  appearance = "link",
+  size = "medium",
+  iconBefore,
+  isLoading = false,
+  testId,
+  tooltip,
+  onMouseDown,
+  onMouseEnter,
+  onMouseLeave,
+  onMouseUp,
+  onFocus,
+  onBlur,
+  style,
+  className,
+}: IconButtonProps) => {
+  return (
+    <StyledButton
+      id={id}
+      aria-label={label}
+      onClick={onClick}
+      $appearance={appearance}
+      $size={size}
+      $isLoading={isLoading}
+      $iconBefore={iconBefore}
+      data-testid={testId}
+      title={tooltip}
+      onMouseDown={onMouseDown}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onMouseUp={onMouseUp}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      style={style}
+      className={className}
+    >
+      <StyledIconSpan $size={size}>{iconBefore}</StyledIconSpan>
+    </StyledButton>
+  );
 };
 
 export { IconButton };
