@@ -34,11 +34,11 @@ interface TextFieldProps {
   /**
    * The `size` prop specifies the size of the input field. The default value is "medium".
    */
-  $size?: FieldSize;
+  size?: FieldSize;
   /**
    * Sets whether the field is invalid. An invalid field is marked with a --color-danger color border and the error message is displayed below the field.
    */
-  $isInvalid?: boolean;
+  isInvalid?: boolean;
   /**
    * The `isDisabled` prop specifies whether the input field is disabled. Users cannot edit or focus on the fields. If the parent form component is disabled, then the field will always be disabled.
    */
@@ -99,8 +99,8 @@ const TextField = ({
   onChange,
   placeholder,
   autoComplete = "on",
-  $size = "medium",
-  $isInvalid = false,
+  size = "medium",
+  isInvalid = false,
   isDisabled = false,
   renderIcon,
   showPassword = false,
@@ -130,13 +130,13 @@ const TextField = ({
         onChange={onChange}
         placeholder={placeholder}
         autoComplete={autoComplete}
-        $size={$size}
-        $isInvalid={$isInvalid}
+        $size={size}
+        $isInvalid={isInvalid}
         disabled={isDisabled}
         {...props}
       />
-      {type === "password" && renderIcon && renderIcon(isDisabled, $size)}
-      {type !== "password" && renderIcon && renderIcon(isDisabled, $size)}
+      {type === "password" && renderIcon && renderIcon(isDisabled, size)}
+      {type !== "password" && renderIcon && renderIcon(isDisabled, size)}
     </StyledTextFieldWrapper>
   );
 };

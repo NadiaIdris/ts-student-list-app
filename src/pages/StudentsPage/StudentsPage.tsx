@@ -84,7 +84,7 @@ const StudentsPage = () => {
         <Heading1>All students</Heading1>
         <NavButtonsWrapper>
           <Button
-            $appearance="link"
+            appearance="link"
             onClick={openDropdown}
             iconAfter={
               <GoTriangleDown style={{ width: "16px", height: "16px" }} />
@@ -92,7 +92,7 @@ const StudentsPage = () => {
           >
             {user?.firstName}
           </Button>
-          <Button $appearance="secondary" onClick={handleLogOut}>
+          <Button appearance="secondary" onClick={handleLogOut}>
             Log out
           </Button>
         </NavButtonsWrapper>
@@ -180,7 +180,7 @@ const StudentsPage = () => {
       </table>
       {isLoading && <p>Loading...</p>}
       {students.length === 0 && !isLoading && <p>No students found</p>}
-      <Button $appearance="primary" onClick={() => navigate("/students/add")}>
+      <Button appearance="primary" onClick={() => navigate("/students/add")}>
         Add new student
       </Button>
     </div>

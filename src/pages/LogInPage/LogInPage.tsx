@@ -29,7 +29,7 @@ const StyledLoginPageWrapper = styled.div`
   gap: 16px;
 `;
 
-const StyledWrapperDiv = styled.div<{ $isDisabled: boolean; $size: FieldSize }>`
+const StyledWrapperDiv = styled.div<{ $isLoading: boolean; $size: FieldSize }>`
   position: absolute;
   top: 50%;
   right: ${({ $size }) => ($size === "small" ? "4px" : "2px")};
@@ -38,8 +38,8 @@ const StyledWrapperDiv = styled.div<{ $isDisabled: boolean; $size: FieldSize }>`
   display: flex;
   flex-direction: row;
   gap: 2px;
-  ${({ $isDisabled }) =>
-    $isDisabled && "pointer-events: none; opacity: 0.5; cursor: disabled;"};
+  ${({ $isLoading }) =>
+    $isLoading && "pointer-events: none; opacity: 0.5; cursor: disabled;"};
 `;
 
 const StyledIconSpan = styled.span<{ $size: FieldSize }>`
@@ -168,13 +168,13 @@ const LogInPage = () => {
 
   const passwordIcons = (
     id: string,
-    $isDisabled: boolean,
+    $isLoading: boolean,
     $size: FieldSize
   ) => (
     <StyledWrapperDiv
       id={`${id}-icon`} // This is useful measuring the width of the icons wrapper span to add the correct padding-right to the input field.
       onClick={handleTogglePasswordIcon}
-      $isDisabled={$isDisabled}
+      $isLoading={$isLoading}
       $size={$size}
     >
       <StyledIconSpan $size={$size}>
@@ -270,8 +270,8 @@ const LogInPage = () => {
           )}
           <Button
             type="submit"
-            $fullWidth
-            isDisabled={submitting}
+            fullWidth
+            isLoading={submitting}
             style={{ marginTop: "24px" }}
           >
             Log in

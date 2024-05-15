@@ -8,14 +8,14 @@ interface ButtonProps {
   children?: ReactNode;
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
-  $appearance?: Appearance;
-  $size?: Size;
-  $fullWidth?: boolean;
-  isDisabled?: boolean;
+  appearance?: Appearance;
+  size?: Size;
+  fullWidth?: boolean;
   /**
    * Causes the button to be in a loading state.
    */
   isLoading?: boolean;
+  isIconOnly?: boolean;
   ref?: any;
   /**
    * Displays an icon before the button text.
@@ -51,6 +51,7 @@ const StyledButton = styled.button<{
   $size: Size;
   $fullWidth: boolean;
   $appearance: Appearance;
+  $isIconOnly: boolean;
 }>`
   border-radius: var(--border-radius);
   border: 1px solid transparent;
@@ -74,8 +75,10 @@ const StyledButton = styled.button<{
     if ($size === "medium") return "0.875rem"; // 0.875rem is ~14px
     else if ($size === "large") return "1rem"; // 1rem is ~16px
   }};
-  padding: ${({ $size }) => {
-    if ($size === "medium") return "0 16px";
+  padding: ${({ $size, $isIconOnly }) => {
+    if ($isIconOnly && $size === "medium") return "4px";
+    else if ($isIconOnly && $size === "large") return "8px";
+    else if ($size === "medium") return "0 16px";
     else if ($size === "large") return "0 24px";
   }};
   background: ${({ $appearance }) => {
@@ -112,10 +115,11 @@ const Button = ({
   children,
   type = "button",
   onClick,
-  $appearance = "primary",
-  $size = "medium",
-  $fullWidth = false,
-  isDisabled = false,
+  appearance = "primary",
+  size = "medium",
+  fullWidth = false,
+  isLoading = false,
+  isIconOnly = false,
   ref,
   iconBefore,
   iconAfter,
@@ -128,10 +132,11 @@ const Button = ({
     <StyledButton
       type={type}
       onClick={onClick}
-      $appearance={$appearance}
-      $size={$size}
-      $fullWidth={$fullWidth}
-      disabled={isDisabled}
+      $appearance={appearance}
+      $size={size}
+      $fullWidth={fullWidth}
+      disabled={isLoading}
+      $isIconOnly={isIconOnly}
       ref={ref}
       data-testid={testId}
       style={style}
