@@ -1,8 +1,9 @@
-import { ReactNode } from "react";
+import { ReactNode, MouseEvent } from "react";
 import { Button, ButtonProps } from "../Button";
 
 interface IconButtonWButtonProps {
   icon: ReactNode;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
   /**
    * Text that will be displayed in the tooltip when hovered or focused on the button.
    **/
@@ -18,6 +19,7 @@ interface IconButtonWButtonProps {
 
 const IconButton = ({
   icon,
+  onClick,
   tooltip,
   appearance = "link-with-background",
   label,
@@ -26,6 +28,7 @@ const IconButton = ({
 }: IconButtonWButtonProps & ButtonProps) => {
   return (
     <Button
+      onClick={onClick}
       iconBefore={icon}
       tooltip={tooltip}
       appearance={appearance}

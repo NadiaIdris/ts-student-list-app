@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
@@ -14,6 +14,10 @@ import { GoTriangleDown } from "react-icons/go";
 
 const PageWrapper = styled.div`
   padding: 20px 48px;
+  overflow-y: auto;
+  overflow-x: auto;
+  height: calc(100vh - 107px - 52px);
+
   @media (max-width: 770px) {
     padding: 20px;
   }
@@ -27,6 +31,11 @@ const StyledHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
+  top: 0;
+  background-color: var(--color-white);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 0 56px;
   @media (max-width: 390px) {
     flex-direction: column;
     align-items: flex-start;
@@ -114,9 +123,15 @@ const StudentsPage = () => {
   };
 
   // TODO: Implement handleEditStudent function
-  const handleEditStudent = (studentId: string) => {
+
+  const handleEditStudent = (
+    event: MouseEvent<HTMLButtonElement>,
+    studentId: string
+  ) => {
+    // Don't bubble up the event to the parent element
+    event.stopPropagation();
     console.log("Edit student with id: ", studentId);
-    navigate(`/students/${studentId}  `);
+    navigate(`/students/${studentId}`);
   };
 
   // TODO: Implement handleDeleteStudent function
@@ -146,10 +161,9 @@ const StudentsPage = () => {
   }, []);
 
   return (
-    <PageWrapper>
+    <>
       <StyledHeader>
         <Heading1>All students</Heading1>
-
         <NavButtonsWrapper>
           <Button
             appearance="link"
@@ -165,64 +179,78 @@ const StudentsPage = () => {
           </Button>
         </NavButtonsWrapper>
       </StyledHeader>
-      <StyledTableWrapper>
-        <StyledTableRow>
-          <StyledBorderBottom>
-            <div></div>
-            <div>First name</div>
-            <div>Last name</div>
-            <div>Email</div>
-            <div></div>
-          </StyledBorderBottom>
-        </StyledTableRow>
-        {students.length > 0 &&
-          students.map((student, index) => (
-            <StyledTableRow key={student.student_uid} onClick={handleRowClick}>
-              <StyledBorderBottom>
-                <div>{index + 1}</div>
-                <div>{student.first_name}</div>
-                <div>{student.last_name}</div>
-                <div>{student.email}</div>
-                <div>
-                  <StyledIconsWrapper>
-                    <IconButton
-                      icon={
-                        <LuPencil style={{ width: "16px", height: "16px" }} />
-                      }
-                      onClick={() => handleEditStudent(student.student_uid)}
-                      size="large"
-                      tooltip="Edit student"
-                      label="Edit student"
-                      appearance="link"
-                    />
-                    <IconButton
-                      icon={
-                        <RiDeleteBinLine
-                          style={{ width: "16px", height: "16px" }}
-                        />
-                      }
-                      onClick={() => handleDeleteStudent(student.student_uid)}
-                      size="large"
-                      tooltip="Delete student"
-                      label="Delete student"
-                      appearance="link"
-                    />
-                  </StyledIconsWrapper>
-                </div>
-              </StyledBorderBottom>
-            </StyledTableRow>
-          ))}
-      </StyledTableWrapper>
-      {isLoading && <p>Loading...</p>}
-      {students.length === 0 && !isLoading && <p>No students found</p>}
+      <PageWrapper>
+        <StyledTableWrapper>
+          <StyledTableRow>
+            <StyledBorderBottom>
+              <div></div>
+              <div>First name</div>
+              <div>Last name</div>
+              <div>Email</div>
+              <div></div>
+            </StyledBorderBottom>
+          </StyledTableRow>
+          {students.length > 0 &&
+            students.map((student, index) => (
+              <StyledTableRow
+                key={student.student_uid}
+                onClick={handleRowClick}
+              >
+                <StyledBorderBottom>
+                  <div>{index + 1}</div>
+                  <div>{student.first_name}</div>
+                  <div>{student.last_name}</div>
+                  <div>{student.email}</div>
+                  <div>
+                    <StyledIconsWrapper>
+                      <IconButton
+                        icon={
+                          <LuPencil style={{ width: "16px", height: "16px" }} />
+                        }
+                        onClick={(event: MouseEvent<HTMLButtonElement>) =>
+                          handleEditStudent(event, student.student_uid)
+                        }
+                        size="large"
+                        tooltip="Edit student"
+                        label="Edit student"
+                        appearance="link"
+                      />
+                      <IconButton
+                        icon={
+                          <RiDeleteBinLine
+                            style={{ width: "16px", height: "16px" }}
+                          />
+                        }
+                        onClick={() => handleDeleteStudent(student.student_uid)}
+                        size="large"
+                        tooltip="Delete student"
+                        label="Delete student"
+                        appearance="link"
+                      />
+                    </StyledIconsWrapper>
+                  </div>
+                </StyledBorderBottom>
+              </StyledTableRow>
+            ))}
+        </StyledTableWrapper>
+        {isLoading && <p>Loading...</p>}
+        {students.length === 0 && !isLoading && <p>No students found</p>}
+      </PageWrapper>
       <Button
         appearance="primary"
         onClick={() => navigate("/students/add")}
-        style={{ margin: "12px 0" }}
+        style={{
+          margin: "12px 0 0 0",
+          position: "sticky",
+          bottom: "0",
+          backgroundColor: "var(--color-white)",
+          boxShadow: "0px -4px 8px rgba(0, 0, 0, 0.1)",
+          padding: "8px 56px",
+        }}
       >
         Add new student
       </Button>
-    </PageWrapper>
+    </>
   );
 };
 

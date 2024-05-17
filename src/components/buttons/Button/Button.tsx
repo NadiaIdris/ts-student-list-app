@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode } from "react";
+import { CSSProperties, MouseEvent, ReactNode } from "react";
 import styled from "styled-components";
 
 export type Appearance =
@@ -12,7 +12,7 @@ export type Size = "medium" | "large";
 export interface ButtonProps {
   children?: ReactNode;
   type?: "button" | "submit" | "reset";
-  onClick?: () => void;
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   appearance?: Appearance;
   size?: Size;
   fullWidth?: boolean;
@@ -153,7 +153,7 @@ const Button = ({
     <ButtonWrapper style={style} className={className}>
       <StyledButton
         type={type}
-        onClick={onClick}
+        onClick={onClick && !isLoading ? onClick : undefined}
         $appearance={appearance}
         $size={size}
         $fullWidth={fullWidth}
