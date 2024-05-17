@@ -12,10 +12,26 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { FiChevronDown } from "react-icons/fi";
 import { GoTriangleDown } from "react-icons/go";
 
+const PageWrapper = styled.div`
+  padding: 20px 48px;
+  @media (max-width: 770px) {
+    padding: 20px;
+  }
+
+  @media (max-width: 500px) {
+    padding: 8px;
+  }
+`;
+
 const StyledHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media (max-width: 390px) {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
 `;
 
 const NavButtonsWrapper = styled.div`
@@ -26,27 +42,47 @@ const NavButtonsWrapper = styled.div`
 const StyledTableWrapper = styled.div`
   max-width: 900px;
   overflow-x: auto;
-  margin: 0 36px;
+  @media (max-width: 500px) {
+    margin: 0 -8px;
+  }
 `;
 
 const StyledTableRow = styled.div`
   // Use this div to highlight the background of a newly added student row.
-  // &:hover {
-  //   background-color: red;
-  //   border-radius: 8px;
-  // }
+  background-color: transparent;
+  transition: background-color 0.1s ease-in-out;
+  &:first-child {
+    font-size: 0.875em;
+    font-weight: 600;
+    height: 42px;
+  }
+  height: 60px;
+  &:hover {
+    &:first-child {
+      background-color: transparent;
+      cursor: default;
+    }
+    background-color: var(--color-gray-400);
+    border-radius: 8px;
+    cursor: pointer;
+  }
 `;
 
 const StyledBorderBottom = styled.div`
-  border-bottom: 1px solid var(--color-gray-900);
   display: grid;
-  grid-template-columns: 30px minmax(100px, 1fr) minmax(100px, 1fr) minmax(
-      200px,
-      1fr
-    ) 80px;
+  grid-template-columns:
+    30px minmax(100px, 200px) minmax(100px, 200px) minmax(200px, 1fr)
+    80px;
+  grid-template-rows: auto;
   gap: 8px;
   align-items: center;
   padding: 0 8px;
+  height: 60px;
+`;
+
+const StyledIconsWrapper = styled.div`
+  display: flex;
+  gap: 8px;
 `;
 
 type Student = {
@@ -88,6 +124,11 @@ const StudentsPage = () => {
     console.log("Delete student with id: ", studentId);
   };
 
+  // TODO: Implement handleRowClick function
+  const handleRowClick = () => {
+    console.log("Row clicked");
+  };
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -105,9 +146,10 @@ const StudentsPage = () => {
   }, []);
 
   return (
-    <div>
+    <PageWrapper>
       <StyledHeader>
         <Heading1>All students</Heading1>
+
         <NavButtonsWrapper>
           <Button
             appearance="link"
@@ -135,14 +177,14 @@ const StudentsPage = () => {
         </StyledTableRow>
         {students.length > 0 &&
           students.map((student, index) => (
-            <StyledTableRow key={student.student_uid}>
+            <StyledTableRow key={student.student_uid} onClick={handleRowClick}>
               <StyledBorderBottom>
                 <div>{index + 1}</div>
                 <div>{student.first_name}</div>
                 <div>{student.last_name}</div>
                 <div>{student.email}</div>
                 <div>
-                  <div>
+                  <StyledIconsWrapper>
                     <IconButton
                       icon={
                         <LuPencil style={{ width: "16px", height: "16px" }} />
@@ -151,6 +193,7 @@ const StudentsPage = () => {
                       size="large"
                       tooltip="Edit student"
                       label="Edit student"
+                      appearance="link"
                     />
                     <IconButton
                       icon={
@@ -162,8 +205,9 @@ const StudentsPage = () => {
                       size="large"
                       tooltip="Delete student"
                       label="Delete student"
+                      appearance="link"
                     />
-                  </div>
+                  </StyledIconsWrapper>
                 </div>
               </StyledBorderBottom>
             </StyledTableRow>
@@ -171,10 +215,14 @@ const StudentsPage = () => {
       </StyledTableWrapper>
       {isLoading && <p>Loading...</p>}
       {students.length === 0 && !isLoading && <p>No students found</p>}
-      <Button appearance="primary" onClick={() => navigate("/students/add")}>
+      <Button
+        appearance="primary"
+        onClick={() => navigate("/students/add")}
+        style={{ margin: "12px 0" }}
+      >
         Add new student
       </Button>
-    </div>
+    </PageWrapper>
   );
 };
 

@@ -150,7 +150,7 @@ const Button = ({
   ...props
 }: ButtonProps) => {
   return (
-    <ButtonWrapper>
+    <ButtonWrapper style={style} className={className}>
       <StyledButton
         type={type}
         onClick={onClick}
@@ -163,8 +163,6 @@ const Button = ({
         disabled={isLoading}
         ref={ref}
         data-testid={testId}
-        style={style}
-        className={className}
         {...props}
       >
         {iconBefore}
