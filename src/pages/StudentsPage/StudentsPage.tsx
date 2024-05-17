@@ -6,9 +6,7 @@ import { axiosInstance } from "../../api/axiosConfig";
 import { Button } from "../../components/buttons/Button";
 import { Heading1 } from "../../components/text/Heading1";
 import { useAuthContext } from "../../hooks/useAuthContext";
-import {
-  IconButton,
-} from "../../components/buttons/IconButton";
+import { IconButton } from "../../components/buttons/IconButton";
 import { LuPencil } from "react-icons/lu";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FiChevronDown } from "react-icons/fi";
@@ -23,6 +21,32 @@ const StyledHeader = styled.header`
 const NavButtonsWrapper = styled.div`
   display: flex;
   gap: 8px;
+`;
+
+const StyledTableWrapper = styled.div`
+  max-width: 900px;
+  overflow-x: auto;
+  margin: 0 36px;
+`;
+
+const StyledTableRow = styled.div`
+  // Use this div to highlight the background of a newly added student row.
+  // &:hover {
+  //   background-color: red;
+  //   border-radius: 8px;
+  // }
+`;
+
+const StyledBorderBottom = styled.div`
+  border-bottom: 1px solid var(--color-gray-900);
+  display: grid;
+  grid-template-columns: 30px minmax(100px, 1fr) minmax(100px, 1fr) minmax(
+      200px,
+      1fr
+    ) 80px;
+  gap: 8px;
+  align-items: center;
+  padding: 0 8px;
 `;
 
 type Student = {
@@ -99,30 +123,32 @@ const StudentsPage = () => {
           </Button>
         </NavButtonsWrapper>
       </StyledHeader>
-      <table>
-        <thead>
-          <tr>
-            <th>Order</th>
-            <th>First name</th>
-            <th>Last name</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-          {students.length > 0 &&
-            students.map((student, index) => (
-              <tr key={student.student_uid}>
-                <td>{index}</td>
-                <td>{student.first_name}</td>
-                <td>{student.last_name}</td>
-                <td>{student.email}</td>
-                <td>
+      <StyledTableWrapper>
+        <StyledTableRow>
+          <StyledBorderBottom>
+            <div></div>
+            <div>First name</div>
+            <div>Last name</div>
+            <div>Email</div>
+            <div></div>
+          </StyledBorderBottom>
+        </StyledTableRow>
+        {students.length > 0 &&
+          students.map((student, index) => (
+            <StyledTableRow key={student.student_uid}>
+              <StyledBorderBottom>
+                <div>{index + 1}</div>
+                <div>{student.first_name}</div>
+                <div>{student.last_name}</div>
+                <div>{student.email}</div>
+                <div>
                   <div>
                     <IconButton
                       icon={
-                        <LuPencil style={{ width: "14px", height: "14px" }} />
+                        <LuPencil style={{ width: "16px", height: "16px" }} />
                       }
                       onClick={() => handleEditStudent(student.student_uid)}
+                      size="large"
                       tooltip="Edit student"
                       label="Edit student"
                     />
@@ -133,54 +159,16 @@ const StudentsPage = () => {
                         />
                       }
                       onClick={() => handleDeleteStudent(student.student_uid)}
+                      size="large"
                       tooltip="Delete student"
                       label="Delete student"
                     />
                   </div>
-                </td>
-                <td>
-                  <div style={{ display: "flex" }}>
-                    {/* <IconButton
-                      icon={
-                        <LuPencil style={{ width: "16px", height: "16px" }} />
-                      }
-                      $size="large"
-                      onClick={() =>
-                        navigate(`/students/${student.student_uid}`)
-                      }
-                    />
-                    <IconButton
-                      icon={
-                        <RiDeleteBinLine
-                          style={{ width: "16px", height: "16px" }}
-                        />
-                      }
-                      $size="large"
-                      $isSubmitting={true}
-                      onClick={() =>
-                        navigate(`/students/${student.student_uid}`)
-                      }
-                      $appearance="secondary"
-                    />
-                    <IconButton
-                      icon={
-                        <RiDeleteBinLine
-                          style={{ width: "16px", height: "16px" }}
-                        />
-                      }
-                      $size="large"
-                      isDisabled={true}
-                      onClick={() =>
-                        navigate(`/students/${student.student_uid}`)
-                      }
-                      $appearance="secondary"
-                    /> */}
-                  </div>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+                </div>
+              </StyledBorderBottom>
+            </StyledTableRow>
+          ))}
+      </StyledTableWrapper>
       {isLoading && <p>Loading...</p>}
       {students.length === 0 && !isLoading && <p>No students found</p>}
       <Button appearance="primary" onClick={() => navigate("/students/add")}>

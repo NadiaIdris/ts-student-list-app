@@ -53,7 +53,7 @@ export interface ButtonProps {
 }
 
 const ButtonWrapper = styled.div`
-  display: inline-block;
+  display: block;
 `;
 
 const StyledButton = styled.button<{
@@ -74,7 +74,8 @@ const StyledButton = styled.button<{
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  // justify-content: space-between;
+  justify-content: center;
   gap: 8px;
   &:disabled {
     cursor: not-allowed;
