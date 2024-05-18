@@ -16,6 +16,7 @@ const TableBodyWrapper = styled.div`
   overflow-y: auto;
   overflow-x: auto;
   height: calc(100vh - 107px - 52px);
+  background-color: var(--color-white);
 
   @media (max-width: 770px) {
     padding: 0 20px;
@@ -188,7 +189,15 @@ const StudentsPage = () => {
   };
 
   // TODO: Implement handleRowClick function
-  const handleRowClick = () => {
+  const handleRowClick = (student_uid: string) => {
+    // Get the student id from the row
+    // Fetch the student data from the API
+    try {
+      navigate(`/students/${student_uid}`);
+    } catch (error) {
+      console.error(error);
+    }
+    // Navigate to the student page
     console.log("Row clicked");
   };
 
@@ -242,7 +251,7 @@ const StudentsPage = () => {
             students.map((student, index) => (
               <StyledTableRow
                 key={student.student_uid}
-                onClick={handleRowClick}
+                onClick={() => handleRowClick(student.student_uid)}
               >
                 <StyledBorderBottom>
                   <StyledTableCell>{index + 1}</StyledTableCell>

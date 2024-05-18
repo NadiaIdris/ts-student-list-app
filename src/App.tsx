@@ -6,6 +6,7 @@ import { AuthContextProvider } from "./context/AuthContext";
 import { LogInPage } from "./pages/LogInPage";
 import { StudentsPage } from "./pages/StudentsPage";
 import { SignUpPage } from "./pages/SignUpPage";
+import { StudentPage } from "./pages/StudentPage";
 
 const router = createBrowserRouter([
   {
@@ -23,16 +24,22 @@ const router = createBrowserRouter([
         <StudentsPage />
       </ProtectedRoute>
     ),
-    children: [
-      {
-        path: "add-student",
-        element: <StudentsPage />,
-      },
-      {
-        path: ":id",
-        element: <StudentsPage />,
-      },
-    ],
+  },
+  {
+    path: "/students/:studentId",
+    element: (
+      <ProtectedRoute>
+        <StudentPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/students/add-student",
+    element: (
+      <ProtectedRoute>
+        <StudentsPage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/login",
