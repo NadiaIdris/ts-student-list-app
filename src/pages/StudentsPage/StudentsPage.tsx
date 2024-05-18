@@ -12,18 +12,20 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { FiChevronDown } from "react-icons/fi";
 import { GoTriangleDown } from "react-icons/go";
 
-const PageWrapper = styled.div`
+const TableBodyWrapper = styled.div`
   padding: 0 48px;
   overflow-y: auto;
   overflow-x: auto;
-  height: calc(100vh - 107px - 42px - 52px);
+  height: calc(100vh - 107px - 52px);
 
   @media (max-width: 770px) {
-    padding: 20px;
+    padding: 0 20px;
+    height: calc(100vh - 86px - 52px);
   }
 
   @media (max-width: 500px) {
-    padding: 8px;
+    padding: 0 8px;
+    height: calc(100vh - 64px - 52px);
   }
 `;
 
@@ -35,6 +37,19 @@ const StyledHeader = styled.header`
   top: 0;
   background-color: var(--color-white);
   padding: 0 56px;
+  @media (max-width: 770px) {
+    h1 {
+      font-size: 2rem;
+    }
+    padding: 0 20px;
+  }
+  @media (max-width: 500px) {
+    h1 {
+      font-size: 1.5rem; // 32px
+      margin-bottom: 1rem; // 16px
+    }
+  }
+
   @media (max-width: 390px) {
     flex-direction: column;
     align-items: flex-start;
@@ -60,6 +75,11 @@ const StyledTableRow = styled.div`
   background-color: transparent;
   transition: background-color 0.1s ease-in-out;
   height: 60px;
+  &:first-child {
+    height: 42px;
+    font-weight: 600;
+    font-size: 0.875em;
+  }
   &:hover {
     &:first-child {
       background-color: transparent;
@@ -81,25 +101,32 @@ const StyledBorderBottom = styled.div`
   align-items: center;
   padding: 0 8px;
   height: 60px;
+  &:first-child {
+    height: 42px;
+  }
 `;
 
-const StyledTableHeader = styled.div`
-  display: grid;
-  grid-template-columns:
-    30px minmax(100px, 200px) minmax(100px, 200px) minmax(200px, 1fr)
-    80px;
-  grid-template-rows: auto;
-  gap: 8px;
-  align-items: center;
-  font-size: 0.875em;
-  font-weight: 600;
-  height: 42px;
-  padding: 0 56px;
+const StyledTableCell = styled.div`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const StyledIconsWrapper = styled.div`
   display: flex;
   gap: 8px;
+`;
+
+const StyledButtonWrapper = styled.div`
+  margin: 12px 0 0 0;
+  position: sticky;
+  bottom: 0;
+  background-color: var(--color-white);
+  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.3);
+  padding: 8px 56px;
+  @media (max-width: 770px) {
+    padding: 8px 20px;
+  }
 `;
 
 const EmptyState = styled.p`
@@ -193,15 +220,18 @@ const StudentsPage = () => {
           </Button>
         </NavButtonsWrapper>
       </StyledHeader>
-      <StyledTableHeader>
-        <div></div>
-        <div>First name</div>
-        <div>Last name</div>
-        <div>Email</div>
-        <div></div>
-      </StyledTableHeader>
-      <PageWrapper>
+
+      <TableBodyWrapper>
         <StyledTableWrapper>
+          <StyledTableRow>
+            <StyledBorderBottom>
+              <div></div>
+              <div>First name</div>
+              <div>Last name</div>
+              <div>Email</div>
+              <div></div>
+            </StyledBorderBottom>
+          </StyledTableRow>
           {students.length > 0 &&
             students.map((student, index) => (
               <StyledTableRow
@@ -209,11 +239,11 @@ const StudentsPage = () => {
                 onClick={handleRowClick}
               >
                 <StyledBorderBottom>
-                  <div>{index + 1}</div>
-                  <div>{student.first_name}</div>
-                  <div>{student.last_name}</div>
-                  <div>{student.email}</div>
-                  <div>
+                  <StyledTableCell>{index + 1}</StyledTableCell>
+                  <StyledTableCell>{student.first_name}</StyledTableCell>
+                  <StyledTableCell>{student.last_name}</StyledTableCell>
+                  <StyledTableCell>{student.email}</StyledTableCell>
+                  <StyledTableCell>
                     <StyledIconsWrapper>
                       <IconButton
                         icon={
@@ -240,7 +270,7 @@ const StudentsPage = () => {
                         appearance="link"
                       />
                     </StyledIconsWrapper>
-                  </div>
+                  </StyledTableCell>
                 </StyledBorderBottom>
               </StyledTableRow>
             ))}
@@ -253,21 +283,12 @@ const StudentsPage = () => {
             Add a student below.
           </EmptyState>
         )}
-      </PageWrapper>
-      <Button
-        appearance="primary"
-        onClick={() => navigate("/students/add")}
-        style={{
-          margin: "12px 0 0 0",
-          position: "sticky",
-          bottom: "0",
-          backgroundColor: "var(--color-white)",
-          boxShadow: "0px 0px 1px rgba(0, 0, 0, 0.3)",
-          padding: "8px 56px",
-        }}
-      >
-        Add new student
-      </Button>
+      </TableBodyWrapper>
+      <StyledButtonWrapper>
+        <Button appearance="primary" onClick={() => navigate("/students/add")}>
+          Add new student
+        </Button>
+      </StyledButtonWrapper>
     </>
   );
 };
