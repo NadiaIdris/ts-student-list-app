@@ -9,7 +9,6 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { IconButton } from "../../components/buttons/IconButton";
 import { LuPencil } from "react-icons/lu";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { FiChevronDown } from "react-icons/fi";
 import { GoTriangleDown } from "react-icons/go";
 
 const TableBodyWrapper = styled.div`
@@ -71,14 +70,11 @@ const StyledTableWrapper = styled.div`
 `;
 
 const StyledTableRow = styled.div`
-  // Use this div to highlight the background of a newly added student row.
   background-color: transparent;
   transition: background-color 0.1s ease-in-out;
   height: 60px;
   &:first-child {
     height: 42px;
-    font-weight: 600;
-    font-size: 0.875em;
   }
   &:hover {
     &:first-child {
@@ -91,6 +87,20 @@ const StyledTableRow = styled.div`
   }
 `;
 
+const StyledTableHeader = styled.div`
+  display: grid;
+  grid-template-columns:
+    30px minmax(100px, 200px) minmax(100px, 200px) minmax(200px, 1fr)
+    80px;
+  grid-template-rows: auto;
+  gap: 8px;
+  align-items: center;
+  padding: 0 8px;
+  height: 42px;
+  font-weight: 600;
+  font-size: 0.875rem;
+`;
+
 const StyledBorderBottom = styled.div`
   display: grid;
   grid-template-columns:
@@ -101,9 +111,6 @@ const StyledBorderBottom = styled.div`
   align-items: center;
   padding: 0 8px;
   height: 60px;
-  &:first-child {
-    height: 42px;
-  }
 `;
 
 const StyledTableCell = styled.div`
@@ -220,17 +227,16 @@ const StudentsPage = () => {
           </Button>
         </NavButtonsWrapper>
       </StyledHeader>
-
       <TableBodyWrapper>
         <StyledTableWrapper>
           <StyledTableRow>
-            <StyledBorderBottom>
+            <StyledTableHeader>
               <div></div>
               <div>First name</div>
               <div>Last name</div>
               <div>Email</div>
               <div></div>
-            </StyledBorderBottom>
+            </StyledTableHeader>
           </StyledTableRow>
           {students.length > 0 &&
             students.map((student, index) => (
