@@ -13,10 +13,10 @@ import { FiChevronDown } from "react-icons/fi";
 import { GoTriangleDown } from "react-icons/go";
 
 const PageWrapper = styled.div`
-  padding: 20px 48px;
+  padding: 0 48px;
   overflow-y: auto;
   overflow-x: auto;
-  height: calc(100vh - 107px - 52px);
+  height: calc(100vh - 107px - 42px - 52px);
 
   @media (max-width: 770px) {
     padding: 20px;
@@ -34,7 +34,6 @@ const StyledHeader = styled.header`
   position: sticky;
   top: 0;
   background-color: var(--color-white);
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   padding: 0 56px;
   @media (max-width: 390px) {
     flex-direction: column;
@@ -60,11 +59,6 @@ const StyledTableRow = styled.div`
   // Use this div to highlight the background of a newly added student row.
   background-color: transparent;
   transition: background-color 0.1s ease-in-out;
-  &:first-child {
-    font-size: 0.875em;
-    font-weight: 600;
-    height: 42px;
-  }
   height: 60px;
   &:hover {
     &:first-child {
@@ -89,9 +83,29 @@ const StyledBorderBottom = styled.div`
   height: 60px;
 `;
 
+const StyledTableHeader = styled.div`
+  display: grid;
+  grid-template-columns:
+    30px minmax(100px, 200px) minmax(100px, 200px) minmax(200px, 1fr)
+    80px;
+  grid-template-rows: auto;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.875em;
+  font-weight: 600;
+  height: 42px;
+  padding: 0 56px;
+`;
+
 const StyledIconsWrapper = styled.div`
   display: flex;
   gap: 8px;
+`;
+
+const EmptyState = styled.p`
+  text-align: center;
+  margin-top: 60px;
+  color: var(--color-black-700);
 `;
 
 type Student = {
@@ -179,17 +193,15 @@ const StudentsPage = () => {
           </Button>
         </NavButtonsWrapper>
       </StyledHeader>
+      <StyledTableHeader>
+        <div></div>
+        <div>First name</div>
+        <div>Last name</div>
+        <div>Email</div>
+        <div></div>
+      </StyledTableHeader>
       <PageWrapper>
         <StyledTableWrapper>
-          <StyledTableRow>
-            <StyledBorderBottom>
-              <div></div>
-              <div>First name</div>
-              <div>Last name</div>
-              <div>Email</div>
-              <div></div>
-            </StyledBorderBottom>
-          </StyledTableRow>
           {students.length > 0 &&
             students.map((student, index) => (
               <StyledTableRow
@@ -234,7 +246,13 @@ const StudentsPage = () => {
             ))}
         </StyledTableWrapper>
         {isLoading && <p>Loading...</p>}
-        {students.length === 0 && !isLoading && <p>No students found</p>}
+        {students.length === 0 && !isLoading && (
+          <EmptyState>
+            No students found.
+            <br />
+            Add a student below.
+          </EmptyState>
+        )}
       </PageWrapper>
       <Button
         appearance="primary"
@@ -244,7 +262,7 @@ const StudentsPage = () => {
           position: "sticky",
           bottom: "0",
           backgroundColor: "var(--color-white)",
-          boxShadow: "0px -4px 8px rgba(0, 0, 0, 0.1)",
+          boxShadow: "0px 0px 1px rgba(0, 0, 0, 0.3)",
           padding: "8px 56px",
         }}
       >
