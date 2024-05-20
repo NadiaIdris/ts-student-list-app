@@ -37,7 +37,7 @@ const StyledStudentOverlay = styled.div`
 `;
 
 const StyledBackground = styled.div`
-  pointer-events: none;
+  // pointer-events: none;
 `;
 
 const StyledStudentDataWrapper = styled.div`

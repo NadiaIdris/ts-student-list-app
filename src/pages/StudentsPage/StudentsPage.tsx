@@ -1,5 +1,5 @@
 import { MouseEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
@@ -70,7 +70,21 @@ const StyledTableWrapper = styled.div`
   }
 `;
 
-const StyledTableRow = styled.div`
+const StyledTableHeader = styled.div`
+  display: grid;
+  grid-template-columns:
+    30px minmax(100px, 200px) minmax(100px, 200px) minmax(200px, 1fr)
+    80px;
+  grid-template-rows: auto;
+  gap: 8px;
+  align-items: center;
+  padding: 0 8px;
+  height: 42px;
+  font-weight: 600;
+  font-size: 0.875rem;
+`;
+
+const StyledTableRow = styled.a`
   background-color: transparent;
   transition: background-color 0.1s ease-in-out;
   height: 60px;
@@ -88,21 +102,7 @@ const StyledTableRow = styled.div`
   }
 `;
 
-const StyledTableHeader = styled.div`
-  display: grid;
-  grid-template-columns:
-    30px minmax(100px, 200px) minmax(100px, 200px) minmax(200px, 1fr)
-    80px;
-  grid-template-rows: auto;
-  gap: 8px;
-  align-items: center;
-  padding: 0 8px;
-  height: 42px;
-  font-weight: 600;
-  font-size: 0.875rem;
-`;
-
-const StyledBorderBottom = styled.div`
+const StyledRowGrid = styled.div`
   display: grid;
   grid-template-columns:
     30px minmax(100px, 200px) minmax(100px, 200px) minmax(200px, 1fr)
@@ -253,7 +253,7 @@ const StudentsPage = () => {
                 key={student.student_uid}
                 onClick={() => handleRowClick(student.student_uid)}
               >
-                <StyledBorderBottom>
+                <StyledRowGrid>
                   <StyledTableCell>{index + 1}</StyledTableCell>
                   <StyledTableCell>{student.first_name}</StyledTableCell>
                   <StyledTableCell>{student.last_name}</StyledTableCell>
@@ -286,7 +286,7 @@ const StudentsPage = () => {
                       />
                     </StyledIconsWrapper>
                   </StyledTableCell>
-                </StyledBorderBottom>
+                </StyledRowGrid>
               </StyledTableRow>
             ))}
         </StyledTableWrapper>
@@ -304,6 +304,7 @@ const StudentsPage = () => {
           Add new student
         </Button>
       </StyledButtonWrapper>
+      <Outlet />
     </>
   );
 };

@@ -24,14 +24,12 @@ const router = createBrowserRouter([
         <StudentsPage />
       </ProtectedRoute>
     ),
-  },
-  {
-    path: "/students/:studentId",
-    element: (
-      <ProtectedRoute>
-        <StudentPage />
-      </ProtectedRoute>
-    ),
+    children: [
+      {
+        path: ":studentId",
+        element: <StudentPage />,
+      },
+    ],
   },
   {
     path: "/students/add-student",
