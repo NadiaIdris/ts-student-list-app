@@ -6,6 +6,7 @@ import {
   useNavigate,
   Form,
   useActionData,
+  redirect,
 } from "react-router-dom";
 import styled from "styled-components";
 import { LOGIN_ENDPOINT } from "../../api/apiConstants";
@@ -21,16 +22,22 @@ import { TextField } from "../../components/TextField";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateLoginForm } from "../../validation/validate";
 import { StudentsPage } from "../StudentsPage";
+import { IUser } from "../../context/AuthContext";
+
+interface IUserLogInErrors {
+  email: string;
+  password: string;
+}
 
 export async function action({ request }: { request: Request }) {
   let formData = await request.formData();
   // Trim the white spaces from the email and password
-  const trimmedUserLogInData: IUserLogInData = Object.fromEntries(
+  const trimmedUserLogInData: IUserLogInErrors = Object.fromEntries(
     [...formData.entries()].map(([key, value]) => [
       key,
       value.toString().trim(),
     ])
-  ) as unknown as IUserLogInData;
+  ) as unknown as IUserLogInErrors;
   // Validate the user login data, before sending it to the server
   const { error } = validateLoginForm(trimmedUserLogInData);
   if (error) {
@@ -40,45 +47,44 @@ export async function action({ request }: { request: Request }) {
       }
       return acc;
     }, defaultUserLogInData);
+    console.log("errorMsgs from action: ", errorMsgs);
     // Don't continue with the login process if there are errors.
     return errorMsgs;
-  } else {
-    // setErrors(defaultUserLogInData);
   }
 
-  // try {
-  //   // setSubmitting(true);
-  //   const response = await axiosInstance.post(LOGIN_ENDPOINT, trimmedUserLogInData);
-  //   // Extract the token and user details from the response
-  //   const bearerToken =
-  //     response.headers.Authorization || response.headers.authorization;
-  //   const token = bearerToken.split(" ")[1];
-  //   const { registered_user_uid, first_name, last_name, email } =
-  //     response.data;
-  //   const user = {
-  //     isAuthenticated: true,
-  //     token: token,
-  //     userId: registered_user_uid,
-  //     firstName: first_name,
-  //     lastName: last_name,
-  //     email: email,
-  //   };
-  //   // logIn(user);
-  //   // Redirect to the url that the user was trying to access
-  //   // const intendedUrl = location.state?.from;
-  //   // if (intendedUrl) {
-  //     // navigate(intendedUrl);
-  //   // } else {
-  //     // navigate("/students");
-  //   // }
-  // } catch (error: any) {
-  //   console.error(error);
-  //   if (error.response.status === 401) {
-  //     // setWrongCredentials(true);
-  //   }
-  // } finally {
-  //   // setSubmitting(false);
-  // }
+  try {
+    // setSubmitting(true);
+    const response = await axiosInstance.post(
+      LOGIN_ENDPOINT,
+      trimmedUserLogInData
+    );
+    // Extract the token and user details from the response
+    const bearerToken =
+      response.headers.Authorization || response.headers.authorization;
+    const token = bearerToken.split(" ")[1];
+    const { registered_user_uid, first_name, last_name, email } = response.data;
+    const userData = {
+      isAuthenticated: true,
+      token: token,
+      userId: registered_user_uid,
+      firstName: first_name,
+      lastName: last_name,
+      email: email,
+    };
+    console.log("userData from action: ", userData);
+    return userData;
+  } catch (error: any) {
+    console.error(error);
+    let wrongCredentials;
+    if (error.response.status === 401) {
+      wrongCredentials = true;
+      console.log("wrongCredentials from action: ", wrongCredentials);
+      return wrongCredentials;
+    }
+    wrongCredentials = false;
+    console.log("wrongCredentials from action if error status was not 401: ", wrongCredentials);
+    return wrongCredentials;
+  }
 }
 
 export interface IUserLogInData {
@@ -151,11 +157,13 @@ const LogInPage = () => {
   const { user, logIn } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const errorMsgs = useActionData() as IUserLogInData;
+  const errorMsgs = useActionData() as IUserLogInErrors;
+  const userData = useActionData() as IUser;
+  const wrongCredentials = useActionData() as boolean;
   const [userLogInData, setUserLogInData] =
     useState<IUserLogInData>(defaultUserLogInData);
   // const [errors, setErrors] = useState<IUserLogInData>(defaultUserLogInData);
-  const [wrongCredentials, setWrongCredentials] = useState(false);
+  // const [wrongCredentials, setWrongCredentials] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -248,6 +256,19 @@ const LogInPage = () => {
       </StyledIconSpan>
     </StyledWrapperDiv>
   );
+
+  // useEffect(() => {
+  //   if (userData) {
+  //     logIn(userData);
+  //     // Redirect to the url that the user was trying to access
+  //     const intendedUrl = location.state?.from;
+  //     if (intendedUrl) {
+  //       navigate(intendedUrl);
+  //     } else {
+  //       navigate("/students");
+  //     }
+  //   }
+  // }, [userData, navigate, location.state, logIn]);
 
   const isAuthenticated = user?.isAuthenticated;
 
