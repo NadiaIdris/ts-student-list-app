@@ -7,6 +7,7 @@ import { LogInPage } from "./pages/LogInPage";
 import { StudentsPage } from "./pages/StudentsPage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { StudentPage } from "./pages/StudentPage";
+import { action as logInAction } from "./pages/LogInPage";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LogInPage />,
+    action: logInAction,
   },
   {
     path: "/signup",

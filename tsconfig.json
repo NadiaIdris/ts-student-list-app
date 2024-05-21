@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5", // Set the ECMAScript target version
+    "downlevelIteration": true, // Enable iteration for ES3/ES5 targets
     "lib": [
       // Specify the library files to include
       "dom",

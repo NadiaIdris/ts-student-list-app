@@ -1,4 +1,4 @@
-import { LogInPage } from "./LogInPage";
+import { LogInPage, action } from "./LogInPage";
 import type { IUserLogInData } from "./LogInPage";
 
-export { LogInPage, IUserLogInData };
+export { LogInPage, IUserLogInData, action };
