@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import {
   Link,
@@ -27,12 +27,13 @@ import { IUser } from "../../context/AuthContext";
 interface IUserLogInErrors {
   email: string;
   password: string;
+  wrongCredentials: boolean;
 }
 
 export async function action({ request }: { request: Request }) {
   let formData = await request.formData();
   // Trim the white spaces from the email and password
-  const trimmedUserLogInData: IUserLogInErrors = Object.fromEntries(
+  const trimmedUserLogInData = Object.fromEntries(
     [...formData.entries()].map(([key, value]) => [
       key,
       value.toString().trim(),
@@ -47,44 +48,20 @@ export async function action({ request }: { request: Request }) {
       }
       return acc;
     }, defaultUserLogInData);
-    console.log("errorMsgs from action: ", errorMsgs);
     // Don't continue with the login process if there are errors.
-    return errorMsgs;
+    return errorMsgs as IUserLogInErrors;
   }
 
   try {
-    // setSubmitting(true);
-    const response = await axiosInstance.post(
-      LOGIN_ENDPOINT,
-      trimmedUserLogInData
-    );
-    // Extract the token and user details from the response
-    const bearerToken =
-      response.headers.Authorization || response.headers.authorization;
-    const token = bearerToken.split(" ")[1];
-    const { registered_user_uid, first_name, last_name, email } = response.data;
-    const userData = {
-      isAuthenticated: true,
-      token: token,
-      userId: registered_user_uid,
-      firstName: first_name,
-      lastName: last_name,
-      email: email,
-    };
-    console.log("userData from action: ", userData);
-    return userData;
+    await axiosInstance.post(LOGIN_ENDPOINT, trimmedUserLogInData);
   } catch (error: any) {
-    console.error(error);
-    let wrongCredentials;
+    console.error(`[ACTION ERROR]: ${error}`);
     if (error.response.status === 401) {
-      wrongCredentials = true;
-      console.log("wrongCredentials from action: ", wrongCredentials);
-      return wrongCredentials;
+      return { wrongCredentials: true } as IUserLogInErrors;
     }
-    wrongCredentials = false;
-    console.log("wrongCredentials from action if error status was not 401: ", wrongCredentials);
-    return wrongCredentials;
   }
+
+  return null;
 }
 
 export interface IUserLogInData {
@@ -156,14 +133,9 @@ const defaultUserLogInData = {
 const LogInPage = () => {
   const { user, logIn } = useAuthContext();
   const navigate = useNavigate();
-  const location = useLocation();
-  const errorMsgs = useActionData() as IUserLogInErrors;
-  const userData = useActionData() as IUser;
-  const wrongCredentials = useActionData() as boolean;
-  const [userLogInData, setUserLogInData] =
-    useState<IUserLogInData>(defaultUserLogInData);
-  // const [errors, setErrors] = useState<IUserLogInData>(defaultUserLogInData);
-  // const [wrongCredentials, setWrongCredentials] = useState(false);
+  // const location = useLocation();
+  const errorMsgs: IUserLogInErrors | undefined =
+    useActionData() as IUserLogInErrors;
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -228,14 +200,6 @@ const LogInPage = () => {
   //   }
   // };
 
-  const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    setUserLogInData({
-      ...userLogInData,
-      [event.target.name]: event.target.value,
-    });
-  };
-
   const handleTogglePasswordIcon = () => {
     setShowPassword(!showPassword);
   };
@@ -257,35 +221,30 @@ const LogInPage = () => {
     </StyledWrapperDiv>
   );
 
-  // useEffect(() => {
-  //   if (userData) {
-  //     logIn(userData);
-  //     // Redirect to the url that the user was trying to access
-  //     const intendedUrl = location.state?.from;
-  //     if (intendedUrl) {
-  //       navigate(intendedUrl);
-  //     } else {
-  //       navigate("/students");
-  //     }
-  //   }
-  // }, [userData, navigate, location.state, logIn]);
-
-  const isAuthenticated = user?.isAuthenticated;
+  useEffect(() => {
+    const isAuthenticated = user?.isAuthenticated;
+    console.log("user in useEffect: ", user);
+    if (isAuthenticated) {
+      logIn(user);
+      // Redirect to the url that the user was trying to access
+      navigate("/");
+    }
+  }, [user, navigate, logIn,]);
 
   // The use effect hook below checks if the user is authenticated and redirects them to the students page if they are.
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/", { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     navigate("/", { replace: true });
+  //   }
+  // }, [isAuthenticated, navigate]);
 
   /*
    * If the user is authenticated, render the StudentsPage component, so that there will not be any
    * flicker in the UI when the user is redirected to the students page.
    */
-  if (isAuthenticated) {
-    return <StudentsPage />;
-  }
+  // if (isAuthenticated) {
+  //   return <StudentsPage />;
+  // }
 
   return (
     <StyledLoginPageWrapper>
@@ -307,8 +266,7 @@ const LogInPage = () => {
               <TextField
                 type="email"
                 name="email"
-                value={userLogInData.email}
-                onChange={handleOnChange}
+                // onChange={handleOnChange}
                 placeholder="Enter your email"
                 isInvalid={Boolean(errorMsgs?.email)}
                 isDisabled={submitting}
@@ -327,8 +285,7 @@ const LogInPage = () => {
               <TextField
                 type="password"
                 name="password"
-                value={userLogInData.password}
-                onChange={handleOnChange}
+                // onChange={handleOnChange}
                 placeholder="Enter your password"
                 isInvalid={Boolean(errorMsgs?.password)}
                 isDisabled={submitting}
@@ -341,8 +298,8 @@ const LogInPage = () => {
             )}
           </Field>
 
-          {wrongCredentials && (
-            <ErrorMessage $isVisible={wrongCredentials}>
+          {errorMsgs?.wrongCredentials && (
+            <ErrorMessage $isVisible={errorMsgs?.wrongCredentials}>
               Please check your credentials. The email or password is incorrect.
             </ErrorMessage>
           )}

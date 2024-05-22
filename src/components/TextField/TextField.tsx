@@ -1,4 +1,4 @@
-import { ChangeEvent, CSSProperties, useLayoutEffect } from "react";
+import { CSSProperties, useLayoutEffect } from "react";
 import styled from "styled-components";
 import { FieldSize } from "../form/Field";
 
@@ -15,14 +15,6 @@ interface TextFieldProps {
    * The `name` prop specifies the name of the input field. Important: name is used as key to identify the input field when submitting the form.
    */
   name: string;
-  /*
-   * The `value` prop specifies the value of the input field.
-   */
-  value: string;
-  /**
-   * The `onChange` prop is a callback function that is called when the value of the input field changes.
-   */
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   /**
    * The `placeholder` prop specifies a short hint that describes the expected value of the input field.
    */
@@ -95,8 +87,6 @@ const TextField = ({
   id,
   type = "text",
   name,
-  value,
-  onChange,
   placeholder,
   autoComplete = "on",
   size = "medium",
@@ -126,8 +116,6 @@ const TextField = ({
         id={id}
         type={type === "password" ? passwordType : type}
         name={name}
-        value={value}
-        onChange={onChange}
         placeholder={placeholder}
         autoComplete={autoComplete}
         $size={size}
