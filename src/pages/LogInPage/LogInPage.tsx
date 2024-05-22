@@ -2,11 +2,9 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import {
   Link,
-  useLocation,
   useNavigate,
   Form,
   useActionData,
-  redirect,
 } from "react-router-dom";
 import styled from "styled-components";
 import { LOGIN_ENDPOINT } from "../../api/apiConstants";
@@ -14,20 +12,23 @@ import { axiosInstance } from "../../api/axiosConfig";
 import { Button } from "../../components/buttons/Button";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
 import { Field, FieldSize } from "../../components/form/Field";
-// import { Form } from "../../components/form/Form";
 import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 import { Heading1 } from "../../components/text/Heading1";
 import { Heading2 } from "../../components/text/Heading2";
 import { TextField } from "../../components/TextField";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateLoginForm } from "../../validation/validate";
-import { StudentsPage } from "../StudentsPage";
 import { IUser } from "../../context/AuthContext";
 
 interface IUserLogInErrors {
   email: string;
   password: string;
+}
+
+interface ILogInData {
+  errorMsgs: IUserLogInErrors;
   wrongCredentials: boolean;
+  user: IUser;
 }
 
 export async function action({ request }: { request: Request }) {
@@ -49,15 +50,32 @@ export async function action({ request }: { request: Request }) {
       return acc;
     }, defaultUserLogInData);
     // Don't continue with the login process if there are errors.
-    return errorMsgs as IUserLogInErrors;
+    return { errorMsgs };
   }
 
   try {
-    await axiosInstance.post(LOGIN_ENDPOINT, trimmedUserLogInData);
+    const response = await axiosInstance.post(
+      LOGIN_ENDPOINT,
+      trimmedUserLogInData
+    );
+    // Extract the token and user details from the response
+    const bearerToken =
+      response.headers.Authorization || response.headers.authorization;
+    const token = bearerToken.split(" ")[1];
+    const { registered_user_uid, first_name, last_name, email } = response.data;
+    const user = {
+      isAuthenticated: true,
+      token: token,
+      userId: registered_user_uid,
+      firstName: first_name,
+      lastName: last_name,
+      email: email,
+    };
+    return { user };
   } catch (error: any) {
     console.error(`[ACTION ERROR]: ${error}`);
     if (error.response.status === 401) {
-      return { wrongCredentials: true } as IUserLogInErrors;
+      return { wrongCredentials: true } as ILogInData;
     }
   }
 
@@ -134,8 +152,7 @@ const LogInPage = () => {
   const { user, logIn } = useAuthContext();
   const navigate = useNavigate();
   // const location = useLocation();
-  const errorMsgs: IUserLogInErrors | undefined =
-    useActionData() as IUserLogInErrors;
+  const actionData: ILogInData | undefined = useActionData() as ILogInData;
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -222,29 +239,13 @@ const LogInPage = () => {
   );
 
   useEffect(() => {
-    const isAuthenticated = user?.isAuthenticated;
-    console.log("user in useEffect: ", user);
-    if (isAuthenticated) {
-      logIn(user);
-      // Redirect to the url that the user was trying to access
-      navigate("/");
+    const userData = actionData?.user;
+    console.log("userD: ", userData);
+    if (userData) {
+      logIn(userData);
+      navigate("/students");
     }
-  }, [user, navigate, logIn,]);
-
-  // The use effect hook below checks if the user is authenticated and redirects them to the students page if they are.
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     navigate("/", { replace: true });
-  //   }
-  // }, [isAuthenticated, navigate]);
-
-  /*
-   * If the user is authenticated, render the StudentsPage component, so that there will not be any
-   * flicker in the UI when the user is redirected to the students page.
-   */
-  // if (isAuthenticated) {
-  //   return <StudentsPage />;
-  // }
+  }, [actionData?.user, navigate, logIn]);
 
   return (
     <StyledLoginPageWrapper>
@@ -253,22 +254,20 @@ const LogInPage = () => {
       </Heading1>
       <StyledFormWrapper>
         <Heading2>Log in</Heading2>
-        {/* <Form onSubmit={handleOnSubmit}> */}
         <Form method="post">
           <Field
             id="login-email"
             label="Email"
             isRequired
-            invalidFieldMessage={errorMsgs?.email}
+            invalidFieldMessage={actionData?.errorMsgs?.email}
             style={{ margin: "0 0 12px 0" }}
           >
             {(inputProps) => (
               <TextField
                 type="email"
                 name="email"
-                // onChange={handleOnChange}
                 placeholder="Enter your email"
-                isInvalid={Boolean(errorMsgs?.email)}
+                isInvalid={Boolean(actionData?.errorMsgs?.email)}
                 isDisabled={submitting}
                 {...inputProps}
               />
@@ -278,16 +277,15 @@ const LogInPage = () => {
             id="login-password"
             label="Password"
             isRequired
-            invalidFieldMessage={errorMsgs?.password}
+            invalidFieldMessage={actionData?.errorMsgs?.password}
             style={{ margin: "0 0 12px 0" }}
           >
             {(inputProps) => (
               <TextField
                 type="password"
                 name="password"
-                // onChange={handleOnChange}
                 placeholder="Enter your password"
-                isInvalid={Boolean(errorMsgs?.password)}
+                isInvalid={Boolean(actionData?.errorMsgs?.password)}
                 isDisabled={submitting}
                 renderIcon={(isDisabled, $size) =>
                   passwordIcons("login-password", isDisabled, $size)
@@ -298,8 +296,8 @@ const LogInPage = () => {
             )}
           </Field>
 
-          {errorMsgs?.wrongCredentials && (
-            <ErrorMessage $isVisible={errorMsgs?.wrongCredentials}>
+          {actionData?.wrongCredentials && (
+            <ErrorMessage $isVisible={actionData?.wrongCredentials}>
               Please check your credentials. The email or password is incorrect.
             </ErrorMessage>
           )}

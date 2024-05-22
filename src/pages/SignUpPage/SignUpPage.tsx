@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Form } from "react-router-dom";
 import styled from "styled-components";
 import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
 import { Button } from "../../components/buttons/Button";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
 import { Field, FieldSize } from "../../components/form/Field";
-import { Form } from "../../components/form/Form";
 import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 import { Heading1 } from "../../components/text/Heading1";
 import { Heading2 } from "../../components/text/Heading2";
