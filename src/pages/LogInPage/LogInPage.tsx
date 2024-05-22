@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { Link, useNavigate, Form, useActionData } from "react-router-dom";
+import { Link, useNavigate, Form, useActionData, useNavigation } from "react-router-dom";
 import styled from "styled-components";
 import { LOGIN_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
@@ -144,12 +144,12 @@ const defaultUserLogInData = {
 };
 
 const LogInPage = () => {
-  const { user, logIn } = useAuthContext();
+  const { logIn } = useAuthContext();
   const navigate = useNavigate();
   // const location = useLocation();
   const actionData: ILogInData | undefined = useActionData() as ILogInData;
   const [showPassword, setShowPassword] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  // const [submitting, setSubmitting] = useState(false);
 
   const emailErrorMsg = actionData?.errorMsgs?.email;
   const passwordErrorMsg = actionData?.errorMsgs?.password;
@@ -244,8 +244,11 @@ const LogInPage = () => {
       logIn(userData);
       navigate("/students");
     }
-  }, [actionData?.user, navigate, logIn]);
-
+  }, [ actionData?.user, navigate, logIn ]);
+  
+  const navigation = useNavigation();
+  // const submitting = navigation.state === "submitting";
+  const submitting = true;
   return (
     <StyledLoginPageWrapper>
       <Heading1 style={{ textAlign: "center" }}>

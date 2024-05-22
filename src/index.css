@@ -65,12 +65,6 @@
   --color-button-default-bg-hover: transparent;
   --color-button-warning-bg-hover: var(--color-danger-darker);
 
-  /* button disabled colors */
-  --color-button-primary-bg-disabled: var(--color-black-500);
-  --color-button-secondary-bg-disabled: var(--color-gray-500);
-  --color-button-default-bg-disabled: transparent;
-  --color-button-warning-bg-disabled: var(--color-danger-100);
-
   /* button text colors */
   --color-button-primary-fg: var(--color-white);
   --color-button-secondary-fg: var(--color-black);

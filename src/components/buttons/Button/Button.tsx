@@ -77,10 +77,6 @@ const StyledButton = styled.button<{
   // justify-content: space-between;
   justify-content: center;
   gap: 8px;
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
   height: ${({ $size, $iconBefore, $children }) => {
     if ($iconBefore && !$children && ($size === "medium" || $size === "large"))
       return "auto";
@@ -125,10 +121,25 @@ const StyledButton = styled.button<{
       else return "var(--color-button-default-bg-hover)";
     }};
     color: ${({ $appearance }) => {
-      if ($appearance === "link") return "var(--text-black)";
-      else if ($appearance === "link-with-background")
-        return "var(--color-black)";
+      if ($appearance === "link" || $appearance === "link-with-background")
+        return "var(--text-black)";
     }};
+  }
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    &:hover {
+      background: ${({ $appearance }) => {
+        if ($appearance === "primary") return "var(--color-button-primary-bg)";
+        else if ($appearance === "secondary")
+          return "var(--color-button-secondary-bg)";
+        else if ($appearance === "warning")
+          return "var(--color-button-warning-bg-hover)";
+        else if ($appearance === "link-with-background")
+          return "var(--color-gray-600)";
+        else return "var(--color-button-default-bg)";
+      }};
+    }
   }
 `;
 
