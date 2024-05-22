@@ -66,7 +66,7 @@ const StyledTextField = styled.input<{
   padding-left: 8px;
   width: 100%;
   &:disabled {
-    background-color: var(--color-gray-1000);
+    opacity: 0.5;
   }
   ${({ $size }) => {
     if ($size === "small")
