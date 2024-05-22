@@ -1,11 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import {
-  Link,
-  useNavigate,
-  Form,
-  useActionData,
-} from "react-router-dom";
+import { Link, useNavigate, Form, useActionData } from "react-router-dom";
 import styled from "styled-components";
 import { LOGIN_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
@@ -156,6 +151,10 @@ const LogInPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  const emailErrorMsg = actionData?.errorMsgs?.email;
+  const passwordErrorMsg = actionData?.errorMsgs?.password;
+
+  // TODO: handle submitting state
   // const handleOnSubmit = async (event: FormEvent<HTMLFormElement>) => {
   //   event.preventDefault();
   //   // Trim the white spaces from the email and password
@@ -259,7 +258,7 @@ const LogInPage = () => {
             id="login-email"
             label="Email"
             isRequired
-            invalidFieldMessage={actionData?.errorMsgs?.email}
+            invalidFieldMessage={emailErrorMsg}
             style={{ margin: "0 0 12px 0" }}
           >
             {(inputProps) => (
@@ -267,7 +266,7 @@ const LogInPage = () => {
                 type="email"
                 name="email"
                 placeholder="Enter your email"
-                isInvalid={Boolean(actionData?.errorMsgs?.email)}
+                isInvalid={Boolean(emailErrorMsg)}
                 isDisabled={submitting}
                 {...inputProps}
               />
@@ -277,7 +276,7 @@ const LogInPage = () => {
             id="login-password"
             label="Password"
             isRequired
-            invalidFieldMessage={actionData?.errorMsgs?.password}
+            invalidFieldMessage={passwordErrorMsg}
             style={{ margin: "0 0 12px 0" }}
           >
             {(inputProps) => (
@@ -285,7 +284,7 @@ const LogInPage = () => {
                 type="password"
                 name="password"
                 placeholder="Enter your password"
-                isInvalid={Boolean(actionData?.errorMsgs?.password)}
+                isInvalid={Boolean(passwordErrorMsg)}
                 isDisabled={submitting}
                 renderIcon={(isDisabled, $size) =>
                   passwordIcons("login-password", isDisabled, $size)
