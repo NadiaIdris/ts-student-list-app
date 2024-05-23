@@ -1,6 +1,13 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { Link, useNavigate, Form, useActionData, useNavigation } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  Form,
+  useActionData,
+  useNavigation,
+  useLocation,
+} from "react-router-dom";
 import styled from "styled-components";
 import { LOGIN_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
@@ -146,75 +153,14 @@ const defaultUserLogInData = {
 const LogInPage = () => {
   const { logIn } = useAuthContext();
   const navigate = useNavigate();
-  // const location = useLocation();
+  const location = useLocation();
   const actionData: ILogInData | undefined = useActionData() as ILogInData;
   const [showPassword, setShowPassword] = useState(false);
-  // const [submitting, setSubmitting] = useState(false);
+  const navigation = useNavigation();
+  const submitting = navigation.state === "submitting";
 
   const emailErrorMsg = actionData?.errorMsgs?.email;
   const passwordErrorMsg = actionData?.errorMsgs?.password;
-
-  // TODO: handle submitting state
-  // const handleOnSubmit = async (event: FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   // Trim the white spaces from the email and password
-  //   const trimmedUserLogInData = Object.keys(userLogInData).reduce(
-  //     (acc, key) => ({
-  //       ...acc,
-  //       [key]: userLogInData[key as keyof IUserLogInData].trim(),
-  //     }),
-  //     defaultUserLogInData
-  //   );
-  //   // Validate the user login data, before sending it to the server
-  //   const { error } = validateLoginForm(trimmedUserLogInData);
-  //   if (error) {
-  //     const errorMsgs = error.details.reduce((acc, detail) => {
-  //       if (detail.context?.key) {
-  //         return { ...acc, [detail.context.key]: detail.message };
-  //       }
-  //       return acc;
-  //     }, defaultUserLogInData);
-  //     setErrors({ ...errorMsgs });
-  //     // Don't continue with the login process if there are errors.
-  //     return;
-  //   } else {
-  //     setErrors(defaultUserLogInData);
-  //   }
-
-  //   try {
-  //     setSubmitting(true);
-  //     const response = await axiosInstance.post(LOGIN_ENDPOINT, userLogInData);
-  //     // Extract the token and user details from the response
-  //     const bearerToken =
-  //       response.headers.Authorization || response.headers.authorization;
-  //     const token = bearerToken.split(" ")[1];
-  //     const { registered_user_uid, first_name, last_name, email } =
-  //       response.data;
-  //     const user = {
-  //       isAuthenticated: true,
-  //       token: token,
-  //       userId: registered_user_uid,
-  //       firstName: first_name,
-  //       lastName: last_name,
-  //       email: email,
-  //     };
-  //     logIn(user);
-  //     // Redirect to the url that the user was trying to access
-  //     const intendedUrl = location.state?.from;
-  //     if (intendedUrl) {
-  //       navigate(intendedUrl);
-  //     } else {
-  //       navigate("/students");
-  //     }
-  //   } catch (error: any) {
-  //     console.error(error);
-  //     if (error.response.status === 401) {
-  //       setWrongCredentials(true);
-  //     }
-  //   } finally {
-  //     setSubmitting(false);
-  //   }
-  // };
 
   const handleTogglePasswordIcon = () => {
     setShowPassword(!showPassword);
@@ -239,16 +185,18 @@ const LogInPage = () => {
 
   useEffect(() => {
     const userData = actionData?.user;
-    console.log("userD: ", userData);
     if (userData) {
       logIn(userData);
-      navigate("/students");
+      // Redirect to the url that the user was trying to access
+      const intendedUrl = localStorage.getItem("endpoint");
+      if (intendedUrl) {
+        navigate(intendedUrl);
+      } else {
+        navigate("/students");
+      }
     }
-  }, [ actionData?.user, navigate, logIn ]);
-  
-  const navigation = useNavigation();
-  // const submitting = navigation.state === "submitting";
-  const submitting = true;
+  }, [actionData?.user, location.state, navigate, logIn]);
+
   return (
     <StyledLoginPageWrapper>
       <Heading1 style={{ textAlign: "center" }}>
