@@ -62,21 +62,22 @@ const StyledButton = styled.button<{
   $appearance: Appearance;
   $iconBefore: ReactNode;
   $children: ReactNode;
+  $isLoading: boolean;
 }>`
   border-radius: ${({ $size, $iconBefore, $children }) => {
     if ($iconBefore && !$children && ($size === "medium" || $size === "large"))
       return "100px";
     else return "var(--border-radius)";
   }};
+  position: relative;
   border: 1px solid transparent;
   font: inherit;
   font-weight: 900;
   cursor: pointer;
   display: flex;
   align-items: center;
-  // justify-content: space-between;
   justify-content: center;
-  gap: 8px;
+  gap: ${({ $iconBefore }) => $iconBefore && "8px"};
   height: ${({ $size, $iconBefore, $children }) => {
     if ($iconBefore && !$children && ($size === "medium" || $size === "large"))
       return "auto";
@@ -127,7 +128,7 @@ const StyledButton = styled.button<{
   }
   &:disabled {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.6;
     &:hover {
       background: ${({ $appearance }) => {
         if ($appearance === "primary") return "var(--color-button-primary-bg)";
@@ -141,6 +142,41 @@ const StyledButton = styled.button<{
       }};
     }
   }
+`;
+
+const StyledButtonText = styled.span<{ $isLoading: boolean }>`
+  ${({ $isLoading }) => $isLoading && "visibility: hidden; opacity: 0;"}
+`;
+
+const StyledSpinner = styled.span<{ $isLoading: boolean }>`
+  ${({ $isLoading }) =>
+    $isLoading &&
+    `
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin: auto;
+    border: 4px solid transparent;
+    border-top-color: var(--color-selection);
+    animation: spin 1s ease infinite;
+    pointer-events: none;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }`}
 `;
 
 const Button = ({
@@ -170,15 +206,19 @@ const Button = ({
         $fullWidth={fullWidth}
         $iconBefore={iconBefore}
         $children={children}
+        $isLoading={isLoading}
         title={tooltip}
         disabled={isLoading}
         ref={ref}
         data-testid={testId}
         {...props}
       >
-        {iconBefore}
-        {children}
-        {iconAfter}
+        <StyledButtonText $isLoading={isLoading}>
+          {iconBefore}
+          {children}
+          {iconAfter}
+        </StyledButtonText>
+        <StyledSpinner $isLoading={isLoading} />
       </StyledButton>
     </ButtonWrapper>
   );
