@@ -66,11 +66,16 @@ const StyledButton = styled.button<{
   $fullWidth: boolean;
   $appearance: Appearance;
   $iconBefore: ReactNode;
+  $iconAfter: ReactNode;
   $children: ReactNode;
   $isLoading: boolean;
 }>`
-  border-radius: ${({ $size, $iconBefore, $children }) => {
-    if ($iconBefore && !$children && ($size === "medium" || $size === "large"))
+  border-radius: ${({ $size, $iconBefore, $iconAfter, $children }) => {
+    if (
+      ($iconBefore || $iconAfter) &&
+      !$children &&
+      ($size === "medium" || $size === "large")
+    )
       return "100px";
     else return "var(--border-radius)";
   }};
@@ -79,12 +84,12 @@ const StyledButton = styled.button<{
   font: inherit;
   font-weight: 900;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${({ $iconBefore }) => $iconBefore && "8px"};
-  height: ${({ $size, $iconBefore, $children }) => {
-    if ($iconBefore && !$children && ($size === "medium" || $size === "large"))
+  height: ${({ $size, $iconBefore, $iconAfter, $children }) => {
+    if (
+      ($iconBefore || $iconAfter) &&
+      !$children &&
+      ($size === "medium" || $size === "large")
+    )
       return "auto";
     else if ($size === "medium") return "36px";
     else if ($size === "large") return "42px";
@@ -94,9 +99,11 @@ const StyledButton = styled.button<{
     if ($size === "medium") return "0.875rem"; // 0.875rem is ~14px
     else if ($size === "large") return "1rem"; // 1rem is ~16px
   }};
-  padding: ${({ $size, $iconBefore, $children }) => {
-    if ($iconBefore && !$children && $size === "medium") return "4px";
-    else if ($iconBefore && !$children && $size === "large") return "8px";
+  padding: ${({ $size, $iconBefore, $iconAfter, $children }) => {
+    if (($iconBefore || $iconAfter) && !$children && $size === "medium")
+      return "4px";
+    else if (($iconBefore || $iconAfter) && !$children && $size === "large")
+      return "8px";
     else if ($size === "medium") return "0 16px";
     else if ($size === "large") return "0 24px";
   }};
@@ -114,6 +121,9 @@ const StyledButton = styled.button<{
     else if ($appearance === "warning") return "var(--color-button-warning-fg)";
     else return "var(--color-button-default-fg)";
   }};
+  ${({ $isLoading }) =>
+    $isLoading && "opacity: 0.6; pointer-events: none;"}
+
   &:hover {
     background: ${({ $appearance }) => {
       if ($appearance === "primary")
@@ -152,8 +162,17 @@ const StyledButton = styled.button<{
   }
 `;
 
-const StyledButtonText = styled.span<{ $isLoading: boolean }>`
+const StyledButtonText = styled.span<{
+  $iconBefore: ReactNode;
+  $iconAfter: ReactNode;
+  $isLoading: boolean;
+}>`
   ${({ $isLoading }) => $isLoading && "visibility: hidden; opacity: 0;"}
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${({ $iconBefore, $iconAfter }) =>
+    $iconBefore || $iconAfter ? "8px" : "0"};
 `;
 
 const StyledSpinner = styled.span<{ $isLoading: boolean }>`
@@ -195,7 +214,7 @@ const Button = ({
   size = "medium",
   fullWidth = false,
   isLoading = false,
-  isDisabled = true,
+  isDisabled = false,
   ref,
   iconBefore,
   iconAfter,
@@ -214,6 +233,7 @@ const Button = ({
         $size={size}
         $fullWidth={fullWidth}
         $iconBefore={iconBefore}
+        $iconAfter={iconAfter}
         $children={children}
         $isLoading={isLoading}
         title={tooltip}
@@ -222,7 +242,11 @@ const Button = ({
         data-testid={testId}
         {...props}
       >
-        <StyledButtonText $isLoading={isLoading}>
+        <StyledButtonText
+          $iconBefore={iconBefore}
+          $iconAfter={iconAfter}
+          $isLoading={isLoading}
+        >
           {iconBefore}
           {children}
           {iconAfter}
