@@ -20,6 +20,11 @@ export interface ButtonProps {
    * Causes the button to be in a loading state.
    */
   isLoading?: boolean;
+  /**
+   * Disables the button.
+   * If the button is disabled, users cannot interact with the button: the button cannot be clicked, focused, or hovered.
+   **/
+  isDisabled?: boolean;
   ref?: any;
   /**
    * Displays an icon before the button text.
@@ -140,7 +145,10 @@ const StyledButton = styled.button<{
           return "var(--color-gray-600)";
         else return "var(--color-button-default-bg)";
       }};
-    }
+      color: ${({ $appearance }) => {
+        if ($appearance === "link" || $appearance === "link-with-background")
+          return "var(--color-black-700)";
+      }}
   }
 `;
 
@@ -187,6 +195,7 @@ const Button = ({
   size = "medium",
   fullWidth = false,
   isLoading = false,
+  isDisabled = true,
   ref,
   iconBefore,
   iconAfter,
@@ -208,7 +217,7 @@ const Button = ({
         $children={children}
         $isLoading={isLoading}
         title={tooltip}
-        disabled={isLoading}
+        disabled={isDisabled}
         ref={ref}
         data-testid={testId}
         {...props}
