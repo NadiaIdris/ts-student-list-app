@@ -81,7 +81,7 @@ const StyledTableHeader = styled.div`
   padding: 0 8px;
   height: 42px;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: var(--font-size-14);
 `;
 
 const StyledTableRow = styled.a`

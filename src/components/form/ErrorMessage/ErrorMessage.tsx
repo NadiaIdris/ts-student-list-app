@@ -3,12 +3,12 @@ import styled from "styled-components";
 import { FormFieldDirection } from "../Field";
 
 interface ErrorMessageProps {
-  $direction?: FormFieldDirection;
+  direction?: FormFieldDirection;
   /**
    * A boolean to determine if the error message is visible. It will always take space on the page
    * to remove UI jank when error message appears on the screen, but it will be hidden if this prop is false.
    */
-  $isVisible?: boolean;
+  isVisible?: boolean;
   /**
    * The content of the error message
    */
@@ -25,7 +25,7 @@ const StyledError = styled.div<{
   $height: number;
 }>`
   color: var(--color-danger);
-  font-size: 0.8em;
+  font-size: var(--font-size-14);
   ${({ $direction }) => $direction === "row" && "margin-left: 113px;"}
   height: ${({ $isVisible, $height }) => ($isVisible ? `auto` : "0")};
   max-height: ${({ $isVisible, $height }) =>
@@ -37,8 +37,8 @@ const StyledError = styled.div<{
 `;
 
 const ErrorMessage = ({
-  $direction = "column",
-  $isVisible = true,
+  direction = "column",
+  isVisible = true,
   children,
   testId,
 }: ErrorMessageProps) => {
@@ -55,9 +55,9 @@ const ErrorMessage = ({
 
   return (
     <StyledError
-      $direction={$direction}
+      $direction={direction}
       data-testid={testId}
-      $isVisible={$isVisible}
+      $isVisible={isVisible}
       $height={height}
       ref={errorRef}
     >

@@ -15,11 +15,11 @@ interface FieldProps {
   /**
    * Form field direction.
    */
-  $direction?: FormFieldDirection;
+  direction?: FormFieldDirection;
   /**
    * The size of the field.
    */
-  $size?: FieldSize;
+  size?: FieldSize;
   children: ReactNode | ((fieldProps: any) => JSX.Element | null);
   /**
    * A `testId` prop is provided for specified elements, which is a unique string that appears as a data attribute `data-testid` in the rendered code, serving as a hook for automated tests
@@ -51,8 +51,8 @@ const Field = ({
   label,
   isRequired = false,
   invalidFieldMessage = "",
-  $direction = "column",
-  $size = "medium",
+  direction = "column",
+  size = "medium",
   children,
   testId,
   style,
@@ -66,19 +66,19 @@ const Field = ({
       className={className}
       {...props}
     >
-      <StyledWrapper $direction={$direction}>
-        <Label htmlFor={id} $direction={$direction} $size={$size}>
+      <StyledWrapper $direction={direction}>
+        <Label htmlFor={id} direction={direction} size={size}>
           {label}
           {isRequired && <RequiredAsterisk />}
         </Label>
         {typeof children === "function"
-          ? children({ $direction, id, $size })
+          ? children({ direction, id, size })
           : children}
       </StyledWrapper>
       {invalidFieldMessage && (
         <ErrorMessage
-          $direction={$direction}
-          $isVisible={Boolean(invalidFieldMessage)}
+          direction={direction}
+          isVisible={Boolean(invalidFieldMessage)}
         >
           {invalidFieldMessage}
         </ErrorMessage>

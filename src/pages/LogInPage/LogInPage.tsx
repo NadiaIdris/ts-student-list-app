@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import {
   Link,
@@ -6,7 +6,6 @@ import {
   Form,
   useActionData,
   useNavigation,
-  useLocation,
 } from "react-router-dom";
 import styled from "styled-components";
 import { LOGIN_ENDPOINT } from "../../api/apiConstants";
@@ -134,7 +133,7 @@ const StyledFormWrapper = styled.div`
 const StyledNotAMemberDiv = styled.div`
   margin-top: 40px;
   text-align: center;
-  font-size: 0.875rem;
+  font-size: var(--font-size-14);
   color: var(--color-black-400);
   a {
     color: var(--color-danger-500);
@@ -153,7 +152,6 @@ const defaultUserLogInData = {
 const LogInPage = () => {
   const { logIn } = useAuthContext();
   const navigate = useNavigate();
-  const location = useLocation();
   const actionData: ILogInData | undefined = useActionData() as ILogInData;
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
@@ -195,7 +193,7 @@ const LogInPage = () => {
         navigate("/students");
       }
     }
-  }, [actionData?.user, location.state, navigate, logIn]);
+  }, [actionData?.user, navigate, logIn]);
 
   return (
     <StyledLoginPageWrapper>
@@ -247,7 +245,7 @@ const LogInPage = () => {
           </Field>
 
           {actionData?.wrongCredentials && (
-            <ErrorMessage $isVisible={actionData?.wrongCredentials}>
+            <ErrorMessage isVisible={actionData?.wrongCredentials}>
               Please check your credentials. The email or password is incorrect.
             </ErrorMessage>
           )}

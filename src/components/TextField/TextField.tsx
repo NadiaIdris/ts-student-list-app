@@ -70,9 +70,9 @@ const StyledTextField = styled.input<{
   }
   ${({ $size }) => {
     if ($size === "small")
-      return "height: 30px; font: 0.875rem Poppins, sans-serif;"; // 0.875rem is ~14px
+      return "height: 30px; font: var(--font-size-14) Poppins, sans-serif;"; // ~14px is 0.875rem
     else if ($size === "medium")
-      return "height: 36px; font: 1rem Poppins, sans-serif;"; // 1rem is ~16px
+      return "height: 36px; font: var(--font-size-16) Poppins, sans-serif;"; // ~16px is 1rem
   }}
   ${({ $isInvalid }) => $isInvalid && `border-color: var(--color-danger);`}
 `;

@@ -95,9 +95,10 @@ const StyledButton = styled.button<{
     else if ($size === "large") return "42px";
   }};
   width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "auto")};
-  font-size: ${({ $size }) => {
-    if ($size === "medium") return "0.875rem"; // 0.875rem is ~14px
-    else if ($size === "large") return "1rem"; // 1rem is ~16px
+  ${({ $size }) => {
+    if ($size === "medium")
+      return "font-size: var(--font-size-14)"; // ~14px is 0.875rem
+    else if ($size === "large") return "font-size: var(--font-size-16)"; // ~16px is 1rem
   }};
   padding: ${({ $size, $iconBefore, $iconAfter, $children }) => {
     if (($iconBefore || $iconAfter) && !$children && $size === "medium")
@@ -121,8 +122,7 @@ const StyledButton = styled.button<{
     else if ($appearance === "warning") return "var(--color-button-warning-fg)";
     else return "var(--color-button-default-fg)";
   }};
-  ${({ $isLoading }) =>
-    $isLoading && "opacity: 0.6; pointer-events: none;"}
+  ${({ $isLoading }) => $isLoading && "opacity: 0.6; pointer-events: none;"}
 
   &:hover {
     background: ${({ $appearance }) => {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { Link, useNavigate, Form } from "react-router-dom";
+import { Link, useNavigate, Form, useActionData } from "react-router-dom";
 import styled from "styled-components";
 import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
@@ -13,6 +13,7 @@ import { Heading2 } from "../../components/text/Heading2";
 import { TextField } from "../../components/TextField";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateSignUpForm } from "../../validation/validate";
+import { IUser } from "../../context/AuthContext";
 
 interface IUserSignUpErrors {
   first_name: string;
@@ -21,6 +22,20 @@ interface IUserSignUpErrors {
   password: string;
   repeat_password: string;
 }
+
+interface ISignUpData {
+  errorMsgs: IUserSignUpErrors;
+  user: IUser;
+  networkError: any;
+}
+
+const defaultUserSignUpData = {
+  first_name: "",
+  last_name: "",
+  email: "",
+  password: "",
+  repeat_password: "",
+};
 
 export async function action({ request }: { request: Request }) {
   let formData = await request.formData();
@@ -34,70 +49,70 @@ export async function action({ request }: { request: Request }) {
   // Validate the user sign up data
   const { error } = validateSignUpForm(trimmedUserSignUpData);
 
-  console.log("formData: ", formData)
-  // if (error) {
-  //   // Make an object with the error messages
-  //   const errorMsgs = error.details.reduce((acc, detail) => {
-  //     const key = detail.context?.key;
-  //     if (key) {
-  //       return {
-  //         ...acc,
-  //         [key]: detail.message,
-  //       };
-  //     }
-  //     return acc;
-  //   }, defaultUserSignUpData);
+  console.log("formData: ", Object.fromEntries(formData.entries()));
+  if (error) {
+    // Make an object with the error messages
+    const errorMsgs = error.details.reduce((acc, detail) => {
+      const key = detail.context?.key;
+      if (key) {
+        return {
+          ...acc,
+          [key]: detail.message,
+        };
+      }
+      return acc;
+    }, defaultUserSignUpData);
 
-  //   return { errorMsgs };
-  // }
+    return { errorMsgs };
+  }
 
-  // // Delete the repeat_password key from the formData
-  // const formDataWithoutRepeatPassword = { ...trimmedUserSignUpData };
-  // delete (formDataWithoutRepeatPassword as Partial<IUserSignUpData>)
-  //   .repeat_password;
+  // Delete the repeat_password key from the formData
+  const formDataWithoutRepeatPassword = { ...trimmedUserSignUpData };
+  delete (formDataWithoutRepeatPassword as Partial<IUserSignUpData>)
+    .repeat_password;
 
-  // //Send the user data to the server if there are no errors
-  // try {
-  //   await axiosInstance.post(SIGNUP_ENDPOINT, formDataWithoutRepeatPassword, {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
+  //Send the user data to the server if there are no errors
+  try {
+    await axiosInstance.post(SIGNUP_ENDPOINT, formDataWithoutRepeatPassword, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-  //   // Automatically log in the user after signing up
-  //   try {
-  //     const userLogInDetails = {
-  //       email: trimmedUserSignUpData.email,
-  //       password: trimmedUserSignUpData.password,
-  //     };
-  //     const response = await axiosInstance.post(
-  //       LOGIN_ENDPOINT,
-  //       userLogInDetails
-  //     );
-  //     // Extract the token and user details from the response
-  //     const bearerToken =
-  //       response.headers.Authorization || response.headers.authorization;
-  //     const token = bearerToken.split(" ")[1];
-  //     const { registered_user_uid, first_name, last_name, email } =
-  //       response.data;
-  //     const user = {
-  //       isAuthenticated: true,
-  //       token: token,
-  //       userId: registered_user_uid,
-  //       firstName: first_name,
-  //       lastName: last_name,
-  //       email: email,
-  //     };
-  //     return { user };
-  //   } catch (error: any) {
-  //     // Failed to log in the user after signing up.
-  //     console.error(error);
-  //   }
-  // } catch (error: any) {
-  //   console.error(`[ACTION ERROR]: ${error}`);
-  //   const err = error.response.status;
-  //   return { err };
-  // }
+    // Automatically log in the user after signing up
+    try {
+      const userLogInDetails = {
+        email: trimmedUserSignUpData.email,
+        password: trimmedUserSignUpData.password,
+      };
+      const response = await axiosInstance.post(
+        LOGIN_ENDPOINT,
+        userLogInDetails
+      );
+      // Extract the token and user details from the response
+      const bearerToken =
+        response.headers.Authorization || response.headers.authorization;
+      const token = bearerToken.split(" ")[1];
+      const { registered_user_uid, first_name, last_name, email } =
+        response.data;
+      const user = {
+        isAuthenticated: true,
+        token: token,
+        userId: registered_user_uid,
+        firstName: first_name,
+        lastName: last_name,
+        email: email,
+      };
+      return { user };
+    } catch (error: any) {
+      // Failed to log in the user after signing up.
+      console.error(error);
+      return { networkError: error };
+    }
+  } catch (error: any) {
+    console.error(`[ACTION ERROR]: ${error}`);
+    return { networkError: error };
+  }
 }
 
 export interface IUserSignUpData {
@@ -112,14 +127,6 @@ interface IShowSignUpErrorMsg {
   showErrorMsg: boolean;
   errorMsg: JSX.Element | null;
 }
-
-const defaultUserSignUpData = {
-  first_name: "",
-  last_name: "",
-  email: "",
-  password: "",
-  repeat_password: "",
-};
 
 const StyledLoginPageWrapper = styled.div`
   display: flex;
@@ -166,7 +173,7 @@ const StyledIconSpan = styled.span<{ $size: FieldSize }>`
 const StyledAlreadyAMemberDiv = styled.div`
   margin-top: 40px;
   text-align: center;
-  font-size: 0.875rem;
+  font-size: var(--font-size-14);
   color: var(--color-black-400);
   a {
     color: var(--color-danger-500);
@@ -178,10 +185,9 @@ const StyledAlreadyAMemberDiv = styled.div`
 `;
 
 const SignUpPage = () => {
-  const [userSignUpData, setUserSignUpData] = useState<IUserSignUpData>(
-    defaultUserSignUpData
-  );
-  const [errors, setErrors] = useState<IUserSignUpData>(defaultUserSignUpData);
+  const { logIn } = useAuthContext();
+  const navigate = useNavigate();
+  const actionData: ISignUpData | undefined = useActionData() as ISignUpData;
   const [showSignUpErrorMsg, setShowSignUpErrorMsg] =
     useState<IShowSignUpErrorMsg>({
       showErrorMsg: false,
@@ -189,19 +195,17 @@ const SignUpPage = () => {
     });
   const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
-  const { logIn } = useAuthContext();
 
   const showCorrectErrorMsg = (error: any) => {
     if (error.response.status === 409) {
       return (
-        <ErrorMessage $isVisible={true}>
+        <ErrorMessage isVisible={true}>
           Email already exists. Please <Link to="/login">log in</Link>.
         </ErrorMessage>
       );
     } else {
       return (
-        <ErrorMessage $isVisible={true}>
+        <ErrorMessage isVisible={true}>
           An error occurred. Please try again later.
         </ErrorMessage>
       );
@@ -296,13 +300,6 @@ const SignUpPage = () => {
   //   }
   // };
 
-  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserSignUpData({
-      ...userSignUpData,
-      [event.target.name]: event.target.value,
-    });
-  };
-
   const handleTogglePasswordIcon = () => {
     setShowPassword(!showPassword);
   };
@@ -340,17 +337,15 @@ const SignUpPage = () => {
             id="first-name"
             label="First name"
             isRequired
-            invalidFieldMessage={errors.first_name}
+            invalidFieldMessage={actionData?.errorMsgs?.first_name}
             style={{ margin: "0 0 12px 0" }}
           >
             {(inputProps) => (
               <TextField
                 type="text"
                 name="first_name"
-                value={userSignUpData.first_name}
-                onChange={handleOnChange}
                 placeholder="Enter your first name"
-                isInvalid={Boolean(errors.first_name)}
+                isInvalid={Boolean(actionData?.errorMsgs?.first_name)}
                 isDisabled={submitting}
                 {...inputProps}
               />
@@ -360,17 +355,15 @@ const SignUpPage = () => {
             id="last-name"
             label="Last name"
             isRequired
-            invalidFieldMessage={errors.last_name}
+            invalidFieldMessage={actionData?.errorMsgs?.last_name}
             style={{ margin: "0 0 12px 0" }}
           >
             {(inputProps) => (
               <TextField
                 type="text"
                 name="last_name"
-                value={userSignUpData.last_name}
-                onChange={handleOnChange}
                 placeholder="Enter your last name"
-                isInvalid={Boolean(errors.last_name)}
+                isInvalid={Boolean(actionData?.errorMsgs?.last_name)}
                 isDisabled={submitting}
                 {...inputProps}
               />
@@ -380,17 +373,15 @@ const SignUpPage = () => {
             id="email"
             label="Email"
             isRequired
-            invalidFieldMessage={errors.email}
+            invalidFieldMessage={actionData?.errorMsgs?.email}
             style={{ margin: "0 0 12px 0" }}
           >
             {(inputProps) => (
               <TextField
                 type="email"
                 name="email"
-                value={userSignUpData.email}
-                onChange={handleOnChange}
                 placeholder="Enter your email"
-                isInvalid={Boolean(errors.email)}
+                isInvalid={Boolean(actionData?.errorMsgs?.email)}
                 isDisabled={submitting}
                 {...inputProps}
               />
@@ -400,17 +391,15 @@ const SignUpPage = () => {
             id="password"
             label="Password"
             isRequired
-            invalidFieldMessage={errors.password}
+            invalidFieldMessage={actionData?.errorMsgs?.password}
             style={{ margin: "0 0 12px 0" }}
           >
             {(inputProps) => (
               <TextField
                 type="password"
                 name="password"
-                value={userSignUpData.password}
-                onChange={handleOnChange}
                 placeholder="Enter your password"
-                isInvalid={Boolean(errors.password)}
+                isInvalid={Boolean(actionData?.errorMsgs?.password)}
                 isDisabled={submitting}
                 renderIcon={(isDisabled, $size) =>
                   passwordIcons("login-password", isDisabled, $size)
@@ -424,17 +413,15 @@ const SignUpPage = () => {
             id="repeat-password"
             label="Confirm password"
             isRequired
-            invalidFieldMessage={errors.repeat_password}
+            invalidFieldMessage={actionData?.errorMsgs?.repeat_password}
             style={{ margin: "0 0 12px 0" }}
           >
             {(inputProps) => (
               <TextField
                 type="password"
                 name="repeat_password"
-                value={userSignUpData.repeat_password}
-                onChange={handleOnChange}
                 placeholder="Enter your password again"
-                isInvalid={Boolean(errors.repeat_password)}
+                isInvalid={Boolean(actionData?.errorMsgs?.repeat_password)}
                 isDisabled={submitting}
                 renderIcon={(isDisabled, $size) =>
                   passwordIcons("login-password", isDisabled, $size)
@@ -444,7 +431,9 @@ const SignUpPage = () => {
               />
             )}
           </Field>
-          {showSignUpErrorMsg.showErrorMsg && showSignUpErrorMsg.errorMsg}
+          {/* {showSignUpErrorMsg.showErrorMsg && showSignUpErrorMsg.errorMsg} */}
+          {actionData?.networkError &&
+            showCorrectErrorMsg(actionData?.networkError)}
           <Button
             type="submit"
             fullWidth

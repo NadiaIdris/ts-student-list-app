@@ -78,6 +78,11 @@
 
   /* border radius */
   --border-radius: 8px;
+
+  /* font sizes */
+  --font-size-14: 0.875rem;
+  --font-size-16: 1rem;
+  --font-size-40: 2.5rem;
 }
 
 :root {

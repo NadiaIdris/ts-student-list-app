@@ -10,7 +10,7 @@ interface LabelProps {
   /*
    * Form field direction.
    */
-  $direction?: FormFieldDirection;
+  direction?: FormFieldDirection;
   /*
    * The content of the label
    */
@@ -18,7 +18,7 @@ interface LabelProps {
   /**
    * The `size` prop specifies the size of the label text. The default value is "medium".
    */
-  $size?: FieldSize;
+  size?: FieldSize;
   /*
    * A `testId` prop is provided for specified elements, which is a unique string that appears as a data attribute `data-testid` in the rendered code, serving as a hook for automated tests
    */
@@ -29,7 +29,10 @@ const LabelStyles = styled.label<{
   $size: FieldSize;
   $direction: FormFieldDirection;
 }>`
-  font-size: ${({ $size }) => ($size === "small" ? "0.875rem" : "1rem")};
+  ${({ $size }) =>
+    $size === "small"
+      ? " font-size: var(--font-size-14)"
+      : " font-size: var(--font-size-16)"};
   width: ${({ $direction }) =>
     $direction && ($direction === "column" ? "fit-content" : "113px")};
   min-width: ${({ $direction }) =>
@@ -38,16 +41,16 @@ const LabelStyles = styled.label<{
 
 const Label = ({
   htmlFor,
-  $direction = "column",
+  direction = "column",
   children,
-  $size = "medium",
+  size = "medium",
   ...props
 }: LabelProps) => {
   return (
     <LabelStyles
       htmlFor={htmlFor}
-      $direction={$direction}
-      $size={$size}
+      $direction={direction}
+      $size={size}
       {...props}
     >
       {children}
