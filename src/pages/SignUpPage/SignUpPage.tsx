@@ -1,6 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { Link, useNavigate, Form, useActionData } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  Form,
+  useActionData,
+  useNavigation,
+} from "react-router-dom";
 import styled from "styled-components";
 import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
@@ -49,7 +55,6 @@ export async function action({ request }: { request: Request }) {
   // Validate the user sign up data
   const { error } = validateSignUpForm(trimmedUserSignUpData);
 
-  console.log("formData: ", Object.fromEntries(formData.entries()));
   if (error) {
     // Make an object with the error messages
     const errorMsgs = error.details.reduce((acc, detail) => {
@@ -188,13 +193,9 @@ const SignUpPage = () => {
   const { logIn } = useAuthContext();
   const navigate = useNavigate();
   const actionData: ISignUpData | undefined = useActionData() as ISignUpData;
-  const [showSignUpErrorMsg, setShowSignUpErrorMsg] =
-    useState<IShowSignUpErrorMsg>({
-      showErrorMsg: false,
-      errorMsg: null,
-    });
-  const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const navigation = useNavigation();
+  const submitting = navigation.state === "submitting";
 
   const showCorrectErrorMsg = (error: any) => {
     if (error.response.status === 409) {
@@ -211,94 +212,6 @@ const SignUpPage = () => {
       );
     }
   };
-
-  // const handleOnSubmit = async (event: React.FormEvent) => {
-  //   event.preventDefault();
-  //   // Trim the white spaces from all the form data
-  //   const trimmedFormData = Object.keys(userSignUpData).reduce(
-  //     (acc, key) => ({
-  //       ...acc,
-  //       [key]: userSignUpData[key as keyof IUserSignUpData].trim(),
-  //     }),
-  //     defaultUserSignUpData
-  //   );
-  //   // Validate the user sign up data
-  //   const { error } = validateSignUpForm(trimmedFormData);
-
-  //   if (error) {
-  //     // Make an object with the error messages
-  //     const errorMsgs = error.details.reduce((acc, detail) => {
-  //       const key = detail.context?.key;
-  //       if (key) {
-  //         return {
-  //           ...acc,
-  //           [key]: detail.message,
-  //         };
-  //       }
-  //       return acc;
-  //     }, defaultUserSignUpData);
-
-  //     setErrors({ ...errorMsgs });
-  //     // Don't continue with the sign up process if there are errors.
-  //     return;
-  //   } else {
-  //     // If no errors, clear the errors
-  //     setErrors(defaultUserSignUpData);
-  //   }
-
-  //   // Delete the repeat_password key from the formData
-  //   const formDataWithoutRepeatPassword = { ...trimmedFormData };
-  //   delete (formDataWithoutRepeatPassword as Partial<IUserSignUpData>)
-  //     .repeat_password;
-
-  //   //Send the user data to the server if there are no errors
-  //   try {
-  //     setSubmitting(true);
-  //     await axiosInstance.post(SIGNUP_ENDPOINT, formDataWithoutRepeatPassword, {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //     // Clear the form
-  //     setUserSignUpData(defaultUserSignUpData);
-
-  //     try {
-  //       const userLogInDetails = {
-  //         email: trimmedFormData.email,
-  //         password: trimmedFormData.password,
-  //       };
-  //       // Automatically log in the user after signing up
-  //       const response = await axiosInstance.post(
-  //         LOGIN_ENDPOINT,
-  //         userLogInDetails
-  //       );
-  //       // Extract the token and user details from the response
-  //       const bearerToken =
-  //         response.headers.Authorization || response.headers.authorization;
-  //       const token = bearerToken.split(" ")[1];
-  //       const { registered_user_uid, first_name, last_name, email } =
-  //         response.data;
-  //       const user = {
-  //         isAuthenticated: true,
-  //         token: token,
-  //         userId: registered_user_uid,
-  //         firstName: first_name,
-  //         lastName: last_name,
-  //         email: email,
-  //       };
-  //       logIn(user);
-
-  //       navigate("/students/");
-  //     } catch (error: any) {
-  //       console.error(error);
-  //     }
-  //   } catch (error: any) {
-  //     const errorMsg = showCorrectErrorMsg(error);
-  //     setShowSignUpErrorMsg({ showErrorMsg: true, errorMsg });
-  //   } finally {
-  //     setSubmitting(false);
-  //   }
-  // };
 
   const handleTogglePasswordIcon = () => {
     setShowPassword(!showPassword);
@@ -324,6 +237,14 @@ const SignUpPage = () => {
       </StyledIconSpan>
     </StyledWrapperDiv>
   );
+
+  useEffect(() => {
+    const userData = actionData?.user;
+    if (userData) {
+      logIn(userData);
+      navigate("/students");
+    }
+  }, [actionData?.user, navigate, logIn]);
 
   return (
     <StyledLoginPageWrapper>
