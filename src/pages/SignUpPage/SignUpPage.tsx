@@ -14,6 +14,92 @@ import { TextField } from "../../components/TextField";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateSignUpForm } from "../../validation/validate";
 
+interface IUserSignUpErrors {
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  repeat_password: string;
+}
+
+export async function action({ request }: { request: Request }) {
+  let formData = await request.formData();
+  // Trim the white spaces from all the form data
+  const trimmedUserSignUpData = Object.fromEntries(
+    [...formData.entries()].map(([key, value]) => [
+      key,
+      value.toString().trim(),
+    ])
+  ) as unknown as IUserSignUpErrors;
+  // Validate the user sign up data
+  const { error } = validateSignUpForm(trimmedUserSignUpData);
+
+  console.log("formData: ", formData)
+  // if (error) {
+  //   // Make an object with the error messages
+  //   const errorMsgs = error.details.reduce((acc, detail) => {
+  //     const key = detail.context?.key;
+  //     if (key) {
+  //       return {
+  //         ...acc,
+  //         [key]: detail.message,
+  //       };
+  //     }
+  //     return acc;
+  //   }, defaultUserSignUpData);
+
+  //   return { errorMsgs };
+  // }
+
+  // // Delete the repeat_password key from the formData
+  // const formDataWithoutRepeatPassword = { ...trimmedUserSignUpData };
+  // delete (formDataWithoutRepeatPassword as Partial<IUserSignUpData>)
+  //   .repeat_password;
+
+  // //Send the user data to the server if there are no errors
+  // try {
+  //   await axiosInstance.post(SIGNUP_ENDPOINT, formDataWithoutRepeatPassword, {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+
+  //   // Automatically log in the user after signing up
+  //   try {
+  //     const userLogInDetails = {
+  //       email: trimmedUserSignUpData.email,
+  //       password: trimmedUserSignUpData.password,
+  //     };
+  //     const response = await axiosInstance.post(
+  //       LOGIN_ENDPOINT,
+  //       userLogInDetails
+  //     );
+  //     // Extract the token and user details from the response
+  //     const bearerToken =
+  //       response.headers.Authorization || response.headers.authorization;
+  //     const token = bearerToken.split(" ")[1];
+  //     const { registered_user_uid, first_name, last_name, email } =
+  //       response.data;
+  //     const user = {
+  //       isAuthenticated: true,
+  //       token: token,
+  //       userId: registered_user_uid,
+  //       firstName: first_name,
+  //       lastName: last_name,
+  //       email: email,
+  //     };
+  //     return { user };
+  //   } catch (error: any) {
+  //     // Failed to log in the user after signing up.
+  //     console.error(error);
+  //   }
+  // } catch (error: any) {
+  //   console.error(`[ACTION ERROR]: ${error}`);
+  //   const err = error.response.status;
+  //   return { err };
+  // }
+}
+
 export interface IUserSignUpData {
   first_name: string;
   last_name: string;
@@ -122,93 +208,93 @@ const SignUpPage = () => {
     }
   };
 
-  const handleOnSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    // Trim the white spaces from all the form data
-    const trimmedFormData = Object.keys(userSignUpData).reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: userSignUpData[key as keyof IUserSignUpData].trim(),
-      }),
-      defaultUserSignUpData
-    );
-    // Validate the user sign up data
-    const { error } = validateSignUpForm(trimmedFormData);
+  // const handleOnSubmit = async (event: React.FormEvent) => {
+  //   event.preventDefault();
+  //   // Trim the white spaces from all the form data
+  //   const trimmedFormData = Object.keys(userSignUpData).reduce(
+  //     (acc, key) => ({
+  //       ...acc,
+  //       [key]: userSignUpData[key as keyof IUserSignUpData].trim(),
+  //     }),
+  //     defaultUserSignUpData
+  //   );
+  //   // Validate the user sign up data
+  //   const { error } = validateSignUpForm(trimmedFormData);
 
-    if (error) {
-      // Make an object with the error messages
-      const errorMsgs = error.details.reduce((acc, detail) => {
-        const key = detail.context?.key;
-        if (key) {
-          return {
-            ...acc,
-            [key]: detail.message,
-          };
-        }
-        return acc;
-      }, defaultUserSignUpData);
+  //   if (error) {
+  //     // Make an object with the error messages
+  //     const errorMsgs = error.details.reduce((acc, detail) => {
+  //       const key = detail.context?.key;
+  //       if (key) {
+  //         return {
+  //           ...acc,
+  //           [key]: detail.message,
+  //         };
+  //       }
+  //       return acc;
+  //     }, defaultUserSignUpData);
 
-      setErrors({ ...errorMsgs });
-      // Don't continue with the sign up process if there are errors.
-      return;
-    } else {
-      // If no errors, clear the errors
-      setErrors(defaultUserSignUpData);
-    }
+  //     setErrors({ ...errorMsgs });
+  //     // Don't continue with the sign up process if there are errors.
+  //     return;
+  //   } else {
+  //     // If no errors, clear the errors
+  //     setErrors(defaultUserSignUpData);
+  //   }
 
-    // Delete the repeat_password key from the formData
-    const formDataWithoutRepeatPassword = { ...trimmedFormData };
-    delete (formDataWithoutRepeatPassword as Partial<IUserSignUpData>)
-      .repeat_password;
+  //   // Delete the repeat_password key from the formData
+  //   const formDataWithoutRepeatPassword = { ...trimmedFormData };
+  //   delete (formDataWithoutRepeatPassword as Partial<IUserSignUpData>)
+  //     .repeat_password;
 
-    //Send the user data to the server if there are no errors
-    try {
-      setSubmitting(true);
-      await axiosInstance.post(SIGNUP_ENDPOINT, formDataWithoutRepeatPassword, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      // Clear the form
-      setUserSignUpData(defaultUserSignUpData);
+  //   //Send the user data to the server if there are no errors
+  //   try {
+  //     setSubmitting(true);
+  //     await axiosInstance.post(SIGNUP_ENDPOINT, formDataWithoutRepeatPassword, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     // Clear the form
+  //     setUserSignUpData(defaultUserSignUpData);
 
-      try {
-        const userLogInDetails = {
-          email: trimmedFormData.email,
-          password: trimmedFormData.password,
-        };
-        // Automatically log in the user after signing up
-        const response = await axiosInstance.post(
-          LOGIN_ENDPOINT,
-          userLogInDetails
-        );
-        // Extract the token and user details from the response
-        const bearerToken =
-          response.headers.Authorization || response.headers.authorization;
-        const token = bearerToken.split(" ")[1];
-        const { registered_user_uid, first_name, last_name, email } =
-          response.data;
-        const user = {
-          isAuthenticated: true,
-          token: token,
-          userId: registered_user_uid,
-          firstName: first_name,
-          lastName: last_name,
-          email: email,
-        };
-        logIn(user);
+  //     try {
+  //       const userLogInDetails = {
+  //         email: trimmedFormData.email,
+  //         password: trimmedFormData.password,
+  //       };
+  //       // Automatically log in the user after signing up
+  //       const response = await axiosInstance.post(
+  //         LOGIN_ENDPOINT,
+  //         userLogInDetails
+  //       );
+  //       // Extract the token and user details from the response
+  //       const bearerToken =
+  //         response.headers.Authorization || response.headers.authorization;
+  //       const token = bearerToken.split(" ")[1];
+  //       const { registered_user_uid, first_name, last_name, email } =
+  //         response.data;
+  //       const user = {
+  //         isAuthenticated: true,
+  //         token: token,
+  //         userId: registered_user_uid,
+  //         firstName: first_name,
+  //         lastName: last_name,
+  //         email: email,
+  //       };
+  //       logIn(user);
 
-        navigate("/students/");
-      } catch (error: any) {
-        console.error(error);
-      }
-    } catch (error: any) {
-      const errorMsg = showCorrectErrorMsg(error);
-      setShowSignUpErrorMsg({ showErrorMsg: true, errorMsg });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  //       navigate("/students/");
+  //     } catch (error: any) {
+  //       console.error(error);
+  //     }
+  //   } catch (error: any) {
+  //     const errorMsg = showCorrectErrorMsg(error);
+  //     setShowSignUpErrorMsg({ showErrorMsg: true, errorMsg });
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // };
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserSignUpData({
@@ -249,7 +335,7 @@ const SignUpPage = () => {
       </Heading1>
       <StyledFormWrapper>
         <Heading2>Sign up</Heading2>
-        <Form onSubmit={handleOnSubmit}>
+        <Form method="post">
           <Field
             id="first-name"
             label="First name"
@@ -264,7 +350,7 @@ const SignUpPage = () => {
                 value={userSignUpData.first_name}
                 onChange={handleOnChange}
                 placeholder="Enter your first name"
-                $isInvalid={Boolean(errors.first_name)}
+                isInvalid={Boolean(errors.first_name)}
                 isDisabled={submitting}
                 {...inputProps}
               />
@@ -284,7 +370,7 @@ const SignUpPage = () => {
                 value={userSignUpData.last_name}
                 onChange={handleOnChange}
                 placeholder="Enter your last name"
-                $isInvalid={Boolean(errors.last_name)}
+                isInvalid={Boolean(errors.last_name)}
                 isDisabled={submitting}
                 {...inputProps}
               />
@@ -304,7 +390,7 @@ const SignUpPage = () => {
                 value={userSignUpData.email}
                 onChange={handleOnChange}
                 placeholder="Enter your email"
-                $isInvalid={Boolean(errors.email)}
+                isInvalid={Boolean(errors.email)}
                 isDisabled={submitting}
                 {...inputProps}
               />
@@ -324,7 +410,7 @@ const SignUpPage = () => {
                 value={userSignUpData.password}
                 onChange={handleOnChange}
                 placeholder="Enter your password"
-                $isInvalid={Boolean(errors.password)}
+                isInvalid={Boolean(errors.password)}
                 isDisabled={submitting}
                 renderIcon={(isDisabled, $size) =>
                   passwordIcons("login-password", isDisabled, $size)
@@ -348,7 +434,7 @@ const SignUpPage = () => {
                 value={userSignUpData.repeat_password}
                 onChange={handleOnChange}
                 placeholder="Enter your password again"
-                $isInvalid={Boolean(errors.repeat_password)}
+                isInvalid={Boolean(errors.repeat_password)}
                 isDisabled={submitting}
                 renderIcon={(isDisabled, $size) =>
                   passwordIcons("login-password", isDisabled, $size)

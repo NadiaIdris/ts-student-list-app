@@ -3,11 +3,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthContextProvider } from "./context/AuthContext";
-import { LogInPage } from "./pages/LogInPage";
+import { LogInPage, action as logInAction } from "./pages/LogInPage";
 import { StudentsPage } from "./pages/StudentsPage";
-import { SignUpPage } from "./pages/SignUpPage";
+import { SignUpPage, action as signUpAction } from "./pages/SignUpPage";
 import { StudentPage } from "./pages/StudentPage";
-import { action as logInAction } from "./pages/LogInPage";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +47,7 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <SignUpPage />,
+    action: signUpAction,
   },
   {
     path: "*",
