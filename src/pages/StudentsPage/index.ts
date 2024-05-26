@@ -1,2 +1,2 @@
-import { StudentsPage } from "./StudentsPage";
-export { StudentsPage };
+import { StudentsPage, loader } from "./StudentsPage";
+export { StudentsPage, loader };

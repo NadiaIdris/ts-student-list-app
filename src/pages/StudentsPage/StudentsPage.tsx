@@ -1,5 +1,5 @@
 import { MouseEvent, useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLoaderData, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
@@ -10,6 +10,22 @@ import { IconButton } from "../../components/buttons/IconButton";
 import { LuPencil } from "react-icons/lu";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { GoTriangleDown } from "react-icons/go";
+
+interface IStudents {
+  students: Student[];
+  error: any;
+}
+
+export async function loader() {
+  try {
+    const response = await axiosInstance.get(STUDENTS_ENDPOINT);
+    if (response.status !== 200) throw new Error(response.statusText); // Throw an error when the response is not OK so that it proceeds directly to the catch block.
+    return { students: response.data };
+  } catch (error: any) {
+    console.error(error.message);
+    return { error };
+  }
+}
 
 const TableBodyWrapper = styled.div`
   padding: 0 48px;
@@ -156,9 +172,7 @@ type Student = {
 const StudentsPage = () => {
   const navigate = useNavigate();
   const { user, logOut } = useAuthContext();
-  const [addStudent, setAddStudent] = useState(false);
-  const [studentId, setStudentId] = useState("");
-  const [students, setStudents] = useState<Student[]>([]);
+  const { students, error } = useLoaderData() as IStudents;
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogOut = () => {
@@ -201,21 +215,21 @@ const StudentsPage = () => {
     console.log("Row clicked");
   };
 
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axiosInstance.get(STUDENTS_ENDPOINT);
-        if (response.status !== 200) throw new Error(response.statusText); // Throw an error when the response is not OK so that it proceeds directly to the catch block.
-        setStudents(response.data);
-      } catch (error: any) {
-        console.error(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchStudents();
-  }, []);
+  // useEffect(() => {
+  //   const fetchStudents = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       const response = await axiosInstance.get(STUDENTS_ENDPOINT);
+  //       if (response.status !== 200) throw new Error(response.statusText); // Throw an error when the response is not OK so that it proceeds directly to the catch block.
+  //       setStudents(response.data);
+  //     } catch (error: any) {
+  //       console.error(error.message);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   fetchStudents();
+  // }, []);
 
   return (
     <>
