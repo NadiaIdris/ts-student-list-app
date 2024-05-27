@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useState } from "react";
+import { MouseEvent, Suspense, useEffect, useState } from "react";
 import { Outlet, useLoaderData, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
@@ -10,6 +10,7 @@ import { IconButton } from "../../components/buttons/IconButton";
 import { LuPencil } from "react-icons/lu";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { GoTriangleDown } from "react-icons/go";
+import { StudentsSkeleton } from "./StudentsSkeleton";
 
 interface IStudents {
   students: Student[];
@@ -172,8 +173,8 @@ type Student = {
 const StudentsPage = () => {
   const navigate = useNavigate();
   const { user, logOut } = useAuthContext();
-  const { students, error } = useLoaderData() as IStudents;
-  const [isLoading, setIsLoading] = useState(false);
+  const loaderData: IStudents | undefined = useLoaderData() as IStudents;
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleLogOut = () => {
     logOut();
@@ -215,21 +216,9 @@ const StudentsPage = () => {
     console.log("Row clicked");
   };
 
-  // useEffect(() => {
-  //   const fetchStudents = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       const response = await axiosInstance.get(STUDENTS_ENDPOINT);
-  //       if (response.status !== 200) throw new Error(response.statusText); // Throw an error when the response is not OK so that it proceeds directly to the catch block.
-  //       setStudents(response.data);
-  //     } catch (error: any) {
-  //       console.error(error.message);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-  //   fetchStudents();
-  // }, []);
+  useEffect(() => {
+    loaderData?.students?.length > 0 && setIsLoading(false);
+  }, [loaderData]);
 
   return (
     <>
@@ -261,8 +250,10 @@ const StudentsPage = () => {
               <div></div>
             </StyledTableHeader>
           </StyledTableRow>
-          {students.length > 0 &&
-            students.map((student, index) => (
+          {isLoading && <StudentsSkeleton />}
+          {!isLoading &&
+            loaderData?.students?.length > 0 &&
+            loaderData?.students?.map((student, index) => (
               <StyledTableRow
                 key={student.student_uid}
                 onClick={() => handleRowClick(student.student_uid)}
@@ -304,8 +295,7 @@ const StudentsPage = () => {
               </StyledTableRow>
             ))}
         </StyledTableWrapper>
-        {isLoading && <p>Loading...</p>}
-        {students.length === 0 && !isLoading && (
+        {loaderData?.students?.length === 0 && !isLoading && (
           <EmptyState>
             No students found.
             <br />
