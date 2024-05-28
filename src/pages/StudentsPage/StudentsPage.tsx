@@ -81,7 +81,6 @@ const NavButtonsWrapper = styled.div`
 
 const StyledTableWrapper = styled.div`
   max-width: 900px;
-  overflow-x: auto;
   @media (max-width: 500px) {
     margin: 0 -8px;
   }
@@ -196,19 +195,6 @@ const StudentsPage = () => {
     console.log("Delete student with id: ", studentId);
   };
 
-  // TODO: Implement handleRowClick function
-  const handleRowClick = (student_uid: string) => {
-    // Get the student id from the row
-    // Fetch the student data from the API
-    try {
-      navigate(`/students/${student_uid}`);
-    } catch (error) {
-      console.error(error);
-    }
-    // Navigate to the student page
-    console.log("Row clicked");
-  };
-
   useEffect(() => {
     (loaderData?.students?.length > 0 || loaderData?.error) &&
       setIsLoading(false);
@@ -249,8 +235,7 @@ const StudentsPage = () => {
             loaderData?.students?.map((student, index) => (
               <StyledTableRow
                 key={student.student_uid}
-                to={`/students/${student.student_uid}`}
-                onClick={() => handleRowClick(student.student_uid)}
+                to={`${student.student_uid}`}
               >
                 <StyledRowGrid>
                   <StyledTableCell>{index + 1}</StyledTableCell>
