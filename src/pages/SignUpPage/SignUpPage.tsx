@@ -128,11 +128,6 @@ export interface IUserSignUpData {
   repeat_password: string;
 }
 
-interface IShowSignUpErrorMsg {
-  showErrorMsg: boolean;
-  errorMsg: JSX.Element | null;
-}
-
 const StyledLoginPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -352,7 +347,6 @@ const SignUpPage = () => {
               />
             )}
           </Field>
-          {/* {showSignUpErrorMsg.showErrorMsg && showSignUpErrorMsg.errorMsg} */}
           {actionData?.networkError &&
             showCorrectErrorMsg(actionData?.networkError)}
           <Button

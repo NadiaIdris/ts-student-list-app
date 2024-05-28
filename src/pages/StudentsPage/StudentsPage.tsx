@@ -1,5 +1,5 @@
-import { MouseEvent, Suspense, useEffect, useState } from "react";
-import { Outlet, useLoaderData, useNavigate } from "react-router-dom";
+import { MouseEvent, useEffect, useState } from "react";
+import { Outlet, useLoaderData, useNavigate, Link } from "react-router-dom";
 import styled from "styled-components";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
@@ -101,18 +101,11 @@ const StyledTableHeader = styled.div`
   font-size: var(--font-size-14);
 `;
 
-const StyledTableRow = styled.a`
+const StyledTableRow = styled(Link)`
   background-color: transparent;
   transition: background-color 0.1s ease-in-out;
   height: 60px;
-  &:first-child {
-    height: 42px;
-  }
   &:hover {
-    &:first-child {
-      background-color: transparent;
-      cursor: default;
-    }
     background-color: var(--color-gray-400);
     border-radius: 8px;
     cursor: pointer;
@@ -217,7 +210,8 @@ const StudentsPage = () => {
   };
 
   useEffect(() => {
-    loaderData?.students?.length > 0 && setIsLoading(false);
+    (loaderData?.students?.length > 0 || loaderData?.error) &&
+      setIsLoading(false);
   }, [loaderData]);
 
   return (
@@ -241,21 +235,21 @@ const StudentsPage = () => {
       </StyledHeader>
       <TableBodyWrapper>
         <StyledTableWrapper>
-          <StyledTableRow>
-            <StyledTableHeader>
-              <div></div>
-              <div>First name</div>
-              <div>Last name</div>
-              <div>Email</div>
-              <div></div>
-            </StyledTableHeader>
-          </StyledTableRow>
+          <StyledTableHeader>
+            <div></div>
+            <div>First name</div>
+            <div>Last name</div>
+            <div>Email</div>
+            <div></div>
+          </StyledTableHeader>
+
           {isLoading && <StudentsSkeleton />}
           {!isLoading &&
             loaderData?.students?.length > 0 &&
             loaderData?.students?.map((student, index) => (
               <StyledTableRow
                 key={student.student_uid}
+                to={`/students/${student.student_uid}`}
                 onClick={() => handleRowClick(student.student_uid)}
               >
                 <StyledRowGrid>
@@ -295,7 +289,7 @@ const StudentsPage = () => {
               </StyledTableRow>
             ))}
         </StyledTableWrapper>
-        {loaderData?.students?.length === 0 && !isLoading && (
+        {loaderData?.error && !isLoading && (
           <EmptyState>
             No students found.
             <br />
