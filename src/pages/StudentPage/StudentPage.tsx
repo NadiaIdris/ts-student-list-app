@@ -1,11 +1,45 @@
-import { useParams } from "react-router-dom";
+import { useLoaderData, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { StudentsPage } from "../StudentsPage";
 import { Heading1 } from "../../components/text/Heading1";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { axiosInstance } from "../../api/axiosConfig";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
 import { RiCloseLargeLine } from "react-icons/ri";
+
+interface IStudent { 
+  firstName: string;
+  lastName: string;
+  email: string;
+  gender: string;
+  dateOfBirth: string;
+}
+
+interface IStudentFetchData { 
+  studentData: IStudent;
+  error: any;
+}
+
+// TODO: fix data fetching
+export async function loader({ params }: { params: { studentId: string } }) {
+  console.log("Loader params", params)
+
+  try {
+    const response = await axiosInstance.get(
+      STUDENTS_ENDPOINT + `/${params.studentId}`
+    );
+    if (response.status === 200) {
+      // Rename the keys that have underscores to match the student data object
+      const studentData = response.data;
+      studentData.firstName = studentData.first_name;
+      studentData.lastName = studentData.last_name;
+      studentData.dateOfBirth = studentData.date_of_birth;
+      return { studentData };
+    }
+  } catch (error: any) {
+    console.error(error.message);
+    return { error};
+  }
+}
 
 const StyledCloseIcon = styled.div`
   position: fixed;
@@ -34,10 +68,6 @@ const StyledStudentOverlay = styled.div`
   width: 500px;
   height: 100%;
   background-color: var(--color-white);
-`;
-
-const StyledBackground = styled.div`
-  // pointer-events: none;
 `;
 
 const StyledStudentDataWrapper = styled.div`
@@ -74,6 +104,7 @@ const StudentPage = () => {
   const [studentData, setStudentData] = useState(defaultStudentData);
   // TODO: Scroll to the student with the id from the URL
   const { studentId } = useParams();
+  const loaderData: IStudentFetchData | undefined = useLoaderData() as IStudentFetchData;
 
   const handleCloseStudentPanel = () => {
     console.log("Close student panel");
@@ -84,29 +115,30 @@ const StudentPage = () => {
   };
 
   // Fetch student data
-  useEffect(() => {
-    const fetchStudent = async () => {
-      try {
-        const response = await axiosInstance.get(
-          STUDENTS_ENDPOINT + `/${studentId}`
-        );
-        if (response.status === 200) {
-          // Rename the keys that have underscores to match the student data object
-          const studentData = response.data;
-          studentData.firstName = studentData.first_name;
-          studentData.lastName = studentData.last_name;
-          studentData.dateOfBirth = studentData.date_of_birth;
-          setStudentData(studentData);
-        }
-      } catch (error: any) {
-        console.error(error.message);
-      }
-    };
-    fetchStudent();
-  }, [studentId]);
+  // useEffect(() => {
+  //   const fetchStudent = async () => {
+  //     try {
+  //       const response = await axiosInstance.get(
+  //         STUDENTS_ENDPOINT + `/${studentId}`
+  //       );
+  //       if (response.status === 200) {
+  //         // Rename the keys that have underscores to match the student data object
+  //         const studentData = response.data;
+  //         studentData.firstName = studentData.first_name;
+  //         studentData.lastName = studentData.last_name;
+  //         studentData.dateOfBirth = studentData.date_of_birth;
+  //         setStudentData(studentData);
+  //       }
+  //     } catch (error: any) {
+  //       console.error(error.message);
+  //     }
+  //   };
+  //   fetchStudent();
+  // }, [studentId]);
 
   return (
-    <>
+    <div>
+      <StyledStudentPageCover />
       <StyledCloseIcon onClick={handleCloseStudentPanel}>
         <RiCloseLargeLine />
       </StyledCloseIcon>
@@ -119,7 +151,9 @@ const StudentPage = () => {
             <StyledDataKey>First name: </StyledDataKey>
             <StyledDataValue
               value={studentData.firstName}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => handleStudentDataUpdate(event)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                handleStudentDataUpdate(event)
+              }
             />
           </StyledStudentDataRow>
           <StyledStudentDataRow>
@@ -140,11 +174,7 @@ const StudentPage = () => {
           </StyledStudentDataRow>
         </StyledStudentDataWrapper>
       </StyledStudentOverlay>
-      <StyledStudentPageCover />
-      <StyledBackground>
-        <StudentsPage />
-      </StyledBackground>
-    </>
+    </div>
   );
 };
 

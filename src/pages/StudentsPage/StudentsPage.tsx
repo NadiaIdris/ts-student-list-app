@@ -28,6 +28,11 @@ export async function loader() {
   }
 }
 
+const StyledPageWrapper = styled.div<{ $sidebarIsOpen: boolean }>`
+  // If render the page with a sidebar, add pointer-events: none;
+  ${({ $sidebarIsOpen }) => $sidebarIsOpen && "pointer-events: none;"}
+`;
+
 const TableBodyWrapper = styled.div`
   padding: 0 48px;
   overflow-y: auto;
@@ -103,12 +108,8 @@ const StyledTableHeader = styled.div`
 const StyledTableRow = styled(Link)`
   background-color: transparent;
   transition: background-color 0.1s ease-in-out;
-  height: 60px;
-  &:hover {
-    background-color: var(--color-gray-400);
-    border-radius: 8px;
-    cursor: pointer;
-  }
+  text-decoration: none;
+  color: inherit;
 `;
 
 const StyledRowGrid = styled.div`
@@ -121,6 +122,11 @@ const StyledRowGrid = styled.div`
   align-items: center;
   padding: 0 8px;
   height: 60px;
+  &:hover {
+    background-color: var(--color-gray-400);
+    border-radius: 8px;
+    cursor: pointer;
+  }
 `;
 
 const StyledTableCell = styled.div`
@@ -167,6 +173,7 @@ const StudentsPage = () => {
   const { user, logOut } = useAuthContext();
   const loaderData: IStudents | undefined = useLoaderData() as IStudents;
   const [isLoading, setIsLoading] = useState(true);
+  const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
 
   const handleLogOut = () => {
     logOut();
@@ -202,91 +209,100 @@ const StudentsPage = () => {
 
   return (
     <>
-      <StyledHeader>
-        <Heading1>All students</Heading1>
-        <NavButtonsWrapper>
+      <StyledPageWrapper $sidebarIsOpen={sidebarIsOpen}>
+        <StyledHeader>
+          <Heading1>All students</Heading1>
+          <NavButtonsWrapper>
+            <Button
+              appearance="link"
+              onClick={openDropdown}
+              iconAfter={
+                <GoTriangleDown style={{ width: "16px", height: "16px" }} />
+              }
+            >
+              {user?.firstName}
+            </Button>
+            <Button appearance="secondary" onClick={handleLogOut}>
+              Log out
+            </Button>
+          </NavButtonsWrapper>
+        </StyledHeader>
+        <TableBodyWrapper>
+          <StyledTableWrapper>
+            <StyledTableHeader>
+              <div></div>
+              <div>First name</div>
+              <div>Last name</div>
+              <div>Email</div>
+              <div></div>
+            </StyledTableHeader>
+            {isLoading && <StudentsSkeleton />}
+            {!isLoading &&
+              loaderData?.students?.length > 0 &&
+              loaderData?.students?.map((student, index) => (
+                <StyledTableRow
+                  key={student.student_uid}
+                  to={`${student.student_uid}`}
+                  // onClick={handleOnClickStudent}
+                >
+                  <StyledRowGrid>
+                    <StyledTableCell>{index + 1}</StyledTableCell>
+                    <StyledTableCell>{student.first_name}</StyledTableCell>
+                    <StyledTableCell>{student.last_name}</StyledTableCell>
+                    <StyledTableCell>{student.email}</StyledTableCell>
+                    <StyledTableCell>
+                      <StyledIconsWrapper>
+                        <IconButton
+                          icon={
+                            <LuPencil
+                              style={{ width: "16px", height: "16px" }}
+                            />
+                          }
+                          onClick={(event: MouseEvent<HTMLButtonElement>) =>
+                            handleEditStudent(event, student.student_uid)
+                          }
+                          size="large"
+                          tooltip="Edit student"
+                          label="Edit student"
+                          appearance="link"
+                        />
+                        <IconButton
+                          icon={
+                            <RiDeleteBinLine
+                              style={{ width: "16px", height: "16px" }}
+                            />
+                          }
+                          onClick={() =>
+                            handleDeleteStudent(student.student_uid)
+                          }
+                          size="large"
+                          tooltip="Delete student"
+                          label="Delete student"
+                          appearance="link"
+                        />
+                      </StyledIconsWrapper>
+                    </StyledTableCell>
+                  </StyledRowGrid>
+                </StyledTableRow>
+              ))}
+          </StyledTableWrapper>
+          {loaderData?.error && !isLoading && (
+            <EmptyState>
+              No students found.
+              <br />
+              Add a student below.
+            </EmptyState>
+          )}
+        </TableBodyWrapper>
+        <StyledButtonWrapper>
           <Button
-            appearance="link"
-            onClick={openDropdown}
-            iconAfter={
-              <GoTriangleDown style={{ width: "16px", height: "16px" }} />
-            }
+            appearance="primary"
+            onClick={() => navigate("/students/add")}
           >
-            {user?.firstName}
+            Add new student
           </Button>
-          <Button appearance="secondary" onClick={handleLogOut}>
-            Log out
-          </Button>
-        </NavButtonsWrapper>
-      </StyledHeader>
-      <TableBodyWrapper>
-        <StyledTableWrapper>
-          <StyledTableHeader>
-            <div></div>
-            <div>First name</div>
-            <div>Last name</div>
-            <div>Email</div>
-            <div></div>
-          </StyledTableHeader>
-
-          {isLoading && <StudentsSkeleton />}
-          {!isLoading &&
-            loaderData?.students?.length > 0 &&
-            loaderData?.students?.map((student, index) => (
-              <StyledTableRow
-                key={student.student_uid}
-                to={`${student.student_uid}`}
-              >
-                <StyledRowGrid>
-                  <StyledTableCell>{index + 1}</StyledTableCell>
-                  <StyledTableCell>{student.first_name}</StyledTableCell>
-                  <StyledTableCell>{student.last_name}</StyledTableCell>
-                  <StyledTableCell>{student.email}</StyledTableCell>
-                  <StyledTableCell>
-                    <StyledIconsWrapper>
-                      <IconButton
-                        icon={
-                          <LuPencil style={{ width: "16px", height: "16px" }} />
-                        }
-                        onClick={(event: MouseEvent<HTMLButtonElement>) =>
-                          handleEditStudent(event, student.student_uid)
-                        }
-                        size="large"
-                        tooltip="Edit student"
-                        label="Edit student"
-                        appearance="link"
-                      />
-                      <IconButton
-                        icon={
-                          <RiDeleteBinLine
-                            style={{ width: "16px", height: "16px" }}
-                          />
-                        }
-                        onClick={() => handleDeleteStudent(student.student_uid)}
-                        size="large"
-                        tooltip="Delete student"
-                        label="Delete student"
-                        appearance="link"
-                      />
-                    </StyledIconsWrapper>
-                  </StyledTableCell>
-                </StyledRowGrid>
-              </StyledTableRow>
-            ))}
-        </StyledTableWrapper>
-        {loaderData?.error && !isLoading && (
-          <EmptyState>
-            No students found.
-            <br />
-            Add a student below.
-          </EmptyState>
-        )}
-      </TableBodyWrapper>
-      <StyledButtonWrapper>
-        <Button appearance="primary" onClick={() => navigate("/students/add")}>
-          Add new student
-        </Button>
-      </StyledButtonWrapper>
+        </StyledButtonWrapper>
+      </StyledPageWrapper>
       <Outlet />
     </>
   );
