@@ -1,12 +1,13 @@
 import { useLoaderData, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Heading1 } from "../../components/text/Heading1";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { axiosInstance } from "../../api/axiosConfig";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
 import { RiCloseLargeLine } from "react-icons/ri";
+import { useStudentUid } from "../StudentsPage/StudentsPage";
 
-interface IStudent { 
+interface IStudent {
   firstName: string;
   lastName: string;
   email: string;
@@ -14,14 +15,13 @@ interface IStudent {
   dateOfBirth: string;
 }
 
-interface IStudentFetchData { 
+interface IStudentFetchData {
   studentData: IStudent;
   error: any;
 }
 
 // TODO: fix data fetching
-export async function loader({ params }: { params: { studentId: string } }) {
-  console.log("Loader params", params)
+export async function loader({ params }: { params: any }) {
 
   try {
     const response = await axiosInstance.get(
@@ -33,11 +33,14 @@ export async function loader({ params }: { params: { studentId: string } }) {
       studentData.firstName = studentData.first_name;
       studentData.lastName = studentData.last_name;
       studentData.dateOfBirth = studentData.date_of_birth;
+      delete studentData.first_name;
+      delete studentData.last_name;
+      delete studentData.date_of_birth;
       return { studentData };
     }
   } catch (error: any) {
     console.error(error.message);
-    return { error};
+    return { error };
   }
 }
 
@@ -104,7 +107,14 @@ const StudentPage = () => {
   const [studentData, setStudentData] = useState(defaultStudentData);
   // TODO: Scroll to the student with the id from the URL
   const { studentId } = useParams();
-  const loaderData: IStudentFetchData | undefined = useLoaderData() as IStudentFetchData;
+  const loaderData: IStudentFetchData | undefined =
+    useLoaderData() as IStudentFetchData;
+  const { studentUid, setStudentUid } = useStudentUid();
+
+  useEffect(() => {
+    console.log("studentId from student page: ", studentId);
+    setStudentUid(studentId!);
+  }, [studentId, setStudentUid]);
 
   const handleCloseStudentPanel = () => {
     console.log("Close student panel");
@@ -138,19 +148,18 @@ const StudentPage = () => {
 
   return (
     <div>
-      <StyledStudentPageCover />
       <StyledCloseIcon onClick={handleCloseStudentPanel}>
         <RiCloseLargeLine />
       </StyledCloseIcon>
       <StyledStudentOverlay>
         <Heading1 style={{ padding: "0 40px" }}>
-          {studentData.firstName} {studentData.lastName}
+          {loaderData?.studentData.firstName} {loaderData?.studentData.lastName}
         </Heading1>
         <StyledStudentDataWrapper>
           <StyledStudentDataRow>
             <StyledDataKey>First name: </StyledDataKey>
             <StyledDataValue
-              value={studentData.firstName}
+              value={loaderData?.studentData.firstName}
               onChange={(event: ChangeEvent<HTMLInputElement>) =>
                 handleStudentDataUpdate(event)
               }
@@ -158,22 +167,23 @@ const StudentPage = () => {
           </StyledStudentDataRow>
           <StyledStudentDataRow>
             <StyledDataKey>Last name: </StyledDataKey>
-            {/* <StyledDataValue>{studentData.lastName}</StyledDataValue> */}
+            <StyledDataValue value={loaderData?.studentData.lastName} ></StyledDataValue>
           </StyledStudentDataRow>
           <StyledStudentDataRow>
             <StyledDataKey>Email: </StyledDataKey>
-            {/* <StyledDataValue>{studentData.email}</StyledDataValue> */}
+            {/* <StyledDataValue>{loaderData?.studentData.email}</StyledDataValue> */}
           </StyledStudentDataRow>
           <StyledStudentDataRow>
             <StyledDataKey>Gender: </StyledDataKey>
-            {/* <StyledDataValue>{studentData.gender}</StyledDataValue> */}
+            {/* <StyledDataValue>{loaderData?.studentData.gender}</StyledDataValue> */}
           </StyledStudentDataRow>
           <StyledStudentDataRow>
             <StyledDataKey>Birthday: </StyledDataKey>
-            {/* <StyledDataValue>{studentData.dateOfBirth}</StyledDataValue> */}
+            {/* <StyledDataValue>{loaderData?.studentData.dateOfBirth}</StyledDataValue> */}
           </StyledStudentDataRow>
         </StyledStudentDataWrapper>
       </StyledStudentOverlay>
+      <StyledStudentPageCover />
     </div>
   );
 };

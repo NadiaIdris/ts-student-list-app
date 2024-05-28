@@ -1,5 +1,11 @@
-import { MouseEvent, useEffect, useState } from "react";
-import { Outlet, useLoaderData, useNavigate, Link } from "react-router-dom";
+import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react";
+import {
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  Link,
+  useOutletContext,
+} from "react-router-dom";
 import styled from "styled-components";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
@@ -28,9 +34,8 @@ export async function loader() {
   }
 }
 
-const StyledPageWrapper = styled.div<{ $sidebarIsOpen: boolean }>`
-  // If render the page with a sidebar, add pointer-events: none;
-  ${({ $sidebarIsOpen }) => $sidebarIsOpen && "pointer-events: none;"}
+const StudentsPageWrapper = styled.div<{ $noPointerEvents: boolean; }>`
+${({$noPointerEvents}) => $noPointerEvents && 'pointer-events: none;'}
 `;
 
 const TableBodyWrapper = styled.div`
@@ -168,12 +173,17 @@ type Student = {
   date_of_birth: string;
 };
 
+type ContextType = {
+  studentUid: string;
+  setStudentUid: Dispatch<SetStateAction<string>>;
+};
+
 const StudentsPage = () => {
   const navigate = useNavigate();
   const { user, logOut } = useAuthContext();
   const loaderData: IStudents | undefined = useLoaderData() as IStudents;
   const [isLoading, setIsLoading] = useState(true);
-  const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
+  const [studentUid, setStudentUid] = useState<string>("");
 
   const handleLogOut = () => {
     logOut();
@@ -209,7 +219,7 @@ const StudentsPage = () => {
 
   return (
     <>
-      <StyledPageWrapper $sidebarIsOpen={sidebarIsOpen}>
+      <StudentsPageWrapper $noPointerEvents={Boolean(studentUid)}>
         <StyledHeader>
           <Heading1>All students</Heading1>
           <NavButtonsWrapper>
@@ -302,10 +312,19 @@ const StudentsPage = () => {
             Add new student
           </Button>
         </StyledButtonWrapper>
-      </StyledPageWrapper>
-      <Outlet />
+      </StudentsPageWrapper>
+      <Outlet context={{ studentUid, setStudentUid } satisfies ContextType} />
     </>
   );
 };
+
+/**
+ * This hook uses useOutletContext and allows us to set studentUid to truthy value from StudentPage.
+ * We want to set studentUid to truthy, because when student page is open, we set the background
+ * pointer-events to none.
+ */
+export function useStudentUid() {
+  return useOutletContext<ContextType>();
+}
 
 export { StudentsPage };

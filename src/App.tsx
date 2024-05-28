@@ -29,7 +29,7 @@ const router = createBrowserRouter([
       {
         path: ":studentId",
         element: <StudentPage />,
-        loader: studentsLoader,
+        loader: studentLoader,
       },
     ],
   },
