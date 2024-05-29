@@ -1,7 +1,7 @@
-import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { Form, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Heading1 } from "../../components/text/Heading1";
-import { useEffect, useState } from "react";
+import { useEffect, useState, MouseEvent, FormEvent } from "react";
 import { axiosInstance } from "../../api/axiosConfig";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
 import { CgClose } from "react-icons/cg";
@@ -16,7 +16,7 @@ interface IStudent {
   dateOfBirth: string;
 }
 
-interface IStudentFetchData {
+export interface IStudentFetchData {
   studentData: IStudent;
   error: any;
 }
@@ -129,14 +129,16 @@ const defaultStudentData = {
 const StudentPage = () => {
   const [studentData, setStudentData] = useState(defaultStudentData);
   // TODO: Scroll to the student with the id from the URL
-  const { studentId } = useParams();
+  const { studentId, editParam } = useParams();
+  const url = useParams();
+  console.log("editParam: ", editParam);
   const loaderData: IStudentFetchData | undefined =
     useLoaderData() as IStudentFetchData;
   const { setStudentUid } = useStudentUid();
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("studentId from student page: ", studentId);
+    console.log("params from student page: ", url);
     setStudentUid(studentId!);
   }, [studentId, setStudentUid]);
 
@@ -144,6 +146,11 @@ const StudentPage = () => {
     // Reset the studentUid to remove css property pointer-events: none from the students page.
     setStudentUid("");
     navigate("/students");
+  };
+
+  const handleEdit = (event: MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    navigate("edit");
   };
 
   return (
@@ -188,8 +195,23 @@ const StudentPage = () => {
             </StyledDataValue>
           </StyledStudentDataRow>
           <StyledButtonsWrapper>
-            <Button>Edit</Button>
-            <Button appearance="warning">Delete</Button>
+            <Form action="edit">
+              <Button type="submit">Edit</Button>
+            </Form>
+            <Form
+              method="post"
+              action="delete"
+              onSubmit={(event: FormEvent<HTMLFormElement>) => {
+                // eslint-disable-next-line no-restricted-globals
+                if (!confirm("Please confirm you want to delete this record")) {
+                  event.preventDefault();
+                }
+              }}
+            >
+              <Button type="submit" appearance="warning">
+                Delete
+              </Button>
+            </Form>
           </StyledButtonsWrapper>
         </StyledStudentDataWrapper>
       </StyledStudentOverlay>

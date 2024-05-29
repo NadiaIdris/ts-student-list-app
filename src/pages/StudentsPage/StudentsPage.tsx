@@ -1,4 +1,10 @@
-import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  MouseEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import {
   Outlet,
   useLoaderData,
@@ -34,8 +40,8 @@ export async function loader() {
   }
 }
 
-const StudentsPageWrapper = styled.div<{ $noPointerEvents: boolean; }>`
-${({$noPointerEvents}) => $noPointerEvents && 'pointer-events: none;'}
+const StudentsPageWrapper = styled.div<{ $noPointerEvents: boolean }>`
+  ${({ $noPointerEvents }) => $noPointerEvents && "pointer-events: none;"}
 `;
 
 const TableBodyWrapper = styled.div`
@@ -253,7 +259,6 @@ const StudentsPage = () => {
                 <StyledTableRow
                   key={student.student_uid}
                   to={`${student.student_uid}`}
-                  // onClick={handleOnClickStudent}
                 >
                   <StyledRowGrid>
                     <StyledTableCell>{index + 1}</StyledTableCell>

@@ -7,6 +7,7 @@ import { LogInPage, action as logInAction } from "./pages/LogInPage";
 import { StudentsPage, loader as studentsLoader } from "./pages/StudentsPage";
 import { SignUpPage, action as signUpAction } from "./pages/SignUpPage";
 import { StudentPage, loader as studentLoader } from "./pages/StudentPage";
+import { EditStudent } from "./pages/StudentPage/EditStudent";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,11 @@ const router = createBrowserRouter([
         element: <StudentPage />,
         loader: studentLoader,
       },
+      {
+        path: ":studentId/edit",
+        element: <EditStudent />,
+        loader: studentLoader,
+      }
     ],
   },
   {
