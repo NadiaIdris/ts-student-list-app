@@ -1,4 +1,4 @@
-import { useLoaderData, useParams } from "react-router-dom";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Heading1 } from "../../components/text/Heading1";
 import { useEffect, useState } from "react";
@@ -133,6 +133,7 @@ const StudentPage = () => {
   const loaderData: IStudentFetchData | undefined =
     useLoaderData() as IStudentFetchData;
   const { setStudentUid } = useStudentUid();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log("studentId from student page: ", studentId);
@@ -140,13 +141,20 @@ const StudentPage = () => {
   }, [studentId, setStudentUid]);
 
   const handleCloseStudentPanel = () => {
-    console.log("Close student panel");
+    // Reset the studentUid to remove css property pointer-events: none from the students page.
+    setStudentUid("");
+    navigate("/students");
   };
 
   return (
     <>
-      <StyledCloseIcon onClick={handleCloseStudentPanel}>
-        <CgClose style={{ width: "18px", height: "18px" }} />
+      <StyledCloseIcon>
+        <Button
+          appearance="link-with-background"
+          size="large"
+          iconBefore={<CgClose style={{ width: "16px", height: "16px" }} />}
+          onClick={handleCloseStudentPanel}
+        />
       </StyledCloseIcon>
       <StyledStudentOverlay>
         <StyledHeading1>
