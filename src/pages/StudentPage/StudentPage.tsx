@@ -85,7 +85,7 @@ padding: 0 40px;
 const StyledStudentDataWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 8px;
   padding: 0 40px;
 
   @media (max-width: 500px) {

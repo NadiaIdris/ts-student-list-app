@@ -65,6 +65,12 @@ const StyledStudentDataWrapper = styled.div`
   }
 `;
 
+const StyledFieldsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
 const EditStudent = () => {
   const navigation = useNavigation();
   const submitting = navigation.state === "submitting";
@@ -72,12 +78,28 @@ const EditStudent = () => {
     useLoaderData() as IStudentFetchData;
   const { setStudentUid } = useStudentUid();
   const navigate = useNavigate();
+  const [fieldDirection, setFieldDirection] = useState<"column" | "row">("row");
 
   const handleCloseStudentPanel = () => {
     // Reset the studentUid to remove css property pointer-events: none from the students page.
     setStudentUid("");
     navigate("/students");
   };
+
+  useEffect(() => {
+    // Set the field direction to column if the window width is less than 400px on component mount.
+    if (window.innerWidth < 400) {
+      setFieldDirection("column");
+    }
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth < 400) {
+        setFieldDirection("column");
+      } else {
+        setFieldDirection("row");
+      }
+    });
+  }, []);
 
   return (
     <>
@@ -94,91 +116,93 @@ const EditStudent = () => {
         <StyledHeading1>Edit</StyledHeading1>
         <StyledStudentDataWrapper>
           <Form method="post">
-            <Field
-              id="first-name"
-              label="First name"
-              direction="row"
-              invalidFieldMessage="" // TODO: add error message
-            >
-              {(inputProps) => (
-                <TextField
-                  type="text"
-                  name="first_name"
-                  defaultValue={loaderData?.studentData.firstName}
-                  placeholder="Enter student's first name"
-                  isDisabled={submitting}
-                  {...inputProps}
-                />
-              )}
-            </Field>
-            <Field
-              id="last-name"
-              label="Last name"
-              direction="row"
-              invalidFieldMessage="" // TODO: add error message
-            >
-              {(inputProps) => (
-                <TextField
-                  type="text"
-                  name="last_name"
-                  defaultValue={loaderData?.studentData.lastName}
-                  placeholder="Enter student's last name"
-                  isDisabled={submitting}
-                  {...inputProps}
-                />
-              )}
-            </Field>
-            <Field
-              id="email"
-              label="Email"
-              direction="row"
-              invalidFieldMessage="" // TODO: add error message
-            >
-              {(inputProps) => (
-                <TextField
-                  type="email"
-                  name="email"
-                  defaultValue={loaderData?.studentData.email}
-                  placeholder="Enter student's email name"
-                  isDisabled={submitting}
-                  {...inputProps}
-                />
-              )}
-            </Field>
-            <Field
-              id="gender"
-              label="Gender"
-              direction="row"
-              invalidFieldMessage="" // TODO: add error message
-            >
-              {(inputProps) => (
-                <TextField
-                  type="text"
-                  name="gender"
-                  defaultValue={loaderData?.studentData.gender}
-                  placeholder="Enter student's gender"
-                  isDisabled={submitting}
-                  {...inputProps}
-                />
-              )}
-            </Field>
-            <Field
-              id="date-of-birth"
-              label="Birthday"
-              direction="row"
-              invalidFieldMessage="" // TODO: add error message
-            >
-              {(inputProps) => (
-                <input
-                  type="date"
-                  name="date_of_birth"
-                  defaultValue={loaderData?.studentData.dateOfBirth}
-                  placeholder="Enter student's gender"
-                  isDisabled={submitting}
-                  {...inputProps}
-                />
-              )}
-            </Field>
+            <StyledFieldsWrapper>
+              <Field
+                id="first-name"
+                label="First name"
+                direction={fieldDirection}
+                invalidFieldMessage="" // TODO: add error message
+              >
+                {(inputProps) => (
+                  <TextField
+                    type="text"
+                    name="first_name"
+                    defaultValue={loaderData?.studentData.firstName}
+                    placeholder="Enter student's first name"
+                    isDisabled={submitting}
+                    {...inputProps}
+                  />
+                )}
+              </Field>
+              <Field
+                id="last-name"
+                label="Last name"
+                direction={fieldDirection}
+                invalidFieldMessage="" // TODO: add error message
+              >
+                {(inputProps) => (
+                  <TextField
+                    type="text"
+                    name="last_name"
+                    defaultValue={loaderData?.studentData.lastName}
+                    placeholder="Enter student's last name"
+                    isDisabled={submitting}
+                    {...inputProps}
+                  />
+                )}
+              </Field>
+              <Field
+                id="email"
+                label="Email"
+                direction={fieldDirection}
+                invalidFieldMessage="" // TODO: add error message
+              >
+                {(inputProps) => (
+                  <TextField
+                    type="email"
+                    name="email"
+                    defaultValue={loaderData?.studentData.email}
+                    placeholder="Enter student's email name"
+                    isDisabled={submitting}
+                    {...inputProps}
+                  />
+                )}
+              </Field>
+              <Field
+                id="gender"
+                label="Gender"
+                direction={fieldDirection}
+                invalidFieldMessage="" // TODO: add error message
+              >
+                {(inputProps) => (
+                  <TextField
+                    type="text"
+                    name="gender"
+                    defaultValue={loaderData?.studentData.gender}
+                    placeholder="Enter student's gender"
+                    isDisabled={submitting}
+                    {...inputProps}
+                  />
+                )}
+              </Field>
+              <Field
+                id="date-of-birth"
+                label="Birthday"
+                direction={fieldDirection}
+                invalidFieldMessage="" // TODO: add error message
+              >
+                {(inputProps) => (
+                  <input
+                    type="date"
+                    name="date_of_birth"
+                    defaultValue={loaderData?.studentData.dateOfBirth}
+                    placeholder="Enter student's gender"
+                    disabled={submitting}
+                    {...inputProps}
+                  />
+                )}
+              </Field>
+            </StyledFieldsWrapper>
             <div>
               <Button type="submit" isLoading={submitting}>
                 Save
