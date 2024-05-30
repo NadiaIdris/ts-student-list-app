@@ -148,11 +148,6 @@ const StudentPage = () => {
     navigate("/students");
   };
 
-  const handleEdit = (event: MouseEvent<HTMLElement>) => {
-    event.preventDefault();
-    navigate("edit");
-  };
-
   return (
     <>
       <StyledCloseIcon>
@@ -195,9 +190,18 @@ const StudentPage = () => {
             </StyledDataValue>
           </StyledStudentDataRow>
           <StyledButtonsWrapper>
-            <Form action="edit">
-              <Button type="submit">Edit</Button>
-            </Form>
+            {/* <Form action="edit"> */}
+            <Button
+              type="button"
+              onClick={(event: MouseEvent<HTMLElement>) => {
+                // event.preventDefault();
+                navigate(`/students/${studentId}/edit`);
+                // handleEdit(event);
+              }}
+            >
+              Edit
+            </Button>
+            {/* </Form> */}
             <Form
               method="post"
               action="delete"

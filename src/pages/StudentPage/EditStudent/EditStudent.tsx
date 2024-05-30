@@ -12,6 +12,7 @@ import { useStudentUid } from "../../StudentsPage/StudentsPage";
 import { CgClose } from "react-icons/cg";
 import { Heading1 } from "../../../components/text/Heading1";
 import { IStudentFetchData } from "../StudentPage";
+import { useEffect, useState } from "react";
 
 interface EditStudentProps {}
 
@@ -90,9 +91,7 @@ const EditStudent = () => {
         />
       </StyledCloseIcon>
       <StyledStudentOverlay>
-        <StyledHeading1>
-          {loaderData?.studentData.firstName} {loaderData?.studentData.lastName}
-        </StyledHeading1>
+        <StyledHeading1>Edit</StyledHeading1>
         <StyledStudentDataWrapper>
           <Form method="post">
             <Field
