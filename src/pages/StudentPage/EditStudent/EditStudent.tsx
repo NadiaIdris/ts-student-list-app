@@ -13,6 +13,7 @@ import { CgClose } from "react-icons/cg";
 import { Heading1 } from "../../../components/text/Heading1";
 import { IStudentFetchData } from "../StudentPage";
 import { useEffect, useState } from "react";
+import { MdContentCopy } from "react-icons/md";
 
 interface EditStudentProps {}
 

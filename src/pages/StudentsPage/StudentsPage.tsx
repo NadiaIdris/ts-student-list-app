@@ -221,7 +221,7 @@ const StudentsPage = () => {
   useEffect(() => {
     (loaderData?.students?.length > 0 || loaderData?.error) &&
       setIsLoading(false);
-  }, [loaderData]);
+  }, [loaderData.students, loaderData.error]);
 
   return (
     <>
@@ -301,11 +301,17 @@ const StudentsPage = () => {
                 </StyledTableRow>
               ))}
           </StyledTableWrapper>
-          {loaderData?.error && !isLoading && (
+          {loaderData?.students?.length === 0 && (
             <EmptyState>
               No students found.
               <br />
               Add a student below.
+            </EmptyState>
+          )}
+          {loaderData?.error && !isLoading && (
+            <EmptyState>
+              {loaderData?.error?.message || loaderData?.error?.code}
+              : Error fetching students. Please try again later.
             </EmptyState>
           )}
         </TableBodyWrapper>
