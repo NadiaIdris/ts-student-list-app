@@ -25,10 +25,10 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         state: { from: endpoint },
       });
     }
-    // Add code to fetch data from the server
   }, [navigate, isAuthenticated, endpoint]);
 
-  return children;
+  if (isAuthenticated) return children;
+  else return null;
 };
 
 export { ProtectedRoute };

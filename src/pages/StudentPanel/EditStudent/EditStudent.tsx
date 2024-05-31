@@ -1,19 +1,18 @@
+import { useEffect, useState } from "react";
+import { CgClose } from "react-icons/cg";
 import {
   Form,
   useLoaderData,
   useNavigate,
   useNavigation,
 } from "react-router-dom";
-import { Field } from "../../../components/form/Field";
-import { TextField } from "../../../components/TextField";
 import styled from "styled-components";
 import { Button } from "../../../components/buttons/Button";
-import { useStudentUid } from "../../StudentsPage/StudentsPage";
-import { CgClose } from "react-icons/cg";
+import { Field, FormFieldDirection } from "../../../components/form/Field";
 import { Heading1 } from "../../../components/text/Heading1";
-import { IStudentFetchData } from "../StudentPage";
-import { useEffect, useState } from "react";
-import { MdContentCopy } from "react-icons/md";
+import { TextField } from "../../../components/TextField";
+import { useStudentUid } from "../../StudentsPage/StudentsPage";
+import { IStudentFetchData } from "../StudentPanel";
 
 interface EditStudentProps {}
 
@@ -79,7 +78,8 @@ const EditStudent = () => {
     useLoaderData() as IStudentFetchData;
   const { setStudentUid } = useStudentUid();
   const navigate = useNavigate();
-  const [fieldDirection, setFieldDirection] = useState<"column" | "row">("row");
+  const [fieldDirection, setFieldDirection] =
+    useState<FormFieldDirection>("row");
 
   const handleCloseStudentPanel = () => {
     // Reset the studentUid to remove css property pointer-events: none from the students page.

@@ -1,12 +1,13 @@
 import { Form, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Heading1 } from "../../components/text/Heading1";
-import { useEffect, useState, MouseEvent, FormEvent } from "react";
+import { useEffect, MouseEvent, FormEvent } from "react";
 import { axiosInstance } from "../../api/axiosConfig";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
 import { CgClose } from "react-icons/cg";
 import { useStudentUid } from "../StudentsPage/StudentsPage";
 import { Button } from "../../components/buttons/Button";
+import { StudentFieldReadOnly } from "./StudentFieldReadOnly";
 
 interface IStudent {
   firstName: string;
@@ -118,27 +119,15 @@ const StyledButtonsWrapper = styled.div`
   gap: 12px;
 `;
 
-const defaultStudentData = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  gender: "",
-  dateOfBirth: "",
-};
-
-const StudentPage = () => {
-  const [studentData, setStudentData] = useState(defaultStudentData);
+const StudentPanel = () => {
   // TODO: Scroll to the student with the id from the URL
-  const { studentId, editParam } = useParams();
-  const url = useParams();
-  console.log("editParam: ", editParam);
+  const { studentId } = useParams();
   const loaderData: IStudentFetchData | undefined =
     useLoaderData() as IStudentFetchData;
   const { setStudentUid } = useStudentUid();
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("params from student page: ", url);
     setStudentUid(studentId!);
   }, [studentId, setStudentUid]);
 
@@ -163,12 +152,7 @@ const StudentPage = () => {
           {loaderData?.studentData.firstName} {loaderData?.studentData.lastName}
         </StyledHeading1>
         <StyledStudentDataWrapper>
-          <StyledStudentDataRow>
-            <StyledDataKey>First name: </StyledDataKey>
-            <StyledDataValue>
-              {loaderData?.studentData?.firstName}
-            </StyledDataValue>
-          </StyledStudentDataRow>
+          <StudentFieldReadOnly id="first-name" label="First name" size='medium' value={loaderData?.studentData?.firstName}/>
           <StyledStudentDataRow>
             <StyledDataKey>Last name: </StyledDataKey>
             <StyledDataValue>
@@ -224,4 +208,4 @@ const StudentPage = () => {
   );
 };
 
-export { StudentPage };
+export { StudentPanel};
