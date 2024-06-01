@@ -258,12 +258,12 @@ const SignUpPage = () => {
           >
             {(inputProps) => (
               <TextField
+                {...inputProps}
                 type="text"
                 name="first_name"
                 placeholder="Enter your first name"
                 isInvalid={Boolean(actionData?.errorMsgs?.first_name)}
                 isDisabled={submitting}
-                {...inputProps}
               />
             )}
           </Field>
@@ -276,12 +276,12 @@ const SignUpPage = () => {
           >
             {(inputProps) => (
               <TextField
+                {...inputProps}
                 type="text"
                 name="last_name"
                 placeholder="Enter your last name"
                 isInvalid={Boolean(actionData?.errorMsgs?.last_name)}
                 isDisabled={submitting}
-                {...inputProps}
               />
             )}
           </Field>
@@ -294,12 +294,12 @@ const SignUpPage = () => {
           >
             {(inputProps) => (
               <TextField
+                {...inputProps}
                 type="email"
                 name="email"
                 placeholder="Enter your email"
                 isInvalid={Boolean(actionData?.errorMsgs?.email)}
                 isDisabled={submitting}
-                {...inputProps}
               />
             )}
           </Field>
@@ -312,6 +312,7 @@ const SignUpPage = () => {
           >
             {(inputProps) => (
               <TextField
+                {...inputProps}
                 type="password"
                 name="password"
                 placeholder="Enter your password"
@@ -321,7 +322,6 @@ const SignUpPage = () => {
                   passwordIcons("login-password", isDisabled, $size)
                 }
                 showPassword={showPassword}
-                {...inputProps}
               />
             )}
           </Field>
@@ -334,6 +334,7 @@ const SignUpPage = () => {
           >
             {(inputProps) => (
               <TextField
+                {...inputProps}
                 type="password"
                 name="repeat_password"
                 placeholder="Enter your password again"
@@ -343,7 +344,6 @@ const SignUpPage = () => {
                   passwordIcons("login-password", isDisabled, $size)
                 }
                 showPassword={showPassword}
-                {...inputProps}
               />
             )}
           </Field>

@@ -212,12 +212,12 @@ const LogInPage = () => {
           >
             {(inputProps) => (
               <TextField
+                {...inputProps}
                 type="email"
                 name="email"
                 placeholder="Enter your email"
                 isInvalid={Boolean(emailErrorMsg)}
                 isDisabled={submitting}
-                {...inputProps}
               />
             )}
           </Field>
@@ -230,6 +230,7 @@ const LogInPage = () => {
           >
             {(inputProps) => (
               <TextField
+                {...inputProps}
                 type="password"
                 name="password"
                 placeholder="Enter your password"
@@ -239,7 +240,6 @@ const LogInPage = () => {
                   passwordIcons("login-password", isDisabled, $size)
                 }
                 showPassword={showPassword}
-                {...inputProps}
               />
             )}
           </Field>

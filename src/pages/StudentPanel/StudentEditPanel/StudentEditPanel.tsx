@@ -71,7 +71,7 @@ const StyledFieldsWrapper = styled.div`
   gap: 8px;
 `;
 
-const EditStudent = () => {
+const StudentEditPanel = () => {
   const navigation = useNavigation();
   const submitting = navigation.state === "submitting";
   const loaderData: IStudentFetchData | undefined =
@@ -126,12 +126,13 @@ const EditStudent = () => {
               >
                 {(inputProps) => (
                   <TextField
+                    {...inputProps}
                     type="text"
                     name="first_name"
                     defaultValue={loaderData?.studentData.firstName}
                     placeholder="Enter student's first name"
                     isDisabled={submitting}
-                    {...inputProps}
+                    size="small"
                   />
                 )}
               </Field>
@@ -143,12 +144,12 @@ const EditStudent = () => {
               >
                 {(inputProps) => (
                   <TextField
+                    {...inputProps}
                     type="text"
                     name="last_name"
                     defaultValue={loaderData?.studentData.lastName}
                     placeholder="Enter student's last name"
                     isDisabled={submitting}
-                    {...inputProps}
                   />
                 )}
               </Field>
@@ -160,12 +161,12 @@ const EditStudent = () => {
               >
                 {(inputProps) => (
                   <TextField
+                    {...inputProps}
                     type="email"
                     name="email"
                     defaultValue={loaderData?.studentData.email}
                     placeholder="Enter student's email name"
                     isDisabled={submitting}
-                    {...inputProps}
                   />
                 )}
               </Field>
@@ -177,12 +178,12 @@ const EditStudent = () => {
               >
                 {(inputProps) => (
                   <TextField
+                    {...inputProps}
                     type="text"
                     name="gender"
                     defaultValue={loaderData?.studentData.gender}
                     placeholder="Enter student's gender"
                     isDisabled={submitting}
-                    {...inputProps}
                   />
                 )}
               </Field>
@@ -194,12 +195,12 @@ const EditStudent = () => {
               >
                 {(inputProps) => (
                   <input
+                    {...inputProps}
                     type="date"
                     name="date_of_birth"
                     defaultValue={loaderData?.studentData.dateOfBirth}
                     placeholder="Enter student's gender"
                     disabled={submitting}
-                    {...inputProps}
                   />
                 )}
               </Field>
@@ -224,4 +225,4 @@ const EditStudent = () => {
   );
 };
 
-export { EditStudent };
+export { StudentEditPanel };
