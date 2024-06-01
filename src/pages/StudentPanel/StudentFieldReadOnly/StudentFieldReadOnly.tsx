@@ -1,53 +1,52 @@
 import { CSSProperties } from "react";
-import { FieldSize, FormFieldDirection } from "../../../components/form/Field";
+import { FieldSize } from "../../../components/form/Field";
 import styled from "styled-components";
 
 interface StudentFieldProps {
   id: string;
   label: string;
   value: string;
-  direction?: FormFieldDirection;
   size?: FieldSize;
   testId?: string;
   style?: CSSProperties;
   className?: string;
 }
 
-const StyledStudentDataRow = styled.div<{
-  $direction: FormFieldDirection;
-  $size: FieldSize;
-}>`
+const StyledRow = styled.div`
   display: flex;
   align-items: center;
+  flex-direction: row;
 
   @media (max-width: 400px) {
-    flex-direction: ${({ $direction }) => $direction};
+    flex-direction: column;
     align-items: stretch;
   }
 `;
 
-const StyledDataKey = styled.div`
-  min-width: 120px;
+const StyledLabel = styled.div`
+  min-width: 113px;
   background-color: red;
 `;
 
-const StyledDataValue = styled.div`
-  flex: 1;
+const StyledValue = styled.div`
+  flex: 1 1 auto;
   background-color: lightblue;
+  height: var(--input-height-medium);
+  display: flex;
+  align-items: center;
 `;
 
 const StudentFieldReadOnly = ({
   id,
   label,
   value,
-  direction = "row",
   size = "medium",
 }: StudentFieldProps) => {
   return (
-    <StyledStudentDataRow id={id} $direction={direction} $size={size}>
-      <StyledDataKey>{label}</StyledDataKey>
-      <StyledDataValue>{value}</StyledDataValue>
-    </StyledStudentDataRow>
+    <StyledRow id={id}>
+      <StyledLabel>{label}</StyledLabel>
+      <StyledValue>{value}</StyledValue>
+    </StyledRow>
   );
 };
 

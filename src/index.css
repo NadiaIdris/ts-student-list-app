@@ -83,6 +83,10 @@
   --font-size-14: 0.875rem;
   --font-size-16: 1rem;
   --font-size-40: 2.5rem;
+
+  /* input field height */
+  --input-height-small: 30px;
+  --input-height-medium: 36px;
 }
 
 :root {

@@ -76,11 +76,11 @@ const StyledStudentOverlay = styled.div`
 `;
 
 const StyledHeading1 = styled(Heading1)`
-padding: 0 40px;
+  padding: 0 40px;
 
-@media (max-width: 500px) {
-  padding: 0 20px;
-}}
+  @media (max-width: 500px) {
+    padding: 0 20px;
+  }
 `;
 
 const StyledStudentDataWrapper = styled.div`
@@ -152,7 +152,12 @@ const StudentPanel = () => {
           {loaderData?.studentData.firstName} {loaderData?.studentData.lastName}
         </StyledHeading1>
         <StyledStudentDataWrapper>
-          <StudentFieldReadOnly id="first-name" label="First name" size='medium' value={loaderData?.studentData?.firstName}/>
+          <StudentFieldReadOnly
+            id="first-name"
+            label="First name"
+            size="medium"
+            value={loaderData?.studentData?.firstName}
+          />
           <StyledStudentDataRow>
             <StyledDataKey>Last name: </StyledDataKey>
             <StyledDataValue>
@@ -208,4 +213,4 @@ const StudentPanel = () => {
   );
 };
 
-export { StudentPanel};
+export { StudentPanel };

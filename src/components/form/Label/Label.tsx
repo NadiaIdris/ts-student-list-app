@@ -25,7 +25,7 @@ interface LabelProps {
   testId?: string;
 }
 
-const LabelStyles = styled.label<{
+const StyledLabel = styled.label<{
   $size: FieldSize;
   $direction: FormFieldDirection;
 }>`
@@ -34,7 +34,7 @@ const LabelStyles = styled.label<{
       ? " font-size: var(--font-size-14)"
       : " font-size: var(--font-size-16)"};
   width: ${({ $direction }) =>
-    $direction && ($direction === "column" ? "fit-content" : "113px")};
+    $direction && ($direction === "column" ? "" : "113px")};
   min-width: ${({ $direction }) =>
     $direction && ($direction === "column" ? "fit-content" : "113px")};
 `;
@@ -47,14 +47,14 @@ const Label = ({
   ...props
 }: LabelProps) => {
   return (
-    <LabelStyles
+    <StyledLabel
       htmlFor={htmlFor}
       $direction={direction}
       $size={size}
       {...props}
     >
       {children}
-    </LabelStyles>
+    </StyledLabel>
   );
 };
 

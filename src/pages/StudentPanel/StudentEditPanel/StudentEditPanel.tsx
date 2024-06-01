@@ -36,11 +36,11 @@ const StyledStudentOverlay = styled.div`
 `;
 
 const StyledHeading1 = styled(Heading1)`
-padding: 0 40px;
+  padding: 0 40px;
 
-@media (max-width: 500px) {
-  padding: 0 20px;
-}}
+  @media (max-width: 500px) {
+    padding: 0 20px;
+  }
 `;
 
 const StyledStudentPageCover = styled.div`
@@ -132,7 +132,6 @@ const StudentEditPanel = () => {
                     defaultValue={loaderData?.studentData.firstName}
                     placeholder="Enter student's first name"
                     isDisabled={submitting}
-                    size="small"
                   />
                 )}
               </Field>
