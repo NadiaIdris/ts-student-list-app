@@ -38,11 +38,11 @@ interface TextFieldProps {
   /**
    * The `renderIcon` prop specifies a custom icon to render beside the input field.
    */
-  renderIcon?: (isDisabled: boolean, $size: FieldSize) => JSX.Element;
+  renderIcon?: (isDisabled: boolean, size: FieldSize) => JSX.Element;
   /**
-   * The `showPassword` prop specifies whether the password is visible or not. This prop is only used when the type is "password".
+   * The `passwordIsVisible` prop specifies whether the password is visible or not. This prop is only used when the type is "password".
    */
-  showPassword?: boolean;
+  passwordIsVisible?: boolean;
   /**
    * The `style` prop specifies the style of the text field. It will add the style inline. It's great to use it to add margin or padding to the text field.
    */
@@ -93,13 +93,11 @@ const TextField = ({
   isInvalid = false,
   isDisabled = false,
   renderIcon,
-  showPassword = false,
+  passwordIsVisible = false,
   style,
   className,
   ...props
 }: TextFieldProps) => {
-  let passwordType = showPassword ? "text" : "password";
-
   useLayoutEffect(() => {
     // Measure the renderIcon container width and set the padding-right of the input field
     if (!id) return;
@@ -114,7 +112,9 @@ const TextField = ({
     <StyledTextFieldWrapper style={style} className={className}>
       <StyledTextField
         id={id}
-        type={type === "password" ? passwordType : type}
+        type={
+          type === "password" ? (passwordIsVisible ? "text" : "password") : type
+        }
         name={name}
         placeholder={placeholder}
         autoComplete={autoComplete}
@@ -123,8 +123,7 @@ const TextField = ({
         disabled={isDisabled}
         {...props}
       />
-      {type === "password" && renderIcon && renderIcon(isDisabled, size)}
-      {type !== "password" && renderIcon && renderIcon(isDisabled, size)}
+      {renderIcon && renderIcon(isDisabled, size)}
     </StyledTextFieldWrapper>
   );
 };

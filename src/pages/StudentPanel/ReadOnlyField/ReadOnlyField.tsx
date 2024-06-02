@@ -1,12 +1,12 @@
 import { CSSProperties } from "react";
-import { FieldSize } from "../../../components/form/Field";
 import styled from "styled-components";
+import { Button } from "../../../components/buttons/Button";
+import { MdContentCopy } from "react-icons/md";
 
 interface StudentFieldProps {
   id: string;
   label: string;
   value: string;
-  size?: FieldSize;
   testId?: string;
   style?: CSSProperties;
   className?: string;
@@ -25,29 +25,35 @@ const StyledRow = styled.div`
 
 const StyledLabel = styled.div`
   min-width: 113px;
-  background-color: red;
+  font-size: var(--font-size-16);
 `;
 
 const StyledValue = styled.div`
   flex: 1 1 auto;
-  background-color: lightblue;
   height: var(--input-height-medium);
   display: flex;
   align-items: center;
+  font-size: var(--font-size-16);
+  font-weight: 700;
 `;
 
-const StudentFieldReadOnly = ({
+const ReadOnlyField = ({
   id,
   label,
   value,
-  size = "medium",
+  testId,
+  style,
+  className,
 }: StudentFieldProps) => {
   return (
-    <StyledRow id={id}>
+    <StyledRow id={id} style={style} className={className} data-testid={testId}>
       <StyledLabel>{label}</StyledLabel>
-      <StyledValue>{value}</StyledValue>
+      <StyledValue>
+        {value}
+        {/* <Button iconBefore={<MdContentCopy style={{ width: "16px", height: "16px" }}/>} /> */}
+      </StyledValue>
     </StyledRow>
   );
 };
 
-export { StudentFieldReadOnly };
+export { ReadOnlyField };

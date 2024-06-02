@@ -160,18 +160,14 @@ const LogInPage = () => {
   const emailErrorMsg = actionData?.errorMsgs?.email;
   const passwordErrorMsg = actionData?.errorMsgs?.password;
 
-  const handleTogglePasswordIcon = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const passwordIcons = (id: string, $isLoading: boolean, $size: FieldSize) => (
+  const passwordIcons = (id: string, isLoading: boolean, size: FieldSize) => (
     <StyledWrapperDiv
       id={`${id}-icon`} // This is useful measuring the width of the icons wrapper span to add the correct padding-right to the input field.
-      onClick={handleTogglePasswordIcon}
-      $isLoading={$isLoading}
-      $size={$size}
+      onClick={() => setShowPassword(!showPassword)}
+      $isLoading={isLoading}
+      $size={size}
     >
-      <StyledIconSpan $size={$size}>
+      <StyledIconSpan $size={size}>
         {showPassword ? (
           <FiEyeOff style={{ width: "16px", height: "16px" }} />
         ) : (
@@ -236,10 +232,10 @@ const LogInPage = () => {
                 placeholder="Enter your password"
                 isInvalid={Boolean(passwordErrorMsg)}
                 isDisabled={submitting}
-                renderIcon={(isDisabled, $size) =>
-                  passwordIcons("login-password", isDisabled, $size)
+                renderIcon={(isDisabled, size) =>
+                  passwordIcons("login-password", isDisabled, size)
                 }
-                showPassword={showPassword}
+                passwordIsVisible={showPassword}
               />
             )}
           </Field>

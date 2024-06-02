@@ -7,7 +7,7 @@ import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
 import { CgClose } from "react-icons/cg";
 import { useStudentUid } from "../StudentsPage/StudentsPage";
 import { Button } from "../../components/buttons/Button";
-import { StudentFieldReadOnly } from "./StudentFieldReadOnly";
+import { ReadOnlyField } from "./ReadOnlyField";
 
 interface IStudent {
   firstName: string;
@@ -94,29 +94,10 @@ const StyledStudentDataWrapper = styled.div`
   }
 `;
 
-const StyledStudentDataRow = styled.div`
-  display: flex;
-  align-items: center;
-
-  @media (max-width: 400px) {
-    flex-direction: column;
-    align-items: stretch;
-  }
-`;
-
-const StyledDataKey = styled.div`
-  min-width: 120px;
-  background-color: red;
-`;
-
-const StyledDataValue = styled.div`
-  flex: 1;
-  background-color: lightblue;
-`;
-
 const StyledButtonsWrapper = styled.div`
   display: flex;
   gap: 12px;
+  margin-top: 24px;
 `;
 
 const StudentPanel = () => {
@@ -148,44 +129,39 @@ const StudentPanel = () => {
         />
       </StyledCloseIcon>
       <StyledStudentOverlay>
-        <StyledHeading1>
-          {loaderData?.studentData.firstName} {loaderData?.studentData.lastName}
-        </StyledHeading1>
+        <StyledHeading1>Student info</StyledHeading1>
         <StyledStudentDataWrapper>
-          <StudentFieldReadOnly
+          <ReadOnlyField
             id="first-name"
             label="First name"
-            size="medium"
             value={loaderData?.studentData?.firstName}
           />
-          <StyledStudentDataRow>
-            <StyledDataKey>Last name: </StyledDataKey>
-            <StyledDataValue>
-              {loaderData?.studentData?.lastName}
-            </StyledDataValue>
-          </StyledStudentDataRow>
-          <StyledStudentDataRow>
-            <StyledDataKey>Email: </StyledDataKey>
-            <StyledDataValue>{loaderData?.studentData?.email}</StyledDataValue>
-          </StyledStudentDataRow>
-          <StyledStudentDataRow>
-            <StyledDataKey>Gender: </StyledDataKey>
-            <StyledDataValue>{loaderData?.studentData?.gender}</StyledDataValue>
-          </StyledStudentDataRow>
-          <StyledStudentDataRow>
-            <StyledDataKey>Birthday: </StyledDataKey>
-            <StyledDataValue>
-              {loaderData?.studentData?.dateOfBirth}
-            </StyledDataValue>
-          </StyledStudentDataRow>
+          <ReadOnlyField
+            id="last-name"
+            label="Last name"
+            value={loaderData?.studentData?.lastName}
+          />
+          <ReadOnlyField
+            id="email"
+            label="Email"
+            value={loaderData?.studentData?.email}
+          />
+          <ReadOnlyField
+            id="gender"
+            label="Gender"
+            value={loaderData?.studentData?.gender ?? "Not specified"}
+          />
+          <ReadOnlyField
+            id="birthday"
+            label="Birthday"
+            value={loaderData?.studentData?.dateOfBirth}
+          />
           <StyledButtonsWrapper>
             {/* <Form action="edit"> */}
             <Button
               type="button"
               onClick={(event: MouseEvent<HTMLElement>) => {
-                // event.preventDefault();
                 navigate(`/students/${studentId}/edit`);
-                // handleEdit(event);
               }}
             >
               Edit
