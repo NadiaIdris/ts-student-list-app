@@ -7,7 +7,7 @@ export type Appearance =
   | "warning"
   | "link"
   | "link-with-background";
-export type Size = "medium" | "large";
+export type Size = "small" | "medium";
 
 export interface ButtonProps {
   children?: ReactNode;
@@ -29,16 +29,16 @@ export interface ButtonProps {
   /**
    * Displays an icon before the button text.
    * IMPORTANT! You must pass in style prop with width and height to the icon.
-   * If you want display medium size icon, pass the icon with 14px width and height.
-   * If you want display large size icon, pass the icon with 16px width and height.
+   * If you want display small size icon, pass the icon with 14px width and height.
+   * If you want display medium size icon, pass the icon with 16px width and height.
    * E.g. <MyIcon style={{ width: "16px", height: "16px" }} />
    **/
   iconBefore?: ReactNode;
   /**
    * Displays an icon after the button text.
    * IMPORTANT! You must pass in style prop with width and height to the icon.
-   * If you want display medium size icon, pass the icon with 14px width and height.
-   * If you want display large size icon, pass the icon with 16px width and height.
+   * If you want display small size icon, pass the icon with 14px width and height.
+   * If you want display medium size icon, pass the icon with 16px width and height.
    * E.g. <MyIcon style={{ width: "16px", height: "16px" }} />
    **/
   iconAfter?: ReactNode;
@@ -74,7 +74,7 @@ const StyledButton = styled.button<{
     if (
       ($iconBefore || $iconAfter) &&
       !$children &&
-      ($size === "medium" || $size === "large")
+      ($size === "small" || $size === "medium")
     )
       return "100px";
     else return "var(--border-radius)";
@@ -88,25 +88,25 @@ const StyledButton = styled.button<{
     if (
       ($iconBefore || $iconAfter) &&
       !$children &&
-      ($size === "medium" || $size === "large")
+      ($size === "small" || $size === "medium")
     )
       return "auto";
-    else if ($size === "medium") return "36px";
-    else if ($size === "large") return "42px";
+    else if ($size === "small") return "36px";
+    else if ($size === "medium") return "42px";
   }};
   width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "auto")};
   ${({ $size }) => {
-    if ($size === "medium")
+    if ($size === "small")
       return "font-size: var(--font-size-14)"; // ~14px is 0.875rem
-    else if ($size === "large") return "font-size: var(--font-size-16)"; // ~16px is 1rem
+    else if ($size === "medium") return "font-size: var(--font-size-16)"; // ~16px is 1rem
   }};
   padding: ${({ $size, $iconBefore, $iconAfter, $children }) => {
-    if (($iconBefore || $iconAfter) && !$children && $size === "medium")
+    if (($iconBefore || $iconAfter) && !$children && $size === "small")
       return "4px";
-    else if (($iconBefore || $iconAfter) && !$children && $size === "large")
+    else if (($iconBefore || $iconAfter) && !$children && $size === "medium")
       return "8px";
-    else if ($size === "medium") return "0 16px";
-    else if ($size === "large") return "0 24px";
+    else if ($size === "small") return "0 16px";
+    else if ($size === "medium") return "0 24px";
   }};
   background: ${({ $appearance }) => {
     if ($appearance === "primary") return "var(--color-button-primary-bg)";
@@ -133,7 +133,7 @@ const StyledButton = styled.button<{
       else if ($appearance === "warning")
         return "var(--color-button-warning-bg-hover)";
       else if ($appearance === "link-with-background")
-        return "var(--color-gray-600)";
+        return "var(--color-button-secondary-bg)";
       else return "var(--color-button-default-bg-hover)";
     }};
     color: ${({ $appearance }) => {
@@ -152,13 +152,14 @@ const StyledButton = styled.button<{
         else if ($appearance === "warning")
           return "var(--color-button-warning-bg-hover)";
         else if ($appearance === "link-with-background")
-          return "var(--color-gray-600)";
+          return "var(--color-button-secondary-bg)";
         else return "var(--color-button-default-bg)";
       }};
       color: ${({ $appearance }) => {
         if ($appearance === "link" || $appearance === "link-with-background")
           return "var(--color-black-700)";
-      }}
+      }};
+    }
   }
 `;
 

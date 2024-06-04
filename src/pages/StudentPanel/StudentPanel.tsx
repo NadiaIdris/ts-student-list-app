@@ -1,13 +1,14 @@
 import { Form, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Heading1 } from "../../components/text/Heading1";
-import { useEffect, MouseEvent, FormEvent } from "react";
+import { useEffect, FormEvent } from "react";
 import { axiosInstance } from "../../api/axiosConfig";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
 import { CgClose } from "react-icons/cg";
 import { useStudentUid } from "../StudentsPage/StudentsPage";
 import { Button } from "../../components/buttons/Button";
 import { ReadOnlyField } from "./ReadOnlyField";
+import { MdOutlineContentCopy } from "react-icons/md";
 
 interface IStudent {
   firstName: string;
@@ -73,13 +74,16 @@ const StyledStudentOverlay = styled.div`
   width: 100%;
   height: 100%;
   background-color: var(--color-white);
+  overflow: auto;
 `;
 
 const StyledHeading1 = styled(Heading1)`
   padding: 0 40px;
+  margin: 40px 0 20px 0;
 
   @media (max-width: 500px) {
     padding: 0 20px;
+    margin: 20px 0 10px 0;
   }
 `;
 
@@ -87,17 +91,17 @@ const StyledStudentDataWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 0 40px;
-
-  @media (max-width: 500px) {
-    padding: 0 20px;
-  }
 `;
 
 const StyledButtonsWrapper = styled.div`
   display: flex;
   gap: 12px;
   margin-top: 24px;
+  padding: 0 32px 0 40px;
+
+  @media (max-width: 500px) {
+    padding: 0 12px 0 20px;
+  }
 `;
 
 const StudentPanel = () => {
@@ -123,7 +127,7 @@ const StudentPanel = () => {
       <StyledCloseIcon>
         <Button
           appearance="link-with-background"
-          size="large"
+          size="medium"
           iconBefore={<CgClose style={{ width: "16px", height: "16px" }} />}
           onClick={handleCloseStudentPanel}
         />
@@ -145,6 +149,20 @@ const StudentPanel = () => {
             id="email"
             label="Email"
             value={loaderData?.studentData?.email}
+            icon={
+              <MdOutlineContentCopy style={{ width: "16px", height: "16px" }} />
+            }
+            iconOnClick={async () => {
+              try {
+                await navigator.clipboard.writeText(
+                  loaderData?.studentData?.email
+                );
+                console.log("Email copied to clipboard");
+              } catch (error: any) {
+                console.error("Failed to copy text:", error.message);
+              }
+            }}
+            iconTooltip="Copy email to clipboard"
           />
           <ReadOnlyField
             id="gender"
@@ -157,16 +175,14 @@ const StudentPanel = () => {
             value={loaderData?.studentData?.dateOfBirth}
           />
           <StyledButtonsWrapper>
-            {/* <Form action="edit"> */}
             <Button
               type="button"
-              onClick={(event: MouseEvent<HTMLElement>) => {
+              onClick={() => {
                 navigate(`/students/${studentId}/edit`);
               }}
             >
               Edit
             </Button>
-            {/* </Form> */}
             <Form
               method="post"
               action="delete"
