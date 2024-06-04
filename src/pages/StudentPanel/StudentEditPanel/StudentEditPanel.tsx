@@ -108,7 +108,7 @@ const StudentEditPanel = () => {
       <StyledCloseIcon>
         <Button
           appearance="link-with-background"
-          size="large"
+          size="medium"
           iconBefore={<CgClose style={{ width: "16px", height: "16px" }} />}
           onClick={handleCloseStudentPanel}
         />

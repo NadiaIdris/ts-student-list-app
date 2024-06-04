@@ -276,7 +276,7 @@ const StudentsPage = () => {
                           onClick={(event: MouseEvent<HTMLButtonElement>) =>
                             handleEditStudent(event, student.student_uid)
                           }
-                          size="large"
+                          size="medium"
                           tooltip="Edit student"
                           label="Edit student"
                           appearance="link"
@@ -290,7 +290,7 @@ const StudentsPage = () => {
                           onClick={() =>
                             handleDeleteStudent(student.student_uid)
                           }
-                          size="large"
+                          size="medium"
                           tooltip="Delete student"
                           label="Delete student"
                           appearance="link"
