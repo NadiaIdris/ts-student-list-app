@@ -1,3 +1,3 @@
-import { IStudentFetchData, StudentPanel, loader } from "./StudentPanel";
-export { StudentPanel, loader };
+import { IStudentFetchData, StudentPanel, loader, closeSnackbar } from "./StudentPanel";
+export { StudentPanel, loader, closeSnackbar };
 export type { IStudentFetchData };

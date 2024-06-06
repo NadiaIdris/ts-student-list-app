@@ -1,7 +1,7 @@
 import { Form, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Heading1 } from "../../components/text/Heading1";
-import { useEffect, FormEvent } from "react";
+import { useEffect, FormEvent, useRef, RefObject } from "react";
 import { axiosInstance } from "../../api/axiosConfig";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
 import { CgClose } from "react-icons/cg";
@@ -9,6 +9,7 @@ import { useStudentUid } from "../StudentsPage/StudentsPage";
 import { Button } from "../../components/buttons/Button";
 import { ReadOnlyField } from "./ReadOnlyField";
 import { MdOutlineContentCopy } from "react-icons/md";
+import { Snackbar } from "../../components/Snackbar";
 
 interface IStudent {
   firstName: string;
@@ -23,7 +24,6 @@ export interface IStudentFetchData {
   error: any;
 }
 
-// TODO: fix data fetching
 export async function loader({ params }: { params: any }) {
   try {
     const response = await axiosInstance.get(
@@ -69,7 +69,7 @@ const StyledStudentOverlay = styled.div`
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 100;
+  z-index: 20;
   max-width: 500px;
   width: 100%;
   height: 100%;
@@ -104,6 +104,20 @@ const StyledButtonsWrapper = styled.div`
   }
 `;
 
+const closeSnackbar = (refArg: RefObject<HTMLDivElement>) => {
+  if (refArg.current) {
+    const ref = refArg.current as HTMLDivElement;
+    ref.style.animation = "slidedown .3s ease-in-out";
+  }
+};
+
+const showSnackbar = (refArg: RefObject<HTMLDivElement>) => {
+  if (refArg.current) {
+    const ref = refArg.current as HTMLDivElement;
+    ref.style.animation = "slideup .3s ease-in-out forwards";
+  }
+};
+
 const StudentPanel = () => {
   // TODO: Scroll to the student with the id from the URL
   const { studentId } = useParams();
@@ -111,6 +125,7 @@ const StudentPanel = () => {
     useLoaderData() as IStudentFetchData;
   const { setStudentUid } = useStudentUid();
   const navigate = useNavigate();
+  const snackbarRef = useRef(null);
 
   useEffect(() => {
     setStudentUid(studentId!);
@@ -120,6 +135,20 @@ const StudentPanel = () => {
     // Reset the studentUid to remove css property pointer-events: none from the students page.
     setStudentUid("");
     navigate("/students");
+  };
+
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(loaderData?.studentData?.email);
+      showSnackbar(snackbarRef);
+      setTimeout(() => {
+        if (snackbarRef.current) {
+          closeSnackbar(snackbarRef);
+        }
+      }, 10000); // Hide the snackbar after 10 seconds
+    } catch (error: any) {
+      console.error("Failed to copy text:", error.message);
+    }
   };
 
   return (
@@ -152,16 +181,7 @@ const StudentPanel = () => {
             icon={
               <MdOutlineContentCopy style={{ width: "16px", height: "16px" }} />
             }
-            iconOnClick={async () => {
-              try {
-                await navigator.clipboard.writeText(
-                  loaderData?.studentData?.email
-                );
-                console.log("Email copied to clipboard");
-              } catch (error: any) {
-                console.error("Failed to copy text:", error.message);
-              }
-            }}
+            iconOnClick={handleCopyEmail}
             iconTooltip="Copy email to clipboard"
           />
           <ReadOnlyField
@@ -200,9 +220,10 @@ const StudentPanel = () => {
           </StyledButtonsWrapper>
         </StyledStudentDataWrapper>
       </StyledStudentOverlay>
+      <Snackbar text="Copied to clipboard" ref={snackbarRef} />
       <StyledStudentPageCover />
     </>
   );
 };
 
-export { StudentPanel };
+export { StudentPanel, closeSnackbar };
