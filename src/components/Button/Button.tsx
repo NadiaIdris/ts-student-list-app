@@ -10,6 +10,10 @@ export type Appearance =
 export type Size = "small" | "medium";
 
 export interface ButtonProps {
+  /**
+   * aria-label attribute for accessibility. 
+   */
+  ariaLabel?: string;
   children?: ReactNode;
   type?: "button" | "submit" | "reset";
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
@@ -208,6 +212,7 @@ const StyledSpinner = styled.span<{ $isLoading: boolean }>`
 `;
 
 const Button = ({
+  ariaLabel,
   children,
   type = "button",
   onClick,
@@ -228,6 +233,7 @@ const Button = ({
   return (
     <ButtonWrapper style={style} className={className}>
       <StyledButton
+        aria-label={ariaLabel}
         type={type}
         onClick={onClick && !isLoading ? onClick : undefined}
         $appearance={appearance}

@@ -1,25 +1,25 @@
 import { useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import {
-  Link,
-  useNavigate,
   Form,
+  Link,
   useActionData,
+  useNavigate,
   useNavigation,
 } from "react-router-dom";
 import styled from "styled-components";
 import { LOGIN_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
-import { Button } from "../../components/buttons/Button";
+import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
 import { Field, FieldSize } from "../../components/form/Field";
 import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 import { Heading1 } from "../../components/text/Heading1";
 import { Heading2 } from "../../components/text/Heading2";
 import { TextField } from "../../components/TextField";
+import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateLoginForm } from "../../validation/validate";
-import { IUser } from "../../context/AuthContext";
 
 interface IUserLogInErrors {
   email: string;
@@ -32,15 +32,23 @@ interface ILogInData {
   user: IUser;
 }
 
-export async function action({ request }: { request: Request }) {
-  let formData = await request.formData();
-  // Trim the white spaces from the email and password
-  const trimmedUserLogInData = Object.fromEntries(
+// TODO: write unit test for removeWhiteSpace
+const removeWhiteSpace = (formData: FormData) => {
+  return Object.fromEntries(
     [...formData.entries()].map(([key, value]) => [
       key,
       value.toString().trim(),
     ])
+  );
+};
+
+export async function action({ request }: { request: Request }) {
+  let formData = await request.formData();
+  // Trim the white spaces from the email and password
+  const trimmedUserLogInData = removeWhiteSpace(
+    formData
   ) as unknown as IUserLogInErrors;
+
   // Validate the user login data, before sending it to the server
   const { error } = validateLoginForm(trimmedUserLogInData);
   if (error) {

@@ -5,23 +5,22 @@ import {
   useEffect,
   useState,
 } from "react";
+import { GoTriangleDown } from "react-icons/go";
+import { LuPencil } from "react-icons/lu";
+import { RiDeleteBinLine } from "react-icons/ri";
 import {
+  Link,
   Outlet,
   useLoaderData,
   useNavigate,
-  Link,
   useOutletContext,
 } from "react-router-dom";
 import styled from "styled-components";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
-import { Button } from "../../components/buttons/Button";
+import { Button } from "../../components/Button";
 import { Heading1 } from "../../components/text/Heading1";
 import { useAuthContext } from "../../hooks/useAuthContext";
-import { IconButton } from "../../components/buttons/IconButton";
-import { LuPencil } from "react-icons/lu";
-import { RiDeleteBinLine } from "react-icons/ri";
-import { GoTriangleDown } from "react-icons/go";
 import { StudentsSkeleton } from "./StudentsSkeleton";
 
 interface IStudents {
@@ -137,6 +136,10 @@ const StyledRowGrid = styled.div`
     background-color: var(--color-gray-400);
     border-radius: 8px;
     cursor: pointer;
+  }
+
+  @media (max-width: 650px) {
+    width: fit-content;
   }
 `;
 
@@ -267,8 +270,8 @@ const StudentsPage = () => {
                     <StyledTableCell>{student.email}</StyledTableCell>
                     <StyledTableCell>
                       <StyledIconsWrapper>
-                        <IconButton
-                          icon={
+                        <Button
+                          iconBefore={
                             <LuPencil
                               style={{ width: "16px", height: "16px" }}
                             />
@@ -276,13 +279,12 @@ const StudentsPage = () => {
                           onClick={(event: MouseEvent<HTMLButtonElement>) =>
                             handleEditStudent(event, student.student_uid)
                           }
-                          size="medium"
                           tooltip="Edit student"
-                          label="Edit student"
+                          ariaLabel="Edit student"
                           appearance="link"
                         />
-                        <IconButton
-                          icon={
+                        <Button
+                          iconBefore={
                             <RiDeleteBinLine
                               style={{ width: "16px", height: "16px" }}
                             />
@@ -290,9 +292,8 @@ const StudentsPage = () => {
                           onClick={() =>
                             handleDeleteStudent(student.student_uid)
                           }
-                          size="medium"
                           tooltip="Delete student"
-                          label="Delete student"
+                          ariaLabel="Delete student"
                           appearance="link"
                         />
                       </StyledIconsWrapper>
@@ -310,8 +311,8 @@ const StudentsPage = () => {
           )}
           {loaderData?.error && !isLoading && (
             <EmptyState>
-              {loaderData?.error?.message || loaderData?.error?.code}
-              : Error fetching students. Please try again later.
+              {loaderData?.error?.message || loaderData?.error?.code}: Error
+              fetching students. Please try again later.
             </EmptyState>
           )}
         </TableBodyWrapper>

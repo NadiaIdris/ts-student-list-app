@@ -7,7 +7,7 @@ import {
   useNavigation,
 } from "react-router-dom";
 import styled from "styled-components";
-import { Button } from "../../../components/buttons/Button";
+import { Button } from "../../../components/Button";
 import { Field, FormFieldDirection } from "../../../components/form/Field";
 import { Heading1 } from "../../../components/text/Heading1";
 import { TextField } from "../../../components/TextField";

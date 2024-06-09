@@ -1,8 +1,8 @@
-import { CgClose } from "react-icons/cg";
-import { Button } from "../buttons/Button";
-import styled from "styled-components";
 import { forwardRef, RefObject } from "react";
+import { CgClose } from "react-icons/cg";
+import styled from "styled-components";
 import { closeSnackbar } from "../../pages/StudentPanel";
+import { Button } from "../Button";
 
 interface SnackbarProps {
   text: string;

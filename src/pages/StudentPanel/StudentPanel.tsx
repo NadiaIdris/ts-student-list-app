@@ -1,15 +1,15 @@
+import { FormEvent, RefObject, useEffect, useRef } from "react";
+import { CgClose } from "react-icons/cg";
+import { MdOutlineContentCopy } from "react-icons/md";
 import { Form, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { Heading1 } from "../../components/text/Heading1";
-import { useEffect, FormEvent, useRef, RefObject } from "react";
-import { axiosInstance } from "../../api/axiosConfig";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
-import { CgClose } from "react-icons/cg";
-import { useStudentUid } from "../StudentsPage/StudentsPage";
-import { Button } from "../../components/buttons/Button";
-import { ReadOnlyField } from "./ReadOnlyField";
-import { MdOutlineContentCopy } from "react-icons/md";
+import { axiosInstance } from "../../api/axiosConfig";
+import { Button } from "../../components/Button";
 import { Snackbar } from "../../components/Snackbar";
+import { Heading1 } from "../../components/text/Heading1";
+import { useStudentUid } from "../StudentsPage/StudentsPage";
+import { ReadOnlyField } from "./ReadOnlyField";
 
 interface IStudent {
   firstName: string;
@@ -226,4 +226,4 @@ const StudentPanel = () => {
   );
 };
 
-export { StudentPanel, closeSnackbar };
+export { closeSnackbar, StudentPanel };

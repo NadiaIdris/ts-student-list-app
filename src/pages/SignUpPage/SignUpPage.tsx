@@ -1,25 +1,25 @@
 import { useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import {
-  Link,
-  useNavigate,
   Form,
+  Link,
   useActionData,
+  useNavigate,
   useNavigation,
 } from "react-router-dom";
 import styled from "styled-components";
 import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
-import { Button } from "../../components/buttons/Button";
+import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
 import { Field, FieldSize } from "../../components/form/Field";
 import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 import { Heading1 } from "../../components/text/Heading1";
 import { Heading2 } from "../../components/text/Heading2";
 import { TextField } from "../../components/TextField";
+import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateSignUpForm } from "../../validation/validate";
-import { IUser } from "../../context/AuthContext";
 
 interface IUserSignUpErrors {
   first_name: string;

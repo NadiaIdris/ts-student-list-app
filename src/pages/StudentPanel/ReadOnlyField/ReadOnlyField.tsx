@@ -1,6 +1,6 @@
-import React, { CSSProperties, ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
 import styled from "styled-components";
-import { Button } from "../../../components/buttons/Button";
+import { Button } from "../../../components/Button";
 
 interface ReadOnlyFieldProps {
   id: string;
