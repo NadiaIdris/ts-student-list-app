@@ -2,19 +2,19 @@ import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import {
   Form,
-  useActionData,
   useLoaderData,
   useNavigate,
   useNavigation,
 } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../../../components/Button";
-import { Dropdown, RefsContainer } from "../../../components/form/Dropdown";
+import { RefsContainer } from "../../../components/form/Dropdown";
 import { Field, FormFieldDirection } from "../../../components/form/Field";
 import { Heading1 } from "../../../components/text/Heading1";
 import { TextField } from "../../../components/TextField";
 import { useStudentUid } from "../../StudentsPage/StudentsPage";
 import { IStudentFetchData } from "../StudentPanel";
+import { DropdownMenu } from "../../../components/form/DropdownMenu";
 
 // TODO: ensure that automatic data revalidation happens when the user edits the student data.
 export async function action({ request }: { request: Request }) {
@@ -86,8 +86,19 @@ const StudentEditPanel = () => {
   const navigate = useNavigate();
   const [fieldDirection, setFieldDirection] =
     useState<FormFieldDirection>("row");
-  // TODO: use the
-  const actionData = useActionData();
+  const genders = [
+    "Female",
+    "Male",
+    "Agender",
+    "Cisgender",
+    "Genderfluid",
+    "Genderqueer",
+    "Non-binary",
+    "Transgender",
+  ];
+  const [selectedGender, setSelectedGender] = useState("");
+
+  const [genderDropdownIsOpen, setGenderDropdownIsOpen] = useState(false);
 
   // Refs for the selects and options.
   const genderOptionsRef: MutableRefObject<HTMLButtonElement[]> = useRef([]);
@@ -192,12 +203,18 @@ const StudentEditPanel = () => {
                 direction={fieldDirection}
                 invalidFieldMessage=""
               >
-                <div>Dropdown menu</div>
-                {/* <DropdownMenu>
-                  <DropdownItemGroup>
-
-                  </DropdownItemGroup>
-                </DropdownMenu> */}
+                {(inputProps) => (
+                  <DropdownMenu
+                    {...inputProps}
+                    ref={genderRefsObj}
+                    isOpen={genderDropdownIsOpen}
+                    menuItems={genders}
+                    onSelectedMenuItemClick={() =>
+                      setGenderDropdownIsOpen((prev) => !prev)
+                    }
+                    selectedMenuItem={selectedGender}
+                  />
+                )}
               </Field>
               {/* <Field
                 id="gender-dropdown"

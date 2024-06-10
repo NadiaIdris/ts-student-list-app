@@ -4,8 +4,8 @@ import { ErrorMessage } from "../ErrorMessage";
 import { Label } from "../Label";
 import { RequiredAsterisk } from "../RequiredAsterisk";
 
-export type FormFieldDirection = "row" | "column";
-export type FieldSize = "small" | "medium";
+type FormFieldDirection = "row" | "column";
+type FieldSize = "small" | "medium";
 
 interface FieldProps {
   id: string;
@@ -88,3 +88,4 @@ const Field = ({
 };
 
 export { Field };
+export type { FormFieldDirection, FieldSize };

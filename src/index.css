@@ -87,6 +87,9 @@
   /* input field height */
   --input-height-small: 30px;
   --input-height-medium: 36px;
+
+  /* animation speed */
+  --animation--speed1: 0.3s;
 }
 
 :root {
