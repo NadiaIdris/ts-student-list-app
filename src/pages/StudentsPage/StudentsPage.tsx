@@ -31,7 +31,8 @@ interface IStudents {
 export async function loader() {
   try {
     const response = await axiosInstance.get(STUDENTS_ENDPOINT);
-    if (response.status !== 200) throw new Error(response.statusText); // Throw an error when the response is not OK so that it proceeds directly to the catch block.
+    if (response.status !== 200) throw new Error(response.statusText); // Throw an error when the
+    // response is not OK so that it proceeds directly to the catch block.
     return { students: response.data };
   } catch (error: any) {
     console.error(error.message);
@@ -225,6 +226,13 @@ const StudentsPage = () => {
     (loaderData?.students?.length > 0 || loaderData?.error) &&
       setIsLoading(false);
   }, [loaderData.students, loaderData.error]);
+
+  useEffect(() => {
+    // if url endoint is '/' redirect to '/students'
+    if (window.location.pathname === "/") {
+      navigate("/students");
+    }
+  }, [navigate]);
 
   return (
     <>

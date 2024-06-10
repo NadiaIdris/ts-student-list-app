@@ -1,20 +1,26 @@
-import { useEffect, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import {
   Form,
+  useActionData,
   useLoaderData,
   useNavigate,
   useNavigation,
 } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../../../components/Button";
+import { Dropdown, RefsContainer } from "../../../components/form/Dropdown";
 import { Field, FormFieldDirection } from "../../../components/form/Field";
 import { Heading1 } from "../../../components/text/Heading1";
 import { TextField } from "../../../components/TextField";
 import { useStudentUid } from "../../StudentsPage/StudentsPage";
 import { IStudentFetchData } from "../StudentPanel";
 
-interface EditStudentProps {}
+// TODO: ensure that automatic data revalidation happens when the user edits the student data.
+export async function action({ request }: { request: Request }) {
+  let formData = await request.formData();
+  console.log("formData: ", formData);
+}
 
 const StyledCloseIcon = styled.div`
   position: fixed;
@@ -80,6 +86,17 @@ const StudentEditPanel = () => {
   const navigate = useNavigate();
   const [fieldDirection, setFieldDirection] =
     useState<FormFieldDirection>("row");
+  // TODO: use the
+  const actionData = useActionData();
+
+  // Refs for the selects and options.
+  const genderOptionsRef: MutableRefObject<HTMLButtonElement[]> = useRef([]);
+  const genderSelectedRef: MutableRefObject<HTMLInputElement | null> =
+    useRef(null);
+  const genderRefsObj: MutableRefObject<RefsContainer> = useRef({
+    optionsRef: genderOptionsRef,
+    selectedRef: genderSelectedRef,
+  });
 
   const handleCloseStudentPanel = () => {
     // Reset the studentUid to remove css property pointer-events: none from the students page.
@@ -169,6 +186,45 @@ const StudentEditPanel = () => {
                   />
                 )}
               </Field>
+              <Field
+                id="gender-dropdown"
+                label="Gender"
+                direction={fieldDirection}
+                invalidFieldMessage=""
+              >
+                <div>Dropdown menu</div>
+                {/* <DropdownMenu>
+                  <DropdownItemGroup>
+
+                  </DropdownItemGroup>
+                </DropdownMenu> */}
+              </Field>
+              {/* <Field
+                id="gender-dropdown"
+                label="Gender"
+                direction={fieldDirection}
+                invalidFieldMessage=""
+              >
+                {(inputProps) => (
+                  <Dropdown
+                    {...inputProps}
+                    ref={genderRefsObj}
+                    // formFields={formFields}
+                    // id={name}
+                    // isOpen={nameSelectIsOpen}
+                    // handleOptionClick={handleOptionClick}
+                    // handleSelectKeyDown={handleSelectKeyDown}
+                    // handleSelectClick={handleSelectClick}
+                    // handleOptionKeyDown={handleOptionKeyDown}
+                    // isDisabled={isSubmitting}
+                    // options={names}
+                    // selectedOption={formFields.name}
+                    // setFormFields={setFormFields}
+                    // setIsOpen={setNameSelectIsOpen}
+                    // setSelectedOption={handleSetSelectedOption}
+                  />
+                )}
+              </Field> */}
               <Field
                 id="gender"
                 label="Gender"
