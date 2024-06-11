@@ -2,10 +2,13 @@ import { forwardRef, MutableRefObject } from "react";
 import { Options } from "./Options";
 import { Selected } from "./Selected";
 
+type OptionsRef = MutableRefObject<HTMLButtonElement[] | null>;
+type SelectedRef = MutableRefObject<HTMLInputElement | null>;
+
 interface RefsContainer {
   // Wrapped for use with forwardRef.
-  optionsRef: MutableRefObject<HTMLButtonElement[]>;
-  selectedRef: MutableRefObject<HTMLInputElement | null>;
+  optionsRef: OptionsRef;
+  selectedRef: SelectedRef;
 }
 
 interface DropdownProps {
@@ -67,5 +70,4 @@ const Dropdown = forwardRef<any, DropdownProps>(
 );
 
 export { Dropdown };
-export type { RefsContainer };
-
+export type { OptionsRef, RefsContainer, SelectedRef };

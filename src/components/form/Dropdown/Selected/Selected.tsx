@@ -1,5 +1,6 @@
 import { MutableRefObject } from "react";
 import { FaCaretDown } from "react-icons/fa";
+import { OptionsRef, SelectedRef } from "../Dropdown";
 
 interface SelectProps {
   // isDisabled: boolean;
@@ -7,8 +8,8 @@ interface SelectProps {
   // handleSelectClick: HandleSelectClick;
   // handleSelectKeyDown: HandleSelectKeyDown;
   // options: TOption[];
-  optionsRef: MutableRefObject<HTMLButtonElement[]>;
-  selectedRef: MutableRefObject<HTMLInputElement | null>;
+  optionsRef: OptionsRef
+  selectedRef: SelectedRef
   placeholder?: string;
   // selectedOption: TOption | null;
   // setIsOpen: (isOpen: boolean) => void;

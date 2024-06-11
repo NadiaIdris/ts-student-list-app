@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import {
   Form,
@@ -9,12 +9,16 @@ import {
 import styled from "styled-components";
 import { Button } from "../../../components/Button";
 import { RefsContainer } from "../../../components/form/Dropdown";
+import {
+  OptionsRef,
+  SelectedRef,
+} from "../../../components/form/Dropdown/Dropdown";
+import { DropdownMenu } from "../../../components/form/DropdownMenu";
 import { Field, FormFieldDirection } from "../../../components/form/Field";
 import { Heading1 } from "../../../components/text/Heading1";
 import { TextField } from "../../../components/TextField";
 import { useStudentUid } from "../../StudentsPage/StudentsPage";
 import { IStudentFetchData } from "../StudentPanel";
-import { DropdownMenu } from "../../../components/form/DropdownMenu";
 
 // TODO: ensure that automatic data revalidation happens when the user edits the student data.
 export async function action({ request }: { request: Request }) {
@@ -96,23 +100,34 @@ const StudentEditPanel = () => {
     "Non-binary",
     "Transgender",
   ];
-  const [selectedGender, setSelectedGender] = useState("");
-
+  const [selectedGender, setSelectedGender] = useState(
+    loaderData?.studentData.gender || ""
+  );
   const [genderDropdownIsOpen, setGenderDropdownIsOpen] = useState(false);
 
   // Refs for the selects and options.
-  const genderOptionsRef: MutableRefObject<HTMLButtonElement[]> = useRef([]);
-  const genderSelectedRef: MutableRefObject<HTMLInputElement | null> =
-    useRef(null);
-  const genderRefsObj: MutableRefObject<RefsContainer> = useRef({
+  const genderOptionsRef: OptionsRef = useRef(null);
+  const genderSelectedRef: SelectedRef = useRef(null);
+  let container: RefsContainer = {
     optionsRef: genderOptionsRef,
     selectedRef: genderSelectedRef,
-  });
+  };
+  const genderRefsObj = useRef(container);
 
   const handleCloseStudentPanel = () => {
     // Reset the studentUid to remove css property pointer-events: none from the students page.
     setStudentUid("");
     navigate("/students");
+  };
+
+  const handleSelectedMenuItemClick = () => {
+    setGenderDropdownIsOpen((prev) => !prev);
+  };
+
+  const handleDropdownMenuItemClick = (option: string) => {
+    setSelectedGender(option);
+    setGenderDropdownIsOpen((prev) => !prev);
+    genderSelectedRef.current?.focus();
   };
 
   useEffect(() => {
@@ -208,11 +223,17 @@ const StudentEditPanel = () => {
                     {...inputProps}
                     ref={genderRefsObj}
                     isOpen={genderDropdownIsOpen}
+                    isDisabled={submitting}
+                    // Data
                     menuItems={genders}
-                    onSelectedMenuItemClick={() =>
-                      setGenderDropdownIsOpen((prev) => !prev)
-                    }
                     selectedMenuItem={selectedGender}
+                    // MouseEvent callbacks
+                    onSelectedMenuItemClick={handleSelectedMenuItemClick}
+                    onDropdownMenuItemClick={handleDropdownMenuItemClick}
+                    // TODO: implement these
+                    // KeyboardEvent callbacks
+                    // onSelectedMenuItemKeyDown={handleSelectedMenuItemKeyDown}
+                    // onDropdownMenuItemKeyDown={handleDropdownMenuItemKeyDown}
                   />
                 )}
               </Field>
@@ -242,23 +263,6 @@ const StudentEditPanel = () => {
                   />
                 )}
               </Field> */}
-              <Field
-                id="gender"
-                label="Gender"
-                direction={fieldDirection}
-                invalidFieldMessage="" // TODO: add error message
-              >
-                {(inputProps) => (
-                  <TextField
-                    {...inputProps}
-                    type="text"
-                    name="gender"
-                    defaultValue={loaderData?.studentData.gender}
-                    placeholder="Enter student's gender"
-                    isDisabled={submitting}
-                  />
-                )}
-              </Field>
               <Field
                 id="date-of-birth"
                 label="Birthday"

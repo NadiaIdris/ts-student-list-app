@@ -1,12 +1,14 @@
-import { LegacyRef } from "react";
-import styled from "styled-components";
+import { MutableRefObject } from "react";
 import { FaCaretDown } from "react-icons/fa";
+import styled from "styled-components";
 import { FieldSize } from "../../Field";
+import { OptionsRef, SelectedRef } from "../../Dropdown/Dropdown";
 
 interface SelectedMenuItemProps {
   id: string;
-  optionsRef: HTMLButtonElement[];
-  selectedRef: LegacyRef<HTMLInputElement> | undefined;
+  optionsRef: OptionsRef
+  selectedRef: SelectedRef
+  isDisabled?: boolean;
   placeholder?: string;
   dropdownIsOpen: boolean;
   onClick: () => void;
@@ -23,7 +25,10 @@ const StyledInputWrapper = styled.div`
   align-items: center;
 `;
 
-const StyledInput = styled.input<{ $size: FieldSize }>`
+const StyledInput = styled.input<{
+  $size: FieldSize;
+  $dropdownIsOpen: boolean;
+}>`
   cursor: default;
   ${({ $size }) => {
     if ($size === "small")
@@ -31,10 +36,20 @@ const StyledInput = styled.input<{ $size: FieldSize }>`
     else if ($size === "medium")
       return "height: var(--input-height-medium); font: var(--font-size-16) Poppins, sans-serif;"; // ~16px is 1rem
   }}
-  border-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
+  ${({ $dropdownIsOpen }) =>
+    $dropdownIsOpen
+      ? "border-bottom-left-radius: 0; border-bottom-right-radius: 0;"
+      : "border-bottom-left-radius: var(--border-radius); border-bottom-right-radius: var(--border-radius);"}
   width: 100%;
   border: 2px solid var(--text-black);
   padding: 0 8px;
+  outline: none;
+
+  &:hover {
+    background-color: var(--color-button-secondary-bg);
+  }
 `;
 
 const StyledIconContainer = styled.div<{ $dropdownIsOpen: boolean }>`
@@ -52,6 +67,7 @@ const SelectedMenuItem = ({
   id,
   optionsRef,
   selectedRef,
+  isDisabled,
   placeholder = "Choose one",
   dropdownIsOpen,
   onClick,
@@ -63,6 +79,7 @@ const SelectedMenuItem = ({
       <StyledInput
         id={id}
         ref={selectedRef}
+        disabled={isDisabled}
         readOnly
         onClick={() => console.log("dropdown open")}
         placeholder={placeholder}
@@ -72,6 +89,7 @@ const SelectedMenuItem = ({
           event.preventDefault();
         }}
         $size={size}
+        $dropdownIsOpen={dropdownIsOpen}
       />
       <StyledIconContainer $dropdownIsOpen={dropdownIsOpen}>
         <FaCaretDown style={{ width: "16px", height: "16px" }} />
