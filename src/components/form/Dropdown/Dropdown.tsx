@@ -1,4 +1,4 @@
-import { forwardRef, MutableRefObject } from "react";
+import { ForwardedRef, forwardRef, MutableRefObject } from "react";
 import { Options } from "./Options";
 import { Selected } from "./Selected";
 
@@ -31,7 +31,7 @@ interface DropdownProps {
   // setSelectedOption: HandleSetSelectedOption;
 }
 
-const Dropdown = forwardRef<any, DropdownProps>(
+const Dropdown = forwardRef(
   (
     {
       // formFields,
@@ -46,8 +46,8 @@ const Dropdown = forwardRef<any, DropdownProps>(
       // setFormFields,
       // setIsOpen,
       ...rest
-    },
-    ref
+    }: DropdownProps,
+    ref: ForwardedRef<RefsContainer>
   ) => {
     const { optionsRef, selectedRef } = (ref as MutableRefObject<RefsContainer>)
       ?.current;

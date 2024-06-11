@@ -27,7 +27,7 @@ const StyledMenuItemGroup = styled.div`
   border-bottom: 2px solid black;
   border-right: 2px solid black;
   border-left: 2px solid black;
-  max-height: 180px;
+  max-height: 200px;
   overflow: hidden auto;
 `;
 
