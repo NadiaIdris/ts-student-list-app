@@ -1,19 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
-import {
-  Form,
-  useLoaderData,
-  useNavigate,
-  useNavigation,
-} from "react-router-dom";
+import { Form, useLoaderData, useNavigate, useNavigation } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../../../components/Button";
-import { RefsContainer } from "../../../components/form/Dropdown";
-import {
-  OptionsRef,
-  SelectedRef,
-} from "../../../components/form/Dropdown/Dropdown";
 import { DropdownMenu } from "../../../components/form/DropdownMenu";
+import { OptionsRef, RefsContainer, SelectedRef } from "../../../components/form/DropdownMenu/DropdownMenu";
 import { Field, FormFieldDirection } from "../../../components/form/Field";
 import { Heading1 } from "../../../components/text/Heading1";
 import { TextField } from "../../../components/TextField";
@@ -84,29 +75,16 @@ const StyledFieldsWrapper = styled.div`
 const StudentEditPanel = () => {
   const navigation = useNavigation();
   const submitting = navigation.state === "submitting";
-  const loaderData: IStudentFetchData | undefined =
-    useLoaderData() as IStudentFetchData;
+  const loaderData: IStudentFetchData | undefined = useLoaderData() as IStudentFetchData;
   const { setStudentUid } = useStudentUid();
   const navigate = useNavigate();
-  const [fieldDirection, setFieldDirection] =
-    useState<FormFieldDirection>("row");
-  const genders = [
-    "Female",
-    "Male",
-    "Agender",
-    "Cisgender",
-    "Genderfluid",
-    "Genderqueer",
-    "Non-binary",
-    "Transgender",
-  ];
-  const [selectedGender, setSelectedGender] = useState(
-    loaderData?.studentData.gender || ""
-  );
+  const [fieldDirection, setFieldDirection] = useState<FormFieldDirection>("row");
+  const genders = ["Female", "Male", "Agender", "Cisgender", "Genderfluid", "Genderqueer", "Non-binary", "Transgender"];
+  const [selectedGender, setSelectedGender] = useState(loaderData?.studentData.gender || "");
   const [genderDropdownIsOpen, setGenderDropdownIsOpen] = useState(false);
 
   // Refs for the selects and options.
-  const genderOptionsRef: OptionsRef = useRef(null);
+  const genderOptionsRef: OptionsRef = useRef([] as HTMLButtonElement[]);
   const genderSelectedRef: SelectedRef = useRef(null);
   let container: RefsContainer = {
     optionsRef: genderOptionsRef,
@@ -212,18 +190,16 @@ const StudentEditPanel = () => {
                   />
                 )}
               </Field>
-              <Field
-                id="gender-dropdown"
-                label="Gender"
-                direction={fieldDirection}
-                invalidFieldMessage=""
-              >
+              <Field id="gender-dropdown" label="Gender" direction={fieldDirection} invalidFieldMessage="">
                 {(inputProps) => (
                   <DropdownMenu
                     {...inputProps}
                     ref={genderRefsObj}
                     isOpen={genderDropdownIsOpen}
                     isDisabled={submitting}
+                    // Function component state setters
+                    setSelectedGender={setSelectedGender}
+                    setGenderDropdownIsOpen={setGenderDropdownIsOpen}
                     // Data
                     menuItems={genders}
                     selectedMenuItem={selectedGender}
@@ -285,11 +261,7 @@ const StudentEditPanel = () => {
               <Button type="submit" isLoading={submitting}>
                 Save
               </Button>
-              <Button
-                type="button"
-                appearance="secondary"
-                isLoading={submitting}
-              >
+              <Button type="button" appearance="secondary" isLoading={submitting}>
                 Cancel
               </Button>
             </div>

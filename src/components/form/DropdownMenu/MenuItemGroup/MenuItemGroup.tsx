@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import { FieldSize } from "../../Field";
-import { MenuItemsType } from "../DropdownMenu";
 import { MenuItem } from "../MenuItem";
-import { MutableRefObject } from "react";
-import { OptionsRef, SelectedRef } from "../../Dropdown/Dropdown";
+import { MenuItemsType, OptionsRef, SelectedRef } from "../DropdownMenu";
 
 interface MenuItemGroupProps {
   optionsRef: OptionsRef

@@ -1,11 +1,19 @@
 import { ForwardedRef, forwardRef, MutableRefObject } from "react";
 import styled from "styled-components";
-import { RefsContainer } from "../Dropdown/Dropdown";
 import { FieldSize } from "../Field";
 import { MenuItemGroup } from "./MenuItemGroup";
 import { SelectedMenuItem } from "./SelectedMenuItem";
 
 type MenuItemsType = string[];
+
+type OptionsRef = MutableRefObject<HTMLButtonElement[]>;
+type SelectedRef = MutableRefObject<HTMLInputElement | null>;
+
+interface RefsContainer {
+  // Wrapped for use with forwardRef.
+  optionsRef: OptionsRef;
+  selectedRef: SelectedRef;
+}
 
 interface DropdownMenuProps {
   id: string;
@@ -19,6 +27,8 @@ interface DropdownMenuProps {
   selectedMenuItem: string;
   onDropdownMenuItemClick: (option: string) => void;
   size?: FieldSize;
+  setSelectedGender?: React.Dispatch<React.SetStateAction<string>>;
+  setGenderDropdownIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const StyledDropDownMenu = styled.div`
@@ -38,11 +48,12 @@ const DropdownMenu = forwardRef(
       selectedMenuItem,
       onDropdownMenuItemClick,
       size = "medium",
+      setSelectedGender,
+      setGenderDropdownIsOpen
     }: DropdownMenuProps,
     ref: ForwardedRef<RefsContainer>
   ) => {
-    const { optionsRef, selectedRef } = (ref as MutableRefObject<RefsContainer>)
-      ?.current;
+    const { optionsRef, selectedRef } = (ref as MutableRefObject<RefsContainer>)?.current;
     return (
       <StyledDropDownMenu>
         <SelectedMenuItem
@@ -51,9 +62,11 @@ const DropdownMenu = forwardRef(
           selectedRef={selectedRef}
           isDisabled={isDisabled}
           dropdownIsOpen={isOpen}
-          onClick={onSelectedMenuItemClick}
+          onSelectedMenuItemClick={onSelectedMenuItemClick}
           selectedMenuItem={selectedMenuItem}
           size={size}
+          setSelectedGender={setSelectedGender}
+          setGenderDropdownIsOpen={setGenderDropdownIsOpen}
         />
         <MenuItemGroup
           optionsRef={optionsRef}
@@ -70,4 +83,4 @@ const DropdownMenu = forwardRef(
 );
 
 export { DropdownMenu };
-export type { MenuItemsType };
+export type { MenuItemsType, OptionsRef, RefsContainer, SelectedRef };

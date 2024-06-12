@@ -1,22 +1,25 @@
-import { MutableRefObject } from "react";
+import { CgClose } from "react-icons/cg";
 import { FaCaretDown } from "react-icons/fa";
 import styled from "styled-components";
+import { Button } from "../../../Button";
+import { OptionsRef, SelectedRef } from "../DropdownMenu";
 import { FieldSize } from "../../Field";
-import { OptionsRef, SelectedRef } from "../../Dropdown/Dropdown";
 
 interface SelectedMenuItemProps {
   id: string;
-  optionsRef: OptionsRef
-  selectedRef: SelectedRef
+  optionsRef: OptionsRef;
+  selectedRef: SelectedRef;
   isDisabled?: boolean;
   placeholder?: string;
   dropdownIsOpen: boolean;
-  onClick: () => void;
+  onSelectedMenuItemClick: () => void;
   /**
    * The `size` prop specifies the size of the input field. The default value is "medium".
    */
   size?: FieldSize;
   selectedMenuItem: string;
+  setSelectedGender?: React.Dispatch<React.SetStateAction<string>>;
+  setGenderDropdownIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const StyledInputWrapper = styled.div`
@@ -25,17 +28,14 @@ const StyledInputWrapper = styled.div`
   align-items: center;
 `;
 
-const StyledInput = styled.input<{
-  $size: FieldSize;
-  $dropdownIsOpen: boolean;
-}>`
-  cursor: default;
+const StyledInput = styled.input<{ $size: FieldSize; $dropdownIsOpen: boolean }>`
   ${({ $size }) => {
     if ($size === "small")
       return "height: var(--input-height-small); font: var(--font-size-14) Poppins, sans-serif;"; // ~14px is 0.875rem
     else if ($size === "medium")
       return "height: var(--input-height-medium); font: var(--font-size-16) Poppins, sans-serif;"; // ~16px is 1rem
   }}
+  cursor: pointer;
   border-top-right-radius: var(--border-radius);
   border-top-left-radius: var(--border-radius);
   ${({ $dropdownIsOpen }) =>
@@ -44,17 +44,19 @@ const StyledInput = styled.input<{
       : "border-bottom-left-radius: var(--border-radius); border-bottom-right-radius: var(--border-radius);"}
   width: 100%;
   border: 2px solid var(--text-black);
-  padding: 0 8px;
+  padding: 0 32px 0 8px;
   outline: none;
+`;
 
-  &:hover {
-    background-color: var(--color-button-secondary-bg);
-  }
+const StyledClearIconContainer = styled.div`
+  position: absolute;
+  right: 34px;
+  cursor: pointer;
 `;
 
 const StyledIconContainer = styled.div<{ $dropdownIsOpen: boolean }>`
   position: absolute;
-  right: 10px;
+  right: 6px;
   ${({ $dropdownIsOpen }) => {
     if ($dropdownIsOpen) {
       return `rotate: -180deg; transition: rotate var(--animation--speed1) ease 0s;`;
@@ -70,18 +72,20 @@ const SelectedMenuItem = ({
   isDisabled,
   placeholder = "Choose one",
   dropdownIsOpen,
-  onClick,
+  onSelectedMenuItemClick,
   size = "medium",
   selectedMenuItem,
+  setSelectedGender,
+  setGenderDropdownIsOpen,
 }: SelectedMenuItemProps) => {
+  const showClearSelectionButton = selectedMenuItem !== "" ? true : false;
   return (
-    <StyledInputWrapper onClick={onClick}>
+    <StyledInputWrapper onClick={onSelectedMenuItemClick}>
       <StyledInput
         id={id}
         ref={selectedRef}
         disabled={isDisabled}
         readOnly
-        onClick={() => console.log("dropdown open")}
         placeholder={placeholder}
         value={selectedMenuItem}
         onMouseDown={(event) => {
@@ -91,8 +95,32 @@ const SelectedMenuItem = ({
         $size={size}
         $dropdownIsOpen={dropdownIsOpen}
       />
+      {showClearSelectionButton && (
+        <StyledClearIconContainer>
+          <Button
+            appearance="link-with-background"
+            size="small"
+            iconBefore={<CgClose style={{ width: "14px", height: "14px" }} />}
+            onClick={(event) => {
+              if (setSelectedGender && setGenderDropdownIsOpen) {
+                event.stopPropagation();
+                setSelectedGender("");
+                setGenderDropdownIsOpen(false);
+              }
+            }}
+          />
+        </StyledClearIconContainer>
+      )}
       <StyledIconContainer $dropdownIsOpen={dropdownIsOpen}>
-        <FaCaretDown style={{ width: "16px", height: "16px" }} />
+        <Button
+          appearance="link"
+          size="small"
+          iconBefore={<FaCaretDown style={{ width: "16px", height: "16px", color: "black" }} />}
+          onClick={(event) => {
+            event.stopPropagation();
+            onSelectedMenuItemClick();
+          }}
+        />
       </StyledIconContainer>
     </StyledInputWrapper>
   );

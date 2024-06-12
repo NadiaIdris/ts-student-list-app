@@ -14,11 +14,12 @@ const StyledMenuItem = styled.button<{ $size: FieldSize }>`
   background-color: var(--color-white);
   border: 2px solid transparent;
   color: var(--color-button-default-fg);
-  display: flex;
   width: 100%;
+  display: flex;
   align-items: center;
   justify-content: flex-start;
-  
+  text-align: start;
+
   ${({ $size }) =>
     $size === "small"
       ? "font-size: var(--font-size-14); height: var(--input-height-small);"

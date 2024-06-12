@@ -1,20 +1,8 @@
-import {
-  Dispatch,
-  MouseEvent,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react";
 import { GoTriangleDown } from "react-icons/go";
 import { LuPencil } from "react-icons/lu";
 import { RiDeleteBinLine } from "react-icons/ri";
-import {
-  Link,
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useOutletContext,
-} from "react-router-dom";
+import { Link, Outlet, useLoaderData, useNavigate, useOutletContext } from "react-router-dom";
 import styled from "styled-components";
 import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
@@ -48,17 +36,22 @@ const TableBodyWrapper = styled.div`
   padding: 0 48px;
   overflow-y: auto;
   overflow-x: auto;
-  height: calc(100vh - 107px - 52px);
+  height: calc(100vh - 58px - 52px);
   background-color: var(--color-white);
 
   @media (max-width: 770px) {
     padding: 0 20px;
-    height: calc(100vh - 86px - 52px);
+    height: calc(100vh - 58px - 86px); // 58px is the height of the bottom bar with 'Add new student' button.
   }
 
   @media (max-width: 500px) {
     padding: 0 8px;
-    height: calc(100vh - 64px - 52px);
+    height: calc(100vh - 58px - 63px);
+  }
+
+  @media (max-width: 420px) {
+    padding: 0 8px;
+    height: calc(100vh - 58px - 121px);
   }
 `;
 
@@ -83,7 +76,7 @@ const StyledHeader = styled.header`
     }
   }
 
-  @media (max-width: 390px) {
+  @media (max-width: 420px) {
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 16px;
@@ -207,10 +200,7 @@ const StudentsPage = () => {
 
   // TODO: Implement handleEditStudent function
 
-  const handleEditStudent = (
-    event: MouseEvent<HTMLButtonElement>,
-    studentId: string
-  ) => {
+  const handleEditStudent = (event: MouseEvent<HTMLButtonElement>, studentId: string) => {
     // Don't bubble up the event to the parent element
     event.stopPropagation();
     console.log("Edit student with id: ", studentId);
@@ -223,8 +213,7 @@ const StudentsPage = () => {
   };
 
   useEffect(() => {
-    (loaderData?.students?.length > 0 || loaderData?.error) &&
-      setIsLoading(false);
+    (loaderData?.students?.length > 0 || loaderData?.error) && setIsLoading(false);
   }, [loaderData.students, loaderData.error]);
 
   useEffect(() => {
@@ -243,9 +232,7 @@ const StudentsPage = () => {
             <Button
               appearance="link"
               onClick={openDropdown}
-              iconAfter={
-                <GoTriangleDown style={{ width: "16px", height: "16px" }} />
-              }
+              iconAfter={<GoTriangleDown style={{ width: "16px", height: "16px" }} />}
             >
               {user?.firstName}
             </Button>
@@ -267,10 +254,7 @@ const StudentsPage = () => {
             {!isLoading &&
               loaderData?.students?.length > 0 &&
               loaderData?.students?.map((student, index) => (
-                <StyledTableRow
-                  key={student.student_uid}
-                  to={`${student.student_uid}`}
-                >
+                <StyledTableRow key={student.student_uid} to={`${student.student_uid}`}>
                   <StyledRowGrid>
                     <StyledTableCell>{index + 1}</StyledTableCell>
                     <StyledTableCell>{student.first_name}</StyledTableCell>
@@ -279,11 +263,7 @@ const StudentsPage = () => {
                     <StyledTableCell>
                       <StyledIconsWrapper>
                         <Button
-                          iconBefore={
-                            <LuPencil
-                              style={{ width: "16px", height: "16px" }}
-                            />
-                          }
+                          iconBefore={<LuPencil style={{ width: "16px", height: "16px" }} />}
                           onClick={(event: MouseEvent<HTMLButtonElement>) =>
                             handleEditStudent(event, student.student_uid)
                           }
@@ -292,14 +272,8 @@ const StudentsPage = () => {
                           appearance="link"
                         />
                         <Button
-                          iconBefore={
-                            <RiDeleteBinLine
-                              style={{ width: "16px", height: "16px" }}
-                            />
-                          }
-                          onClick={() =>
-                            handleDeleteStudent(student.student_uid)
-                          }
+                          iconBefore={<RiDeleteBinLine style={{ width: "16px", height: "16px" }} />}
+                          onClick={() => handleDeleteStudent(student.student_uid)}
                           tooltip="Delete student"
                           ariaLabel="Delete student"
                           appearance="link"
@@ -319,16 +293,12 @@ const StudentsPage = () => {
           )}
           {loaderData?.error && !isLoading && (
             <EmptyState>
-              {loaderData?.error?.message || loaderData?.error?.code}: Error
-              fetching students. Please try again later.
+              {loaderData?.error?.message || loaderData?.error?.code}: Error fetching students. Please try again later.
             </EmptyState>
           )}
         </TableBodyWrapper>
         <StyledButtonWrapper>
-          <Button
-            appearance="primary"
-            onClick={() => navigate("/students/add")}
-          >
+          <Button appearance="primary" onClick={() => navigate("/students/add")}>
             Add new student
           </Button>
         </StyledButtonWrapper>

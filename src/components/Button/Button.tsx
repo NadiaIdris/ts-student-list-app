@@ -62,7 +62,7 @@ export interface ButtonProps {
 }
 
 const ButtonWrapper = styled.div`
-  display: block;
+  display: contents;
 `;
 
 const StyledButton = styled.button<{
