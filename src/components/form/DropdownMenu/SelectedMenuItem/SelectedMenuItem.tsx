@@ -2,8 +2,9 @@ import { CgClose } from "react-icons/cg";
 import { FaCaretDown } from "react-icons/fa";
 import styled from "styled-components";
 import { Button } from "../../../Button";
-import { OptionsRef, SelectedRef } from "../DropdownMenu";
 import { FieldSize } from "../../Field";
+import { OptionsRef, SelectedRef } from "../DropdownMenu";
+import { KeyboardEvent } from "react";
 
 interface SelectedMenuItemProps {
   id: string;
@@ -13,6 +14,7 @@ interface SelectedMenuItemProps {
   placeholder?: string;
   dropdownIsOpen: boolean;
   onSelectedMenuItemClick: () => void;
+  onSelectedMenuItemKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   /**
    * The `size` prop specifies the size of the input field. The default value is "medium".
    */
@@ -46,6 +48,11 @@ const StyledInput = styled.input<{ $size: FieldSize; $dropdownIsOpen: boolean }>
   border: 2px solid var(--text-black);
   padding: 0 32px 0 8px;
   outline: none;
+  &:focus {
+    outline: 2px solid blue;
+    outline-offset: -2px; // replaces the border, when is focused.
+    border: 2px solid transparent;
+  }
 `;
 
 const StyledClearIconContainer = styled.div`
@@ -73,6 +80,7 @@ const SelectedMenuItem = ({
   placeholder = "Choose one",
   dropdownIsOpen,
   onSelectedMenuItemClick,
+  onSelectedMenuItemKeyDown,
   size = "medium",
   selectedMenuItem,
   setSelectedGender,
@@ -80,7 +88,17 @@ const SelectedMenuItem = ({
 }: SelectedMenuItemProps) => {
   const showClearSelectionButton = selectedMenuItem !== "" ? true : false;
   return (
-    <StyledInputWrapper onClick={onSelectedMenuItemClick}>
+    <StyledInputWrapper
+      onClick={onSelectedMenuItemClick}
+      onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === "Enter") {
+          /* If we don't prevent the browser's default, the form will be submitted when user pressed
+         "Enter" key. */
+          event.preventDefault();
+          console.log("Enter key pressed");
+        }
+      }}
+    >
       <StyledInput
         id={id}
         ref={selectedRef}
@@ -116,10 +134,7 @@ const SelectedMenuItem = ({
           appearance="link"
           size="small"
           iconBefore={<FaCaretDown style={{ width: "16px", height: "16px", color: "black" }} />}
-          onClick={(event) => {
-            event.stopPropagation();
-            onSelectedMenuItemClick();
-          }}
+          onClick={() => onSelectedMenuItemClick}
         />
       </StyledIconContainer>
     </StyledInputWrapper>

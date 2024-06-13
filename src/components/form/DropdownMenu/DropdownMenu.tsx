@@ -24,6 +24,7 @@ interface DropdownMenuProps {
    * Callback function to handle the click event on the selected menu item.
    */
   onSelectedMenuItemClick: () => void;
+  onSelectedMenuItemKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   selectedMenuItem: string;
   onDropdownMenuItemClick: (option: string) => void;
   size?: FieldSize;
@@ -45,6 +46,7 @@ const DropdownMenu = forwardRef(
       isDisabled,
       menuItems,
       onSelectedMenuItemClick,
+      onSelectedMenuItemKeyDown,
       selectedMenuItem,
       onDropdownMenuItemClick,
       size = "medium",
@@ -63,6 +65,7 @@ const DropdownMenu = forwardRef(
           isDisabled={isDisabled}
           dropdownIsOpen={isOpen}
           onSelectedMenuItemClick={onSelectedMenuItemClick}
+          onSelectedMenuItemKeyDown={onSelectedMenuItemKeyDown}
           selectedMenuItem={selectedMenuItem}
           size={size}
           setSelectedGender={setSelectedGender}

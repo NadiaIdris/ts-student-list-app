@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, MouseEvent, MutableRefObject } from "react";
 import { CgClose } from "react-icons/cg";
 import { Form, useLoaderData, useNavigate, useNavigation } from "react-router-dom";
 import styled from "styled-components";
@@ -16,6 +16,25 @@ export async function action({ request }: { request: Request }) {
   let formData = await request.formData();
   console.log("formData: ", formData);
 }
+
+export type ToggleSelectIsOpen = (
+  genderDropdownIsOpen: boolean,
+  genders: string[],
+  genderOptionsRef: OptionsRef,
+  placeholder: string,
+  selectedOption: string | null,
+  setGenderDropdownIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+) => void;
+
+export type HandleSelectKeyDown = (
+  event: KeyboardEvent,
+  genderDropdownIsOpen: boolean,
+  genders: string[],
+  genderOptionsRef: OptionsRef,
+  placeholder: string,
+  selectedOption: string | null,
+  setGenderDropdownIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+) => void;
 
 const StyledCloseIcon = styled.div`
   position: fixed;
@@ -98,8 +117,83 @@ const StudentEditPanel = () => {
     navigate("/students");
   };
 
-  const handleSelectedMenuItemClick = () => {
-    setGenderDropdownIsOpen((prev) => !prev);
+  const toggleSelectIsOpen: ToggleSelectIsOpen = (
+    genderDropdownIsOpen,
+    genders,
+    genderOptionsRef,
+    placeholder,
+    selectedGender,
+    setGenderDropdownIsOpen
+  ) => {
+    if (genderDropdownIsOpen) {
+      setGenderDropdownIsOpen(false);
+      return;
+    }
+    setGenderDropdownIsOpen(true);
+    if (selectedGender !== placeholder) {
+      /* Find index is assuming that there is only one instance of a string in an array. If more
+      than one instance of the same string, the findIndex method returns the index of the first match.  */
+      const selectedOptionIndex = genders.findIndex((gender) => gender === selectedGender);
+      // Add a timeout to make sure async setIsOpen is called first and then our setTimeout is called next from the JS event loop.
+      setTimeout(() => {
+        if (genderOptionsRef.current[selectedOptionIndex]) {
+          genderOptionsRef.current[selectedOptionIndex].focus();
+          genderOptionsRef.current[selectedOptionIndex].scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "center",
+          });
+        }
+      }, 0);
+    }
+  };
+
+  const handleSelectedMenuItemClick = (event: MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    // Prevent propagating of the click event to outer elements in the container.
+    event.stopPropagation();
+    toggleSelectIsOpen(
+      genderDropdownIsOpen,
+      genders,
+      genderOptionsRef,
+      "Choose one",
+      selectedGender,
+      setGenderDropdownIsOpen
+    );
+    genderSelectedRef.current?.focus();
+  };
+
+  const handleSelectedMenuItemKeyDown: HandleSelectKeyDown = (
+    event,
+    genderDropdownIsOpen,
+    genders,
+    genderOptionsRef,
+    placeholder,
+    selectedGender,
+    setGenderDropdownIsOpen
+  ) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      toggleSelectIsOpen(
+        genderDropdownIsOpen,
+        genders,
+        genderOptionsRef,
+        placeholder,
+        selectedGender,
+        setGenderDropdownIsOpen
+      );
+    }
+
+    if (genderDropdownIsOpen) {
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        genderOptionsRef.current[0].focus();
+        setGenderDropdownIsOpen(true);
+      }
+
+      if (event.key === "Escape") {
+        setGenderDropdownIsOpen(false);
+      }
+    }
   };
 
   const handleDropdownMenuItemClick = (option: string) => {
@@ -208,7 +302,7 @@ const StudentEditPanel = () => {
                     onDropdownMenuItemClick={handleDropdownMenuItemClick}
                     // TODO: implement these
                     // KeyboardEvent callbacks
-                    // onSelectedMenuItemKeyDown={handleSelectedMenuItemKeyDown}
+                    onSelectedMenuItemKeyDown={handleSelectedMenuItemKeyDown}
                     // onDropdownMenuItemKeyDown={handleDropdownMenuItemKeyDown}
                   />
                 )}
