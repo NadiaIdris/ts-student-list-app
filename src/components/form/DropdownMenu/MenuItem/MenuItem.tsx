@@ -1,12 +1,17 @@
-import { MouseEvent } from "react";
+import { MouseEvent, KeyboardEvent } from "react";
 import styled from "styled-components";
 import { FieldSize } from "../../Field";
+import { OptionsRef } from "../DropdownMenu";
+import { HandleOptionKeyDown } from "../../../../pages/StudentPanel/StudentEditPanel";
 
 interface MenuItemProps {
+  optionsRef: OptionsRef;
   children: string;
   onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+  onDropdownMenuItemKeyDown?: HandleOptionKeyDown;
   isDisabled?: boolean;
   size?: FieldSize;
+  index: number;
 }
 
 const StyledMenuItem = styled.button<{ $size: FieldSize }>`
@@ -33,16 +38,42 @@ const StyledMenuItem = styled.button<{ $size: FieldSize }>`
     border-bottom-right-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
   }
+  /* TODO: delete or keep this focus? */
+  &:focus {
+    outline: 2px solid blue;
+    outline-offset: -2px; // replaces the border, when is focused.
+    border: 2px solid transparent;
+  }
 `;
 
 const MenuItem = ({
+  optionsRef,
   children,
   onClick,
+  onDropdownMenuItemKeyDown,
   isDisabled,
   size = "medium",
+  index,
 }: MenuItemProps) => {
+
+  const handleKeyDown: React.KeyboardEventHandler<HTMLButtonElement> = (event) => { 
+    if (onDropdownMenuItemKeyDown) {
+      onDropdownMenuItemKeyDown(event, index);
+    }
+  };
   return (
-    <StyledMenuItem onClick={onClick} disabled={isDisabled} $size={size}>
+    <StyledMenuItem
+      ref={(node) => {
+        // Add this button node to optionsRef array.
+        if (node) {
+          optionsRef.current[index] = node;
+        }
+      }}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      disabled={isDisabled}
+      $size={size}
+    >
       {children}
     </StyledMenuItem>
   );

@@ -5,6 +5,7 @@ import { Button } from "../../../Button";
 import { FieldSize } from "../../Field";
 import { OptionsRef, SelectedRef } from "../DropdownMenu";
 import { KeyboardEvent } from "react";
+import { HandleSelectKeyDown } from "../../../../pages/StudentPanel/StudentEditPanel";
 
 interface SelectedMenuItemProps {
   id: string;
@@ -14,7 +15,7 @@ interface SelectedMenuItemProps {
   placeholder?: string;
   dropdownIsOpen: boolean;
   onSelectedMenuItemClick: () => void;
-  onSelectedMenuItemKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+  onSelectedMenuItemKeyDown?: HandleSelectKeyDown;
   /**
    * The `size` prop specifies the size of the input field. The default value is "medium".
    */
@@ -91,12 +92,8 @@ const SelectedMenuItem = ({
     <StyledInputWrapper
       onClick={onSelectedMenuItemClick}
       onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
-        if (event.key === "Enter") {
-          /* If we don't prevent the browser's default, the form will be submitted when user pressed
-         "Enter" key. */
-          event.preventDefault();
-          console.log("Enter key pressed");
-        }
+        onSelectedMenuItemKeyDown &&
+        onSelectedMenuItemKeyDown(event)
       }}
     >
       <StyledInput
@@ -123,7 +120,6 @@ const SelectedMenuItem = ({
               if (setSelectedGender && setGenderDropdownIsOpen) {
                 event.stopPropagation();
                 setSelectedGender("");
-                setGenderDropdownIsOpen(false);
               }
             }}
           />

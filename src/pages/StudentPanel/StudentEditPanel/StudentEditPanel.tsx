@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, MouseEvent, MutableRefObject } from "react";
+import { KeyboardEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { Form, useLoaderData, useNavigate, useNavigation } from "react-router-dom";
 import styled from "styled-components";
@@ -26,15 +26,9 @@ export type ToggleSelectIsOpen = (
   setGenderDropdownIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 ) => void;
 
-export type HandleSelectKeyDown = (
-  event: KeyboardEvent,
-  genderDropdownIsOpen: boolean,
-  genders: string[],
-  genderOptionsRef: OptionsRef,
-  placeholder: string,
-  selectedOption: string | null,
-  setGenderDropdownIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-) => void;
+type HandleSelectKeyDown = (event: KeyboardEvent<HTMLDivElement>) => void;
+
+type HandleOptionKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => void;
 
 const StyledCloseIcon = styled.div`
   position: fixed;
@@ -130,13 +124,23 @@ const StudentEditPanel = () => {
       return;
     }
     setGenderDropdownIsOpen(true);
-    if (selectedGender !== placeholder) {
+    console.log("selectedGender: ", selectedGender);
+    // TODO: selectedGender will never equal placeholder
+    // Run this code only when something is selected.
+    if (selectedGender !== "") {
+      console.log("selectedGender !== '': ", selectedGender !== "");
       /* Find index is assuming that there is only one instance of a string in an array. If more
       than one instance of the same string, the findIndex method returns the index of the first match.  */
       const selectedOptionIndex = genders.findIndex((gender) => gender === selectedGender);
       // Add a timeout to make sure async setIsOpen is called first and then our setTimeout is called next from the JS event loop.
       setTimeout(() => {
         if (genderOptionsRef.current[selectedOptionIndex]) {
+          console.log(
+            "Inside toggleSelectIsOpen genderOptionsRef.current[selectedOptionIndex]: ",
+            genderOptionsRef.current[selectedOptionIndex]
+          );
+          // TODO: the component doesn't get focused for some reason, but the console.log above gets
+          // logged.
           genderOptionsRef.current[selectedOptionIndex].focus();
           genderOptionsRef.current[selectedOptionIndex].scrollIntoView({
             behavior: "smooth",
@@ -151,33 +155,38 @@ const StudentEditPanel = () => {
   const handleSelectedMenuItemClick = (event: MouseEvent<HTMLButtonElement, MouseEvent>) => {
     // Prevent propagating of the click event to outer elements in the container.
     event.stopPropagation();
-    toggleSelectIsOpen(
-      genderDropdownIsOpen,
-      genders,
-      genderOptionsRef,
-      "Choose one",
-      selectedGender,
-      setGenderDropdownIsOpen
-    );
+    setGenderDropdownIsOpen((prev) => !prev);
+    // toggleSelectIsOpen(
+    //   genderDropdownIsOpen,
+    //   genders,
+    //   genderOptionsRef,
+    //   "Choose one",
+    //   selectedGender,
+    //   setGenderDropdownIsOpen
+    // );
     genderSelectedRef.current?.focus();
   };
 
   const handleSelectedMenuItemKeyDown: HandleSelectKeyDown = (
-    event,
-    genderDropdownIsOpen,
-    genders,
-    genderOptionsRef,
-    placeholder,
-    selectedGender,
-    setGenderDropdownIsOpen
+    event
+    // genderDropdownIsOpen,
+    // genders,
+    // genderOptionsRef,
+    // placeholder,
+    // selectedGender,
+    // setGenderDropdownIsOpen
   ) => {
+    console.dir(event);
+
+    event.preventDefault();
+
     if (event.key === "Enter") {
-      event.preventDefault();
+      // event.preventDefault();
       toggleSelectIsOpen(
         genderDropdownIsOpen,
         genders,
         genderOptionsRef,
-        placeholder,
+        "Choose one",
         selectedGender,
         setGenderDropdownIsOpen
       );
@@ -185,9 +194,8 @@ const StudentEditPanel = () => {
 
     if (genderDropdownIsOpen) {
       if (event.key === "ArrowDown") {
-        event.preventDefault();
-        genderOptionsRef.current[0].focus();
-        setGenderDropdownIsOpen(true);
+        let button = genderOptionsRef.current[0];
+        button?.focus();
       }
 
       if (event.key === "Escape") {
@@ -196,10 +204,66 @@ const StudentEditPanel = () => {
     }
   };
 
-  const handleDropdownMenuItemClick = (option: string) => {
-    setSelectedGender(option);
+  const handleDropdownMenuItemClick = (item: string) => {
+    setSelectedGender(item);
     setGenderDropdownIsOpen((prev) => !prev);
     genderSelectedRef.current?.focus();
+  };
+
+  const handleDropdownMenuItemKeyDown: HandleOptionKeyDown = (
+    event,
+    // formFields,
+    index
+    // key,
+    // item,
+    // optionsRef,
+    // selectRef,
+    // setFormFields,
+    // setSelectedOption,
+    // setSelectIsOpen
+  ) => {
+    const optionsLength = genderOptionsRef.current.length;
+
+    if (event.key === "Enter") {
+      event.preventDefault();
+      const item = genderOptionsRef.current[index].textContent;
+      item && setSelectedGender(item);
+      setGenderDropdownIsOpen(false);
+      genderSelectedRef.current?.focus();
+    }
+
+    if (event.key === "ArrowDown") {
+      if (index < optionsLength - 1) {
+        // TODO: Find the next non disabled option and focus on it.
+        if (genderOptionsRef.current[index + 1].disabled) {
+          // findNextNonDisabledOption(index + 1).focus();
+        } else {
+          // Focus the next option.
+          if (genderSelectedRef.current !== null) {
+            genderOptionsRef.current[index + 1].focus();
+          }
+        }
+      }
+      event.preventDefault();
+    }
+
+    if (event.key === "ArrowUp") {
+      // TODO: Implement findPreviousNonDisabledOption function.
+      if (index > 0) {
+        genderOptionsRef.current[index - 1].focus();
+      }
+      if (index === 0) {
+        genderSelectedRef.current?.focus();
+      }
+      event.preventDefault();
+    }
+
+    if (event.key === "Escape") {
+      setGenderDropdownIsOpen(false);
+      if (genderSelectedRef.current !== null) {
+        genderSelectedRef.current?.focus();
+      }
+    }
   };
 
   useEffect(() => {
@@ -303,7 +367,7 @@ const StudentEditPanel = () => {
                     // TODO: implement these
                     // KeyboardEvent callbacks
                     onSelectedMenuItemKeyDown={handleSelectedMenuItemKeyDown}
-                    // onDropdownMenuItemKeyDown={handleDropdownMenuItemKeyDown}
+                    onDropdownMenuItemKeyDown={handleDropdownMenuItemKeyDown}
                   />
                 )}
               </Field>
@@ -368,3 +432,4 @@ const StudentEditPanel = () => {
 };
 
 export { StudentEditPanel };
+export type { HandleOptionKeyDown, HandleSelectKeyDown };

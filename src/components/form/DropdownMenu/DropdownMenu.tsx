@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { FieldSize } from "../Field";
 import { MenuItemGroup } from "./MenuItemGroup";
 import { SelectedMenuItem } from "./SelectedMenuItem";
+import { HandleOptionKeyDown, HandleSelectKeyDown } from "../../../pages/StudentPanel/StudentEditPanel";
 
 type MenuItemsType = string[];
 
@@ -20,13 +21,14 @@ interface DropdownMenuProps {
   isOpen: boolean;
   isDisabled?: boolean;
   menuItems: MenuItemsType;
+  selectedMenuItem: string;
   /**
    * Callback function to handle the click event on the selected menu item.
    */
   onSelectedMenuItemClick: () => void;
-  onSelectedMenuItemKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
-  selectedMenuItem: string;
   onDropdownMenuItemClick: (option: string) => void;
+  onSelectedMenuItemKeyDown?: HandleSelectKeyDown;
+  onDropdownMenuItemKeyDown?: HandleOptionKeyDown;
   size?: FieldSize;
   setSelectedGender?: React.Dispatch<React.SetStateAction<string>>;
   setGenderDropdownIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -45,13 +47,14 @@ const DropdownMenu = forwardRef(
       isOpen,
       isDisabled,
       menuItems,
-      onSelectedMenuItemClick,
-      onSelectedMenuItemKeyDown,
       selectedMenuItem,
+      onSelectedMenuItemClick,
       onDropdownMenuItemClick,
+      onDropdownMenuItemKeyDown,
+      onSelectedMenuItemKeyDown,
       size = "medium",
       setSelectedGender,
-      setGenderDropdownIsOpen
+      setGenderDropdownIsOpen,
     }: DropdownMenuProps,
     ref: ForwardedRef<RefsContainer>
   ) => {
@@ -78,6 +81,7 @@ const DropdownMenu = forwardRef(
           dropdownIsOpen={isOpen}
           menuItems={menuItems}
           onDropdownMenuItemClick={onDropdownMenuItemClick}
+          onDropdownMenuItemKeyDown={onDropdownMenuItemKeyDown}
           size={size}
         />
       </StyledDropDownMenu>

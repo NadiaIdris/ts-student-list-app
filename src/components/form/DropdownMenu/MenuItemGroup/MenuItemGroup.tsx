@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { FieldSize } from "../../Field";
 import { MenuItem } from "../MenuItem";
 import { MenuItemsType, OptionsRef, SelectedRef } from "../DropdownMenu";
+import { HandleOptionKeyDown } from "../../../../pages/StudentPanel/StudentEditPanel";
 
 interface MenuItemGroupProps {
   optionsRef: OptionsRef
@@ -10,6 +11,7 @@ interface MenuItemGroupProps {
   dropdownIsOpen: boolean;
   menuItems: MenuItemsType;
   onDropdownMenuItemClick: (option: string) => void;
+  onDropdownMenuItemKeyDown?: HandleOptionKeyDown;
   size?: FieldSize;
 }
 
@@ -37,6 +39,7 @@ const MenuItemGroup = ({
   menuItems,
   size = "medium",
   onDropdownMenuItemClick,
+  onDropdownMenuItemKeyDown
 }: MenuItemGroupProps) => {
   return (
     <>
@@ -45,9 +48,12 @@ const MenuItemGroup = ({
           {menuItems.map((item, index) => (
             <MenuItem
               key={index}
+              index={index}
               isDisabled={isDisabled}
               onClick={() => onDropdownMenuItemClick(item)}
+              onDropdownMenuItemKeyDown={onDropdownMenuItemKeyDown}
               size={size}
+              optionsRef={optionsRef}
             >
               {item}
             </MenuItem>
