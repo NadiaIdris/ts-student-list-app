@@ -1,20 +1,24 @@
-import { useEffect, useState } from "react";
+import { KeyboardEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
-import {
-  Form,
-  useLoaderData,
-  useNavigate,
-  useNavigation,
-} from "react-router-dom";
+import { Form, useLoaderData, useNavigate, useNavigation } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../../../components/Button";
+import { DropdownMenu } from "../../../components/form/DropdownMenu";
+import { OptionsRef, RefsContainer, SelectedRef } from "../../../components/form/DropdownMenu/DropdownMenu";
 import { Field, FormFieldDirection } from "../../../components/form/Field";
 import { Heading1 } from "../../../components/text/Heading1";
 import { TextField } from "../../../components/TextField";
 import { useStudentUid } from "../../StudentsPage/StudentsPage";
 import { IStudentFetchData } from "../StudentPanel";
 
-interface EditStudentProps {}
+// TODO: ensure that automatic data revalidation happens when the user edits the student data.
+export async function action({ request }: { request: Request }) {
+  let formData = await request.formData();
+}
+
+type HandleSelectKeyDown = (event: KeyboardEvent<HTMLDivElement>) => void;
+
+type HandleOptionKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => void;
 
 const StyledCloseIcon = styled.div`
   position: fixed;
@@ -74,17 +78,127 @@ const StyledFieldsWrapper = styled.div`
 const StudentEditPanel = () => {
   const navigation = useNavigation();
   const submitting = navigation.state === "submitting";
-  const loaderData: IStudentFetchData | undefined =
-    useLoaderData() as IStudentFetchData;
+  const loaderData: IStudentFetchData | undefined = useLoaderData() as IStudentFetchData;
   const { setStudentUid } = useStudentUid();
   const navigate = useNavigate();
-  const [fieldDirection, setFieldDirection] =
-    useState<FormFieldDirection>("row");
+  const [fieldDirection, setFieldDirection] = useState<FormFieldDirection>("row");
+  const genders = ["Female", "Male", "Agender", "Cisgender", "Genderfluid", "Genderqueer", "Non-binary", "Transgender"];
+  const [selectedGender, setSelectedGender] = useState(loaderData?.studentData.gender || "");
+  const [genderDropdownIsOpen, setGenderDropdownIsOpen] = useState(false);
+
+  // Refs for the selects and options.
+  const genderOptionsRef: OptionsRef = useRef([] as HTMLButtonElement[]);
+  const genderSelectedRef: SelectedRef = useRef(null);
+  let container: RefsContainer = {
+    optionsRef: genderOptionsRef,
+    selectedRef: genderSelectedRef,
+  };
+  const genderRefsObj = useRef(container);
 
   const handleCloseStudentPanel = () => {
     // Reset the studentUid to remove css property pointer-events: none from the students page.
     setStudentUid("");
     navigate("/students");
+  };
+
+  const scrollToSelectedMenuItem = () => {
+    /* Find index is assuming that there is only one instance of a string in an array. If more
+      than one instance of the same string, the findIndex method returns the index of the first match.  */
+    const selectedOptionIndex = genders.findIndex((gender) => gender === selectedGender);
+    // Add a timeout to make sure async setGenderDropdownIsOpen is called first and then our setTimeout is called next from the JS event loop.
+    setTimeout(() => {
+      if (genderOptionsRef.current[selectedOptionIndex]) {
+        genderOptionsRef.current[selectedOptionIndex].focus();
+        genderOptionsRef.current[selectedOptionIndex].scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "center",
+        });
+      }
+    }, 0);
+  };
+
+  const handleSelectedMenuItemClick = (event: MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    // Prevent propagating of the click event to outer elements in the container.
+    event.stopPropagation();
+    setGenderDropdownIsOpen((prev) => {
+      if (!prev) {
+        const selectedOptionIndex = genders.findIndex((gender) => gender === selectedGender);
+        // Add a timeout to make sure async setGenderDropdownIsOpen is called first and then our setTimeout is called next from the JS event loop.
+        setTimeout(() => {
+          if (genderOptionsRef.current[selectedOptionIndex]) {
+            genderOptionsRef.current[selectedOptionIndex].focus();
+            genderOptionsRef.current[selectedOptionIndex].scrollIntoView({
+              behavior: "smooth",
+              block: "nearest",
+              inline: "center",
+            });
+          }
+        }, 0);
+      }
+      genderSelectedRef.current?.focus();
+      return !prev;
+    });
+  };
+
+  const handleSelectedMenuItemKeyDown: HandleSelectKeyDown = (event) => {
+    event.preventDefault();
+
+    if (event.key === "Enter") {
+      setGenderDropdownIsOpen((prev) => {
+        const isOpen = !prev;
+        if (isOpen) scrollToSelectedMenuItem();
+        return !prev;
+      });
+    }
+
+    if (genderDropdownIsOpen) {
+      if (event.key === "ArrowDown") {
+        let button = genderOptionsRef.current[0];
+        button?.focus();
+      }
+
+      if (event.key === "Escape") {
+        setGenderDropdownIsOpen(false);
+      }
+    }
+  };
+
+  const handleDropdownMenuItemClick = (item: string) => {
+    setSelectedGender(item);
+    setGenderDropdownIsOpen((prev) => !prev);
+    genderSelectedRef.current?.focus();
+  };
+
+  const handleDropdownMenuItemKeyDown: HandleOptionKeyDown = (event, index) => {
+    event.preventDefault();
+    const optionsLength = genderOptionsRef.current.length;
+
+    if (event.key === "Enter") {
+      const item = genderOptionsRef.current[index].textContent;
+      if (item) setSelectedGender(item);
+      setGenderDropdownIsOpen(false);
+      genderSelectedRef.current?.focus();
+    }
+
+    if (event.key === "ArrowDown") {
+      const lastMenuItemIdx = optionsLength - 1;
+      if (index < lastMenuItemIdx) {
+        genderOptionsRef.current[index + 1].focus();
+      }
+    }
+
+    if (event.key === "ArrowUp") {
+      if (index > 0) genderOptionsRef.current[index - 1].focus();
+      if (index === 0) genderSelectedRef.current?.focus();
+    }
+
+    if (event.key === "Escape") {
+      setGenderDropdownIsOpen(false);
+      if (genderSelectedRef.current) genderSelectedRef.current?.focus();
+    }
+
+    // TODO: implement custom Tab behavior following the behavior of ArrowDown and ArrowUp.
   };
 
   useEffect(() => {
@@ -169,20 +283,26 @@ const StudentEditPanel = () => {
                   />
                 )}
               </Field>
-              <Field
-                id="gender"
-                label="Gender"
-                direction={fieldDirection}
-                invalidFieldMessage="" // TODO: add error message
-              >
+              <Field id="gender-dropdown" label="Gender" direction={fieldDirection} invalidFieldMessage="">
                 {(inputProps) => (
-                  <TextField
+                  <DropdownMenu
                     {...inputProps}
-                    type="text"
-                    name="gender"
-                    defaultValue={loaderData?.studentData.gender}
-                    placeholder="Enter student's gender"
+                    ref={genderRefsObj}
+                    isOpen={genderDropdownIsOpen}
                     isDisabled={submitting}
+                    // Function component state setters
+                    setSelectedGender={setSelectedGender}
+                    setGenderDropdownIsOpen={setGenderDropdownIsOpen}
+                    // Data
+                    menuItems={genders}
+                    selectedMenuItem={selectedGender}
+                    // MouseEvent callbacks
+                    onSelectedMenuItemClick={handleSelectedMenuItemClick}
+                    onDropdownMenuItemClick={handleDropdownMenuItemClick}
+                    // TODO: implement these
+                    // KeyboardEvent callbacks
+                    onSelectedMenuItemKeyDown={handleSelectedMenuItemKeyDown}
+                    onDropdownMenuItemKeyDown={handleDropdownMenuItemKeyDown}
                   />
                 )}
               </Field>
@@ -208,11 +328,7 @@ const StudentEditPanel = () => {
               <Button type="submit" isLoading={submitting}>
                 Save
               </Button>
-              <Button
-                type="button"
-                appearance="secondary"
-                isLoading={submitting}
-              >
+              <Button type="button" appearance="secondary" isLoading={submitting}>
                 Cancel
               </Button>
             </div>
@@ -225,3 +341,4 @@ const StudentEditPanel = () => {
 };
 
 export { StudentEditPanel };
+export type { HandleOptionKeyDown, HandleSelectKeyDown };

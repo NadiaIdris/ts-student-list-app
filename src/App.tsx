@@ -17,6 +17,7 @@ const router = createBrowserRouter([
         <StudentsPage />
       </ProtectedRoute>
     ),
+    loader: studentsLoader,
   },
   {
     path: "/students/",
@@ -36,7 +37,8 @@ const router = createBrowserRouter([
         path: ":studentId/edit",
         element: <StudentEditPanel />,
         loader: studentLoader,
-      }
+        // action: editStudentAction,
+      },
     ],
   },
   {

@@ -19,7 +19,7 @@
   --color-danger-1000: rgba(234, 26, 151, 1);
   --color-danger-darker: rgb(197, 3, 119);
   --color-selection: rgba(0, 244, 141, 1);
-  --color-focus: rgb(0, 208, 255);
+  --color-focus: blue;
   --color-white: var(--color-white-1000);
   --color-black: var(--color-black-1000);
   --color-white-100: rgba(255, 255, 255, 0.1);
@@ -87,6 +87,9 @@
   /* input field height */
   --input-height-small: 30px;
   --input-height-medium: 36px;
+
+  /* animation speed */
+  --animation--speed1: 0.3s;
 }
 
 :root {
@@ -113,4 +116,25 @@ body {
 :-webkit-autofill:focus,
 :-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 1000px var(--color-white) inset; /* change the color to white background color from the default light blue */
+}
+
+/* Global scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-white);
+  border-bottom-right-radius: var(--border-radius);
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 100px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(196, 196, 196); /* color of the scroll thumb */
+  border-radius: 100px; /* roundness of the scroll thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-black); /* color of the scroll thumb on hover */
 }

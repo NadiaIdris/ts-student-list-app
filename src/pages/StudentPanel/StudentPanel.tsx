@@ -1,4 +1,4 @@
-import { FormEvent, RefObject, useEffect, useRef } from "react";
+import { FormEvent, RefObject, useCallback, useEffect, useRef } from "react";
 import { CgClose } from "react-icons/cg";
 import { MdOutlineContentCopy } from "react-icons/md";
 import { Form, useLoaderData, useNavigate, useParams } from "react-router-dom";
@@ -131,11 +131,11 @@ const StudentPanel = () => {
     setStudentUid(studentId!);
   }, [studentId, setStudentUid]);
 
-  const handleCloseStudentPanel = () => {
+  const handleCloseStudentPanel = useCallback(() => {
     // Reset the studentUid to remove css property pointer-events: none from the students page.
     setStudentUid("");
     navigate("/students");
-  };
+  }, [navigate, setStudentUid]);
 
   const handleCopyEmail = async () => {
     try {
@@ -150,6 +150,11 @@ const StudentPanel = () => {
       console.error("Failed to copy text:", error.message);
     }
   };
+
+  useEffect(() => {
+    // When use clicks on back button in browser, close the student panel
+    window.onpopstate = handleCloseStudentPanel;
+  }, [handleCloseStudentPanel]);
 
   return (
     <>
