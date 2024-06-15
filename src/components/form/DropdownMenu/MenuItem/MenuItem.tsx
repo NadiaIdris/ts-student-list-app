@@ -38,11 +38,11 @@ const StyledMenuItem = styled.button<{ $size: FieldSize }>`
     border-bottom-right-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
   }
-  /* TODO: delete or keep this focus? */
   &:focus {
-    outline: 2px solid blue;
-    outline-offset: -2px; // replaces the border, when is focused.
+    outline: 2px solid var(--color-focus);
+    outline-offset: -4px; // replaces the border, when is focused.
     border: 2px solid transparent;
+    border-radius: var(--border-radius);
   }
 `;
 

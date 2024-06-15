@@ -63,7 +63,6 @@ const DropdownMenu = forwardRef(
       <StyledDropDownMenu>
         <SelectedMenuItem
           id={id}
-          optionsRef={optionsRef}
           selectedRef={selectedRef}
           isDisabled={isDisabled}
           dropdownIsOpen={isOpen}

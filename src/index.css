@@ -19,7 +19,7 @@
   --color-danger-1000: rgba(234, 26, 151, 1);
   --color-danger-darker: rgb(197, 3, 119);
   --color-selection: rgba(0, 244, 141, 1);
-  --color-focus: rgb(0, 208, 255);
+  --color-focus: blue;
   --color-white: var(--color-white-1000);
   --color-black: var(--color-black-1000);
   --color-white-100: rgba(255, 255, 255, 0.1);

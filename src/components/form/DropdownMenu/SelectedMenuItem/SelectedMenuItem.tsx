@@ -3,13 +3,12 @@ import { FaCaretDown } from "react-icons/fa";
 import styled from "styled-components";
 import { Button } from "../../../Button";
 import { FieldSize } from "../../Field";
-import { OptionsRef, SelectedRef } from "../DropdownMenu";
+import { SelectedRef } from "../DropdownMenu";
 import { KeyboardEvent } from "react";
 import { HandleSelectKeyDown } from "../../../../pages/StudentPanel/StudentEditPanel";
 
 interface SelectedMenuItemProps {
   id: string;
-  optionsRef: OptionsRef;
   selectedRef: SelectedRef;
   isDisabled?: boolean;
   placeholder?: string;
@@ -75,7 +74,6 @@ const StyledIconContainer = styled.div<{ $dropdownIsOpen: boolean }>`
 
 const SelectedMenuItem = ({
   id,
-  optionsRef,
   selectedRef,
   isDisabled,
   placeholder = "Choose one",
@@ -92,8 +90,7 @@ const SelectedMenuItem = ({
     <StyledInputWrapper
       onClick={onSelectedMenuItemClick}
       onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
-        onSelectedMenuItemKeyDown &&
-        onSelectedMenuItemKeyDown(event)
+        onSelectedMenuItemKeyDown && onSelectedMenuItemKeyDown(event);
       }}
     >
       <StyledInput
@@ -120,6 +117,7 @@ const SelectedMenuItem = ({
               if (setSelectedGender && setGenderDropdownIsOpen) {
                 event.stopPropagation();
                 setSelectedGender("");
+                selectedRef.current?.focus();
               }
             }}
           />

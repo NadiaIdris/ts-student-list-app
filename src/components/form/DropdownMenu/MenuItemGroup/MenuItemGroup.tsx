@@ -16,8 +16,6 @@ interface MenuItemGroupProps {
 }
 
 const StyledMenuItemGroup = styled.div`
-  /* display: flex;
-  flex-direction: column; */
   position: absolute;
   z-index: 5;
   width: 100%;
@@ -29,6 +27,7 @@ const StyledMenuItemGroup = styled.div`
   border-left: 2px solid black;
   max-height: 200px;
   overflow: hidden auto;
+  background-color: var(--color-white);
 `;
 
 const MenuItemGroup = ({
