@@ -26,9 +26,7 @@ export interface IStudentFetchData {
 
 export async function loader({ params }: { params: any }) {
   try {
-    const response = await axiosInstance.get(
-      STUDENTS_ENDPOINT + `/${params.studentId}`
-    );
+    const response = await axiosInstance.get(STUDENTS_ENDPOINT + `/${params.studentId}`);
     if (response.status === 200) {
       // Rename the keys that have underscores to match the student data object
       const studentData = response.data;
@@ -121,8 +119,7 @@ const showSnackbar = (refArg: RefObject<HTMLDivElement>) => {
 const StudentPanel = () => {
   // TODO: Scroll to the student with the id from the URL
   const { studentId } = useParams();
-  const loaderData: IStudentFetchData | undefined =
-    useLoaderData() as IStudentFetchData;
+  const loaderData: IStudentFetchData | undefined = useLoaderData() as IStudentFetchData;
   const { setStudentUid } = useStudentUid();
   const navigate = useNavigate();
   const snackbarRef = useRef(null);
@@ -171,61 +168,43 @@ const StudentPanel = () => {
       <StyledStudentOverlay>
         <StyledHeading1>Student info</StyledHeading1>
         <StyledStudentDataWrapper>
-          <ReadOnlyField
-            id="first-name"
-            label="First name"
-            value={loaderData?.studentData?.firstName}
-          />
-          <ReadOnlyField
-            id="last-name"
-            label="Last name"
-            value={loaderData?.studentData?.lastName}
-          />
+          <ReadOnlyField id="first-name" label="First name" value={loaderData?.studentData?.firstName} />
+          <ReadOnlyField id="last-name" label="Last name" value={loaderData?.studentData?.lastName} />
           <ReadOnlyField
             id="email"
             label="Email"
             value={loaderData?.studentData?.email}
-            icon={
-              <MdOutlineContentCopy style={{ width: "16px", height: "16px" }} />
-            }
+            icon={<MdOutlineContentCopy style={{ width: "16px", height: "16px" }} />}
             iconOnClick={handleCopyEmail}
             iconTooltip="Copy email to clipboard"
           />
-          <ReadOnlyField
-            id="gender"
-            label="Gender"
-            value={loaderData?.studentData?.gender ?? "Not specified"}
-          />
-          <ReadOnlyField
-            id="birthday"
-            label="Birthday"
-            value={loaderData?.studentData?.dateOfBirth}
-          />
-          <StyledButtonsWrapper>
-            <Button
-              type="button"
-              onClick={() => {
-                navigate(`/students/${studentId}/edit`);
-              }}
-            >
-              Edit
-            </Button>
-            <Form
-              method="post"
-              action="delete"
-              onSubmit={(event: FormEvent<HTMLFormElement>) => {
-                // eslint-disable-next-line no-restricted-globals
-                if (!confirm("Please confirm you want to delete this record")) {
-                  event.preventDefault();
-                }
-              }}
-            >
-              <Button type="submit" appearance="warning">
-                Delete
-              </Button>
-            </Form>
-          </StyledButtonsWrapper>
+          <ReadOnlyField id="gender" label="Gender" value={loaderData?.studentData?.gender ?? "Not specified"} />
+          <ReadOnlyField id="birthday" label="Birthday" value={loaderData?.studentData?.dateOfBirth} />
         </StyledStudentDataWrapper>
+        <StyledButtonsWrapper>
+          <Button
+            type="button"
+            onClick={() => {
+              navigate(`/students/${studentId}/edit`);
+            }}
+          >
+            Edit
+          </Button>
+          <Form
+            method="post"
+            action="delete"
+            onSubmit={(event: FormEvent<HTMLFormElement>) => {
+              // eslint-disable-next-line no-restricted-globals
+              if (!confirm("Please confirm you want to delete this record")) {
+                event.preventDefault();
+              }
+            }}
+          >
+            <Button type="submit" appearance="warning">
+              Delete
+            </Button>
+          </Form>
+        </StyledButtonsWrapper>
       </StyledStudentOverlay>
       <Snackbar text="Copied to clipboard" ref={snackbarRef} />
       <StyledStudentPageCover />

@@ -42,9 +42,11 @@ const StyledStudentOverlay = styled.div`
 
 const StyledHeading1 = styled(Heading1)`
   padding: 0 40px;
+  margin: 40px 0 20px 0;
 
   @media (max-width: 500px) {
     padding: 0 20px;
+    margin: 20px 0 10px 0;
   }
 `;
 
@@ -74,6 +76,12 @@ const StyledFieldsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+`;
+
+const StyledButtonsWrapper = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
 `;
 
 const StudentEditPanel = () => {
@@ -324,14 +332,14 @@ const StudentEditPanel = () => {
                 )}
               </Field>
             </StyledFieldsWrapper>
-            <div>
+            <StyledButtonsWrapper>
               <Button type="submit" isLoading={submitting}>
                 Save
               </Button>
               <Button type="button" appearance="secondary" isLoading={submitting}>
                 Cancel
               </Button>
-            </div>
+            </StyledButtonsWrapper>
           </Form>
         </StyledStudentDataWrapper>
       </StyledStudentOverlay>
