@@ -10,6 +10,7 @@ import { Heading1 } from "../../../components/text/Heading1";
 import { TextField } from "../../../components/TextField";
 import { useStudentUid } from "../../StudentsPage/StudentsPage";
 import { IStudentFetchData } from "../StudentPanel";
+import { DatePicker } from "../../../components/form/DatePicker";
 
 // TODO: ensure that automatic data revalidation happens when the user edits the student data.
 export async function action({ request }: { request: Request }) {
@@ -123,18 +124,7 @@ const StudentEditPanel = () => {
     event.stopPropagation();
     setGenderDropdownIsOpen((prev) => {
       if (!prev) {
-        const selectedOptionIndex = genders.findIndex((gender) => gender === selectedGender);
-        // Add a timeout to make sure async setGenderDropdownIsOpen is called first and then our setTimeout is called next from the JS event loop.
-        setTimeout(() => {
-          if (genderOptionsRef.current[selectedOptionIndex]) {
-            genderOptionsRef.current[selectedOptionIndex].focus();
-            genderOptionsRef.current[selectedOptionIndex].scrollIntoView({
-              behavior: "smooth",
-              block: "nearest",
-              inline: "center",
-            });
-          }
-        }, 0);
+        scrollToSelectedMenuItem();
       }
       genderSelectedRef.current?.focus();
       return !prev;
@@ -200,6 +190,14 @@ const StudentEditPanel = () => {
 
     // TODO: implement custom Tab behavior following the behavior of ArrowDown and ArrowUp.
   };
+
+  const sanitizeDateFromServer = (date: string) => {
+    const formattedDate = new Date(date).toISOString().split("T")[0];
+    return formattedDate;
+  };
+  const dateOfBirth = sanitizeDateFromServer(loaderData?.studentData.dateOfBirth);
+  const maxDate = new Date().toISOString().split("T")[0];
+  const minDate = new Date(1900, 0, 1).toISOString().split("T")[0];
 
   useEffect(() => {
     // Set the field direction to column if the window width is less than 400px on component mount.
@@ -313,13 +311,13 @@ const StudentEditPanel = () => {
                 invalidFieldMessage="" // TODO: add error message
               >
                 {(inputProps) => (
-                  <input
+                  <DatePicker
                     {...inputProps}
-                    type="date"
                     name="date_of_birth"
-                    defaultValue={loaderData?.studentData.dateOfBirth}
-                    placeholder="Enter student's gender"
+                    defaultValue={dateOfBirth}
                     disabled={submitting}
+                    min={minDate}
+                    max={maxDate}
                   />
                 )}
               </Field>
