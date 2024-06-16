@@ -120,6 +120,8 @@ const SelectedMenuItem = ({
                 selectedRef.current?.focus();
               }
             }}
+            ariaLabel="Clear selection"
+            tooltip="Clear selection"
           />
         </StyledClearIconContainer>
       )}
@@ -129,6 +131,8 @@ const SelectedMenuItem = ({
           size="small"
           iconBefore={<FaCaretDown style={{ width: "16px", height: "16px", color: "black" }} />}
           onClick={() => onSelectedMenuItemClick}
+          ariaLabel="Toggle dropdown"
+          tooltip="Toggle dropdown"
         />
       </StyledIconContainer>
     </StyledInputWrapper>

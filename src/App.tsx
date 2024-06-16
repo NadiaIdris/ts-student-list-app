@@ -10,15 +10,28 @@ import { StudentPanel, loader as studentLoader } from "./pages/StudentPanel";
 import { StudentEditPanel } from "./pages/StudentPanel/StudentEditPanel";
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <ProtectedRoute>
-        <StudentsPage />
-      </ProtectedRoute>
-    ),
-    loader: studentsLoader,
-  },
+  // {
+  //   path: "/",
+  //   element: (
+  //     <ProtectedRoute>
+  //       <StudentsPage />
+  //     </ProtectedRoute>
+  //   ),
+  //   loader: studentsLoader,
+  //   children: [
+  //     {
+  //       path: "/students/:studentId",
+  //       element: <StudentPanel />,
+  //       loader: studentLoader,
+  //     },
+  //     {
+  //       path: "/students/:studentId/edit",
+  //       element: <StudentEditPanel />,
+  //       loader: studentLoader,
+  //       // action: editStudentAction,
+  //     },
+  //   ],
+  // },
   {
     path: "/students/",
     element: (

@@ -164,6 +164,8 @@ const StudentPanel = () => {
           size="medium"
           iconBefore={<CgClose style={{ width: "16px", height: "16px" }} />}
           onClick={handleCloseStudentPanel}
+          ariaLabel="Close student panel"
+          tooltip="Close student panel"
         />
       </StyledCloseIcon>
       <StyledStudentOverlay>

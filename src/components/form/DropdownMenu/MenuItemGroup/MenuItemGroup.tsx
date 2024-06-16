@@ -5,8 +5,8 @@ import { MenuItemsType, OptionsRef, SelectedRef } from "../DropdownMenu";
 import { HandleOptionKeyDown } from "../../../../pages/StudentPanel/StudentEditPanel";
 
 interface MenuItemGroupProps {
-  optionsRef: OptionsRef
-  selectedRef: SelectedRef
+  optionsRef: OptionsRef;
+  selectedRef: SelectedRef;
   isDisabled?: boolean;
   dropdownIsOpen: boolean;
   menuItems: MenuItemsType;
@@ -38,7 +38,7 @@ const MenuItemGroup = ({
   menuItems,
   size = "medium",
   onDropdownMenuItemClick,
-  onDropdownMenuItemKeyDown
+  onDropdownMenuItemKeyDown,
 }: MenuItemGroupProps) => {
   return (
     <>
