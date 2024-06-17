@@ -7,7 +7,7 @@ import { LogInPage, action as logInAction } from "./pages/LogInPage";
 import { StudentsPage, loader as studentsLoader } from "./pages/StudentsPage";
 import { SignUpPage, action as signUpAction } from "./pages/SignUpPage";
 import { StudentPanel, loader as studentLoader } from "./pages/StudentPanel";
-import { StudentEditPanel } from "./pages/StudentPanel/StudentEditPanel";
+import { StudentEditPanel, action as editStudentAction } from "./pages/StudentPanel/StudentEditPanel";
 
 const router = createBrowserRouter([
   // {
@@ -50,7 +50,7 @@ const router = createBrowserRouter([
         path: ":studentId/edit",
         element: <StudentEditPanel />,
         loader: studentLoader,
-        // action: editStudentAction,
+        action: editStudentAction,
       },
     ],
   },

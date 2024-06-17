@@ -17,6 +17,7 @@ interface RefsContainer {
 }
 
 interface DropdownMenuProps {
+  name?: string;
   id: string;
   isOpen: boolean;
   isDisabled?: boolean;
@@ -43,6 +44,7 @@ const StyledDropDownMenu = styled.div`
 const DropdownMenu = forwardRef(
   (
     {
+      name,
       id,
       isOpen,
       isDisabled,
@@ -62,6 +64,7 @@ const DropdownMenu = forwardRef(
     return (
       <StyledDropDownMenu>
         <SelectedMenuItem
+          name={name}
           id={id}
           selectedRef={selectedRef}
           isDisabled={isDisabled}

@@ -76,7 +76,7 @@ const StyledTextField = styled.input<{
   }}
   ${({ $isInvalid }) => $isInvalid && `border-color: var(--color-danger);`}
 
-  &:focus-within {
+  &:focus {
     outline: 2px solid blue;
     outline-offset: -2px;
     border: 2px solid transparent;

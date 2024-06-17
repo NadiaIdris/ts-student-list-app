@@ -16,11 +16,14 @@ interface DatePickerProps {
 const StyledDatePicker = styled.input<{ $size: FieldSize }>`
   width: 100%;
   border-radius: var(--border-radius);
-  /* height: var(--input-height-medium); */
   border: 2px solid var(--text-black);
-  /* font-size: var(--font-size-16); */
   padding: 0 8px;
   font-family: inherit;
+  &:focus {
+    outline: 2px solid blue;
+    outline-offset: -2px;
+    border: 2px solid transparent;
+  }
 
   ${({ $size }) => {
     if ($size === "small")
