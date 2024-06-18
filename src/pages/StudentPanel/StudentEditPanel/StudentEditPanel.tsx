@@ -1,6 +1,6 @@
 import { KeyboardEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
-import { Form, useLoaderData, useNavigate, useNavigation } from "react-router-dom";
+import { Form, Params, redirect, useLoaderData, useNavigate, useNavigation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../../../components/Button";
 import { DropdownMenu } from "../../../components/form/DropdownMenu";
@@ -11,10 +11,29 @@ import { TextField } from "../../../components/TextField";
 import { useStudentUid } from "../../StudentsPage/StudentsPage";
 import { IStudentFetchData } from "../StudentPanel";
 import { DatePicker } from "../../../components/form/DatePicker";
+import { axiosInstance } from "../../../api/axiosConfig";
+import { STUDENTS_ENDPOINT } from "../../../api/apiConstants";
 
-// TODO: ensure that automatic data revalidation happens when the user edits the student data.
-export async function action({ request }: { request: Request }) {
+export async function action({ request, params }: { request: Request; params: Params }) {
   let formData = await request.formData();
+  try {
+    const endpoint = STUDENTS_ENDPOINT + `/${params.studentId}`;
+    const userInformation = {
+      first_name: formData.get("first_name"),
+      last_name: formData.get("last_name"),
+      email: formData.get("email"),
+      gender: formData.get("gender"),
+      date_of_birth: formData.get("date_of_birth"),
+    };
+    const response = await axiosInstance.put(endpoint, userInformation);
+    if (response.status === 200) {
+      // Redirect to the student's page after the student data has been updated.
+      return redirect(`/students/${params.studentId}`);
+    }
+  } catch (error: any) {
+    console.error(error.message);
+    return { error };
+  }
 }
 
 type HandleSelectKeyDown = (event: KeyboardEvent<HTMLDivElement>) => void;
@@ -42,9 +61,11 @@ const StyledStudentOverlay = styled.div`
 
 const StyledHeading1 = styled(Heading1)`
   padding: 0 40px;
+  margin: 40px 0 20px 0;
 
   @media (max-width: 500px) {
     padding: 0 20px;
+    margin: 20px 0 10px 0;
   }
 `;
 
@@ -76,8 +97,15 @@ const StyledFieldsWrapper = styled.div`
   gap: 8px;
 `;
 
+const StyledButtonsWrapper = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+`;
+
 const StudentEditPanel = () => {
   const navigation = useNavigation();
+  const { studentId } = useParams();
   const submitting = navigation.state === "submitting";
   const loaderData: IStudentFetchData | undefined = useLoaderData() as IStudentFetchData;
   const { setStudentUid } = useStudentUid();
@@ -223,12 +251,14 @@ const StudentEditPanel = () => {
           size="medium"
           iconBefore={<CgClose style={{ width: "16px", height: "16px" }} />}
           onClick={handleCloseStudentPanel}
+          ariaLabel="Close student panel"
+          tooltip="Close student panel  "
         />
       </StyledCloseIcon>
       <StyledStudentOverlay>
         <StyledHeading1>Edit</StyledHeading1>
         <StyledStudentDataWrapper>
-          <Form method="post">
+          <Form method="put">
             <StyledFieldsWrapper>
               <Field
                 id="first-name"
@@ -285,6 +315,7 @@ const StudentEditPanel = () => {
                 {(inputProps) => (
                   <DropdownMenu
                     {...inputProps}
+                    name="gender"
                     ref={genderRefsObj}
                     isOpen={genderDropdownIsOpen}
                     isDisabled={submitting}
@@ -322,14 +353,21 @@ const StudentEditPanel = () => {
                 )}
               </Field>
             </StyledFieldsWrapper>
-            <div>
+            <StyledButtonsWrapper>
               <Button type="submit" isLoading={submitting}>
                 Save
               </Button>
-              <Button type="button" appearance="secondary" isLoading={submitting}>
+              <Button
+                type="button"
+                appearance="secondary"
+                isLoading={submitting}
+                onClick={() => {
+                  navigate(`/students/${studentId}`);
+                }}
+              >
                 Cancel
               </Button>
-            </div>
+            </StyledButtonsWrapper>
           </Form>
         </StyledStudentDataWrapper>
       </StyledStudentOverlay>

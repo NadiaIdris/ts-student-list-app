@@ -75,6 +75,12 @@ const StyledTextField = styled.input<{
       return "height: var(--input-height-medium); font: var(--font-size-16) Poppins, sans-serif;"; // ~16px is 1rem
   }}
   ${({ $isInvalid }) => $isInvalid && `border-color: var(--color-danger);`}
+
+  &:focus {
+    outline: 2px solid blue;
+    outline-offset: -2px;
+    border: 2px solid transparent;
+  }
 `;
 
 /**
@@ -112,9 +118,7 @@ const TextField = ({
     <StyledTextFieldWrapper style={style} className={className}>
       <StyledTextField
         id={id}
-        type={
-          type === "password" ? (passwordIsVisible ? "text" : "password") : type
-        }
+        type={type === "password" ? (passwordIsVisible ? "text" : "password") : type}
         name={name}
         placeholder={placeholder}
         autoComplete={autoComplete}

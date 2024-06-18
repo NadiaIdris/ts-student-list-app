@@ -107,13 +107,6 @@ body {
   background-color: var(--color-selection) !important;
 }
 
-/* Global focus style */
-/* TODO: add global focus */
-/* :focus {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--color-focus);
-} */
-
 ::placeholder {
   color: var(--color-black-600);
 }

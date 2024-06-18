@@ -8,6 +8,7 @@ import { KeyboardEvent } from "react";
 import { HandleSelectKeyDown } from "../../../../pages/StudentPanel/StudentEditPanel";
 
 interface SelectedMenuItemProps {
+  name?: string;
   id: string;
   selectedRef: SelectedRef;
   isDisabled?: boolean;
@@ -73,6 +74,7 @@ const StyledIconContainer = styled.div<{ $dropdownIsOpen: boolean }>`
 `;
 
 const SelectedMenuItem = ({
+  name,
   id,
   selectedRef,
   isDisabled,
@@ -94,6 +96,7 @@ const SelectedMenuItem = ({
       }}
     >
       <StyledInput
+        name={name}
         id={id}
         ref={selectedRef}
         disabled={isDisabled}
@@ -120,6 +123,8 @@ const SelectedMenuItem = ({
                 selectedRef.current?.focus();
               }
             }}
+            ariaLabel="Clear selection"
+            tooltip="Clear selection"
           />
         </StyledClearIconContainer>
       )}
@@ -129,6 +134,8 @@ const SelectedMenuItem = ({
           size="small"
           iconBefore={<FaCaretDown style={{ width: "16px", height: "16px", color: "black" }} />}
           onClick={() => onSelectedMenuItemClick}
+          ariaLabel="Toggle dropdown"
+          tooltip="Toggle dropdown"
         />
       </StyledIconContainer>
     </StyledInputWrapper>

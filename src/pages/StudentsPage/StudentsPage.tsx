@@ -83,7 +83,7 @@ const StyledHeader = styled.header`
   }
 `;
 
-const NavButtonsWrapper = styled.div`
+const StyledNavButtonsWrapper = styled.div`
   display: flex;
   gap: 8px;
 `;
@@ -216,19 +216,27 @@ const StudentsPage = () => {
     (loaderData?.students?.length > 0 || loaderData?.error) && setIsLoading(false);
   }, [loaderData.students, loaderData.error]);
 
-  useEffect(() => {
-    // if url endoint is '/' redirect to '/students'
-    if (window.location.pathname === "/") {
-      navigate("/students");
-    }
-  }, [navigate]);
+  // useEffect(() => {
+  //   // if url endoint is '/' redirect to '/students'
+  //   if (window.location.pathname === "/") {
+  //     navigate("/students");
+  //   }
+  // }, [navigate]);
+
+  // const createEndpoint = (url: string, studentId: string) => { 
+  //   if (url === "/") {
+  //     return `/students/${studentId}`;
+  //   } else {
+  //     return `/${studentId}`;
+  //   }
+  // };
 
   return (
     <>
       <StudentsPageWrapper $noPointerEvents={Boolean(studentUid)}>
         <StyledHeader>
           <Heading1>All students</Heading1>
-          <NavButtonsWrapper>
+          <StyledNavButtonsWrapper>
             <Button
               appearance="link"
               onClick={openDropdown}
@@ -239,7 +247,7 @@ const StudentsPage = () => {
             <Button appearance="secondary" onClick={handleLogOut}>
               Log out
             </Button>
-          </NavButtonsWrapper>
+          </StyledNavButtonsWrapper>
         </StyledHeader>
         <TableBodyWrapper>
           <StyledTableWrapper>

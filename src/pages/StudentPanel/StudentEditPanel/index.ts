@@ -1,3 +1,3 @@
-import { StudentEditPanel, HandleOptionKeyDown, HandleSelectKeyDown } from "./StudentEditPanel";
-export { StudentEditPanel };
+import { StudentEditPanel, HandleOptionKeyDown, HandleSelectKeyDown,action } from "./StudentEditPanel";
+export { StudentEditPanel, action };
 export type { HandleOptionKeyDown, HandleSelectKeyDown };
