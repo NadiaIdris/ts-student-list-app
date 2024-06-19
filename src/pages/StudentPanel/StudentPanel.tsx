@@ -148,6 +148,15 @@ const StudentPanel = () => {
     }
   };
 
+  const formatBirthday = (date: string) => { 
+    const dateObj = new Date(date);
+    return dateObj.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   useEffect(() => {
     // When use clicks on back button in browser, close the student panel
     window.onpopstate = handleCloseStudentPanel;
@@ -179,7 +188,7 @@ const StudentPanel = () => {
             iconTooltip="Copy email to clipboard"
           />
           <ReadOnlyField id="gender" label="Gender" value={loaderData?.studentData?.gender ?? "Not specified"} />
-          <ReadOnlyField id="birthday" label="Birthday" value={loaderData?.studentData?.dateOfBirth} />
+          <ReadOnlyField id="birthday" label="Birthday" value={formatBirthday(loaderData?.studentData?.dateOfBirth)} />
         </StyledStudentDataWrapper>
         <StyledButtonsWrapper>
           <Button
