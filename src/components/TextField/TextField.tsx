@@ -62,7 +62,7 @@ const StyledTextField = styled.input<{
   $isInvalid?: boolean;
 }>`
   border-radius: var(--border-radius);
-  border: 2px solid var(--color-black);
+  border: var(--border);
   padding-left: 8px;
   width: 100%;
   &:disabled {
@@ -80,6 +80,10 @@ const StyledTextField = styled.input<{
     outline: 2px solid blue;
     outline-offset: -2px;
     border: 2px solid transparent;
+  }
+
+  :-internal-autofill-previewed {
+    font-size: 22px !important;
   }
 `;
 

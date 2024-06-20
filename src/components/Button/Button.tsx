@@ -1,17 +1,12 @@
 import { CSSProperties, MouseEvent, ReactNode } from "react";
 import styled from "styled-components";
 
-export type Appearance =
-  | "primary"
-  | "secondary"
-  | "warning"
-  | "link"
-  | "link-with-background";
+export type Appearance = "primary" | "secondary" | "warning" | "link" | "link-with-background";
 export type Size = "small" | "medium";
 
 export interface ButtonProps {
   /**
-   * aria-label attribute for accessibility. 
+   * aria-label attribute for accessibility.
    */
   ariaLabel?: string;
   children?: ReactNode;
@@ -43,6 +38,7 @@ export interface ButtonProps {
    * IMPORTANT! You must pass in style prop with width and height to the icon.
    * If you want display small size icon, pass the icon with 14px width and height.
    * If you want display medium size icon, pass the icon with 16px width and height.
+   * If you want display large size icon, pass the icon with 24px width and height.
    * E.g. <MyIcon style={{ width: "16px", height: "16px" }} />
    **/
   iconAfter?: ReactNode;
@@ -75,54 +71,42 @@ const StyledButton = styled.button<{
   $isLoading: boolean;
 }>`
   border-radius: ${({ $size, $iconBefore, $iconAfter, $children }) => {
-    if (
-      ($iconBefore || $iconAfter) &&
-      !$children &&
-      ($size === "small" || $size === "medium")
-    )
-      return "100px";
+    if (($iconBefore || $iconAfter) && !$children && ($size === "small" || $size === "medium")) return "100px";
     else return "var(--border-radius)";
   }};
   position: relative;
-  border: 1px solid transparent;
+  border: transparent;
   font: inherit;
   font-weight: 900;
   cursor: pointer;
   height: ${({ $size, $iconBefore, $iconAfter, $children }) => {
-    if (
-      ($iconBefore || $iconAfter) &&
-      !$children &&
-      ($size === "small" || $size === "medium")
-    )
-      return "auto";
-    else if ($size === "small") return "36px";
-    else if ($size === "medium") return "42px";
+    /* Icon button height */
+    if (($iconBefore || $iconAfter) && !$children) return "auto";
+    /* Regular button height */
+    if ($size === "small") return "36px";
+    else return "42px";
   }};
   width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "auto")};
   ${({ $size }) => {
-    if ($size === "small")
-      return "font-size: var(--font-size-14)"; // ~14px is 0.875rem
-    else if ($size === "medium") return "font-size: var(--font-size-16)"; // ~16px is 1rem
+    if ($size === "small") return "font-size: var(--font-size-14)"; // ~14px is 0.875rem
+    else return "font-size: var(--font-size-16)"; // ~16px is 1rem
   }};
   padding: ${({ $size, $iconBefore, $iconAfter, $children }) => {
-    if (($iconBefore || $iconAfter) && !$children && $size === "small")
-      return "4px";
-    else if (($iconBefore || $iconAfter) && !$children && $size === "medium")
-      return "8px";
-    else if ($size === "small") return "0 16px";
-    else if ($size === "medium") return "0 24px";
+    /* Icon button padding */
+    if (($iconBefore || $iconAfter) && !$children && $size === "small") return "4px";
+    else if (($iconBefore || $iconAfter) && !$children) return "8px";
+    /* Regular button padding */ else if ($size === "small") return "0 16px";
+    else return "0 24px";
   }};
   background: ${({ $appearance }) => {
     if ($appearance === "primary") return "var(--color-button-primary-bg)";
-    else if ($appearance === "secondary")
-      return "var(--color-button-secondary-bg)";
+    else if ($appearance === "secondary") return "var(--color-button-secondary-bg)";
     else if ($appearance === "warning") return "var(--color-button-warning-bg)";
     else return "var(--color-button-default-bg)";
   }};
   color: ${({ $appearance }) => {
     if ($appearance === "primary") return "var(--color-button-primary-fg)";
-    else if ($appearance === "secondary")
-      return "var(--color-button-secondary-fg)";
+    else if ($appearance === "secondary") return "var(--color-button-secondary-fg)";
     else if ($appearance === "warning") return "var(--color-button-warning-fg)";
     else return "var(--color-button-default-fg)";
   }};
@@ -130,19 +114,14 @@ const StyledButton = styled.button<{
 
   &:hover {
     background: ${({ $appearance }) => {
-      if ($appearance === "primary")
-        return "var(--color-button-primary-bg-hover)";
-      else if ($appearance === "secondary")
-        return "var(--color-button-secondary-bg-hover)";
-      else if ($appearance === "warning")
-        return "var(--color-button-warning-bg-hover)";
-      else if ($appearance === "link-with-background")
-        return "var(--color-button-secondary-bg)";
+      if ($appearance === "primary") return "var(--color-button-primary-bg-hover)";
+      else if ($appearance === "secondary") return "var(--color-button-secondary-bg-hover)";
+      else if ($appearance === "warning") return "var(--color-button-warning-bg-hover)";
+      else if ($appearance === "link-with-background") return "var(--color-button-secondary-bg)";
       else return "var(--color-button-default-bg-hover)";
     }};
     color: ${({ $appearance }) => {
-      if ($appearance === "link" || $appearance === "link-with-background")
-        return "var(--text-black)";
+      if ($appearance === "link" || $appearance === "link-with-background") return "var(--text-black)";
     }};
   }
   &:disabled {
@@ -151,17 +130,13 @@ const StyledButton = styled.button<{
     &:hover {
       background: ${({ $appearance }) => {
         if ($appearance === "primary") return "var(--color-button-primary-bg)";
-        else if ($appearance === "secondary")
-          return "var(--color-button-secondary-bg)";
-        else if ($appearance === "warning")
-          return "var(--color-button-warning-bg-hover)";
-        else if ($appearance === "link-with-background")
-          return "var(--color-button-secondary-bg)";
+        else if ($appearance === "secondary") return "var(--color-button-secondary-bg)";
+        else if ($appearance === "warning") return "var(--color-button-warning-bg-hover)";
+        else if ($appearance === "link-with-background") return "var(--color-button-secondary-bg)";
         else return "var(--color-button-default-bg)";
       }};
       color: ${({ $appearance }) => {
-        if ($appearance === "link" || $appearance === "link-with-background")
-          return "var(--color-black-700)";
+        if ($appearance === "link" || $appearance === "link-with-background") return "var(--color-black-700)";
       }};
     }
   }
@@ -176,8 +151,7 @@ const StyledButtonText = styled.span<{
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: ${({ $iconBefore, $iconAfter }) =>
-    $iconBefore || $iconAfter ? "8px" : "0"};
+  gap: ${({ $iconBefore, $iconAfter }) => ($iconBefore || $iconAfter ? "8px" : "0")};
 `;
 
 const StyledSpinner = styled.span<{ $isLoading: boolean }>`
@@ -249,11 +223,7 @@ const Button = ({
         data-testid={testId}
         {...props}
       >
-        <StyledButtonText
-          $iconBefore={iconBefore}
-          $iconAfter={iconAfter}
-          $isLoading={isLoading}
-        >
+        <StyledButtonText $iconBefore={iconBefore} $iconAfter={iconAfter} $isLoading={isLoading}>
           {iconBefore}
           {children}
           {iconAfter}

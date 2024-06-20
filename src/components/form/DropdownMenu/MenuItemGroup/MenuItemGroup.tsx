@@ -1,12 +1,11 @@
 import styled from "styled-components";
-import { FieldSize } from "../../Field";
-import { MenuItem } from "../MenuItem";
-import { MenuItemsType, OptionsRef, SelectedRef } from "../DropdownMenu";
 import { HandleOptionKeyDown } from "../../../../pages/StudentPanel/StudentEditPanel";
+import { FieldSize } from "../../Field";
+import { MenuItemsType, ItemsRef } from "../DropdownMenu";
+import { MenuItem } from "../MenuItem";
 
 interface MenuItemGroupProps {
-  optionsRef: OptionsRef;
-  selectedRef: SelectedRef;
+  itemsRef: ItemsRef;
   isDisabled?: boolean;
   dropdownIsOpen: boolean;
   menuItems: MenuItemsType;
@@ -31,8 +30,7 @@ const StyledMenuItemGroup = styled.div`
 `;
 
 const MenuItemGroup = ({
-  optionsRef,
-  selectedRef,
+  itemsRef,
   isDisabled,
   dropdownIsOpen,
   menuItems,
@@ -52,7 +50,7 @@ const MenuItemGroup = ({
               onClick={() => onDropdownMenuItemClick(item)}
               onDropdownMenuItemKeyDown={onDropdownMenuItemKeyDown}
               size={size}
-              optionsRef={optionsRef}
+              itemsRef={itemsRef}
             >
               {item}
             </MenuItem>

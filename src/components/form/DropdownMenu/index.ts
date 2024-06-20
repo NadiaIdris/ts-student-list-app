@@ -1,4 +1,3 @@
-import { DropdownMenu, MenuItemsType } from "./DropdownMenu";
-export type { RefsContainer } from "./DropdownMenu";
+import { DropdownMenu } from "./DropdownMenu";
 export { DropdownMenu };
-export type { MenuItemsType };
+export type { MenuItemsType, ItemsRef, RefsContainer } from "./DropdownMenu";

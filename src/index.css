@@ -76,8 +76,10 @@
   --text-black: var(--color-black);
   --text-gray: var(--color-black-800);
 
-  /* border radius */
+  /* border */
+  --border: 2px solid var(--color-black);
   --border-radius: 8px;
+  --border-radius-large: 14px;
 
   /* font sizes */
   --font-size-14: 0.875rem;

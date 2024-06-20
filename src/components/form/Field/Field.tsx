@@ -4,7 +4,7 @@ import { ErrorMessage } from "../ErrorMessage";
 import { Label } from "../Label";
 import { RequiredAsterisk } from "../RequiredAsterisk";
 
-type FormFieldDirection = "row" | "column";
+type Direction = "row" | "column";
 type FieldSize = "small" | "medium";
 
 interface FieldProps {
@@ -15,7 +15,7 @@ interface FieldProps {
   /**
    * Form field direction.
    */
-  direction?: FormFieldDirection;
+  direction?: Direction;
   /**
    * The size of the field.
    */
@@ -38,7 +38,7 @@ const StyledField = styled.div`
   flex-direction: column;
 `;
 
-const StyledWrapper = styled.div<{ $direction: FormFieldDirection }>`
+const StyledWrapper = styled.div<{ $direction: Direction }>`
   display: flex;
   flex-direction: ${({ $direction }) => $direction};
   ${({ $direction }) => {
@@ -88,4 +88,4 @@ const Field = ({
 };
 
 export { Field };
-export type { FormFieldDirection, FieldSize };
+export type { Direction, FieldSize };

@@ -1,9 +1,9 @@
 import { ReactNode, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { FormFieldDirection } from "../Field";
+import { Direction } from "../Field";
 
 interface ErrorMessageProps {
-  direction?: FormFieldDirection;
+  direction?: Direction;
   /**
    * A boolean to determine if the error message is visible. It will always take space on the page
    * to remove UI jank when error message appears on the screen, but it will be hidden if this prop is false.
@@ -20,7 +20,7 @@ interface ErrorMessageProps {
 }
 
 const StyledError = styled.div<{
-  $direction: FormFieldDirection;
+  $direction: Direction;
   $isVisible: boolean;
   $height: number;
 }>`

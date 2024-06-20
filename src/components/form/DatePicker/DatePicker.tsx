@@ -4,7 +4,7 @@ import { FieldSize } from "../Field";
 interface DatePickerProps {
   name: string;
   defaultValue: string;
-  submitting?: boolean;
+  isDisabled?: boolean;
   min?: string;
   max?: string;
   /**
@@ -16,9 +16,12 @@ interface DatePickerProps {
 const StyledDatePicker = styled.input<{ $size: FieldSize }>`
   width: 100%;
   border-radius: var(--border-radius);
-  border: 2px solid var(--text-black);
+  border: var(--border);
   padding: 0 8px;
   font-family: inherit;
+  &:disabled {
+    opacity: 0.5;
+  }
   &:focus {
     outline: 2px solid blue;
     outline-offset: -2px;
@@ -45,14 +48,14 @@ const StyledDatePicker = styled.input<{ $size: FieldSize }>`
   }
 `;
 
-const DatePicker = ({ name, defaultValue, submitting, min, max, size = "medium", ...rest }: DatePickerProps) => {
+const DatePicker = ({ name, defaultValue, isDisabled, min, max, size = "medium", ...rest }: DatePickerProps) => {
   return (
     <StyledDatePicker
       {...rest}
       type="date"
       name={name}
       defaultValue={defaultValue}
-      disabled={submitting}
+      disabled={isDisabled}
       min={min}
       max={max}
       $size={size}

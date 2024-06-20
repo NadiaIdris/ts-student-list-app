@@ -1,18 +1,18 @@
 import { ForwardedRef, forwardRef, MutableRefObject } from "react";
 import styled from "styled-components";
+import { HandleOptionKeyDown, HandleSelectKeyDown } from "../../../pages/StudentPanel/StudentEditPanel";
 import { FieldSize } from "../Field";
 import { MenuItemGroup } from "./MenuItemGroup";
 import { SelectedMenuItem } from "./SelectedMenuItem";
-import { HandleOptionKeyDown, HandleSelectKeyDown } from "../../../pages/StudentPanel/StudentEditPanel";
 
 type MenuItemsType = string[];
 
-type OptionsRef = MutableRefObject<HTMLButtonElement[]>;
+type ItemsRef = MutableRefObject<HTMLButtonElement[]>;
 type SelectedRef = MutableRefObject<HTMLInputElement | null>;
 
 interface RefsContainer {
   // Wrapped for use with forwardRef.
-  optionsRef: OptionsRef;
+  itemsRef: ItemsRef;
   selectedRef: SelectedRef;
 }
 
@@ -46,21 +46,25 @@ const DropdownMenu = forwardRef(
     {
       name,
       id,
+      size = "medium",
       isOpen,
       isDisabled,
+      // Data
       menuItems,
       selectedMenuItem,
+      // MouseEvent callbacks
       onSelectedMenuItemClick,
       onDropdownMenuItemClick,
+      // KeyboardEvent callbacks
       onDropdownMenuItemKeyDown,
       onSelectedMenuItemKeyDown,
-      size = "medium",
+      // Function component state setters
       setSelectedGender,
       setGenderDropdownIsOpen,
     }: DropdownMenuProps,
     ref: ForwardedRef<RefsContainer>
   ) => {
-    const { optionsRef, selectedRef } = (ref as MutableRefObject<RefsContainer>)?.current;
+    const { itemsRef: optionsRef, selectedRef } = (ref as MutableRefObject<RefsContainer>)?.current;
     return (
       <StyledDropDownMenu>
         <SelectedMenuItem
@@ -77,8 +81,7 @@ const DropdownMenu = forwardRef(
           setGenderDropdownIsOpen={setGenderDropdownIsOpen}
         />
         <MenuItemGroup
-          optionsRef={optionsRef}
-          selectedRef={selectedRef}
+          itemsRef={optionsRef}
           isDisabled={isDisabled}
           dropdownIsOpen={isOpen}
           menuItems={menuItems}
@@ -92,4 +95,4 @@ const DropdownMenu = forwardRef(
 );
 
 export { DropdownMenu };
-export type { MenuItemsType, OptionsRef, RefsContainer, SelectedRef };
+export type { ItemsRef, MenuItemsType, RefsContainer, SelectedRef };

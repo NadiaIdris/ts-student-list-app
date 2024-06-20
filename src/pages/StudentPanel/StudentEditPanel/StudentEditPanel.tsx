@@ -2,17 +2,19 @@ import { KeyboardEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { Form, Params, redirect, useLoaderData, useNavigate, useNavigation, useParams } from "react-router-dom";
 import styled from "styled-components";
+import { STUDENTS_ENDPOINT } from "../../../api/apiConstants";
+import { axiosInstance } from "../../../api/axiosConfig";
 import { Button } from "../../../components/Button";
+import { DatePicker } from "../../../components/form/DatePicker";
 import { DropdownMenu } from "../../../components/form/DropdownMenu";
-import { OptionsRef, RefsContainer, SelectedRef } from "../../../components/form/DropdownMenu/DropdownMenu";
-import { Field, FormFieldDirection } from "../../../components/form/Field";
+import { ItemsRef, RefsContainer, SelectedRef } from "../../../components/form/DropdownMenu/DropdownMenu";
+import { Direction, Field } from "../../../components/form/Field";
 import { Heading1 } from "../../../components/text/Heading1";
 import { TextField } from "../../../components/TextField";
 import { useStudentUid } from "../../StudentsPage/StudentsPage";
 import { IStudentFetchData } from "../StudentPanel";
-import { DatePicker } from "../../../components/form/DatePicker";
-import { axiosInstance } from "../../../api/axiosConfig";
-import { STUDENTS_ENDPOINT } from "../../../api/apiConstants";
+
+const GENDERS = ["Female", "Male", "Agender", "Cisgender", "Genderfluid", "Genderqueer", "Non-binary", "Transgender"];
 
 export async function action({ request, params }: { request: Request; params: Params }) {
   let formData = await request.formData();
@@ -110,16 +112,15 @@ const StudentEditPanel = () => {
   const loaderData: IStudentFetchData | undefined = useLoaderData() as IStudentFetchData;
   const { setStudentUid } = useStudentUid();
   const navigate = useNavigate();
-  const [fieldDirection, setFieldDirection] = useState<FormFieldDirection>("row");
-  const genders = ["Female", "Male", "Agender", "Cisgender", "Genderfluid", "Genderqueer", "Non-binary", "Transgender"];
+  const [fieldDirection, setFieldDirection] = useState<Direction>("row");
   const [selectedGender, setSelectedGender] = useState(loaderData?.studentData.gender || "");
   const [genderDropdownIsOpen, setGenderDropdownIsOpen] = useState(false);
 
   // Refs for the selects and options.
-  const genderOptionsRef: OptionsRef = useRef([] as HTMLButtonElement[]);
+  const genderItemsRef: ItemsRef = useRef([] as HTMLButtonElement[]);
   const genderSelectedRef: SelectedRef = useRef(null);
   let container: RefsContainer = {
-    optionsRef: genderOptionsRef,
+    itemsRef: genderItemsRef,
     selectedRef: genderSelectedRef,
   };
   const genderRefsObj = useRef(container);
@@ -133,12 +134,12 @@ const StudentEditPanel = () => {
   const scrollToSelectedMenuItem = () => {
     /* Find index is assuming that there is only one instance of a string in an array. If more
       than one instance of the same string, the findIndex method returns the index of the first match.  */
-    const selectedOptionIndex = genders.findIndex((gender) => gender === selectedGender);
+    const selectedOptionIndex = GENDERS.findIndex((gender) => gender === selectedGender);
     // Add a timeout to make sure async setGenderDropdownIsOpen is called first and then our setTimeout is called next from the JS event loop.
     setTimeout(() => {
-      if (genderOptionsRef.current[selectedOptionIndex]) {
-        genderOptionsRef.current[selectedOptionIndex].focus();
-        genderOptionsRef.current[selectedOptionIndex].scrollIntoView({
+      if (genderItemsRef.current[selectedOptionIndex]) {
+        genderItemsRef.current[selectedOptionIndex].focus();
+        genderItemsRef.current[selectedOptionIndex].scrollIntoView({
           behavior: "smooth",
           block: "nearest",
           inline: "center",
@@ -172,7 +173,7 @@ const StudentEditPanel = () => {
 
     if (genderDropdownIsOpen) {
       if (event.key === "ArrowDown") {
-        let button = genderOptionsRef.current[0];
+        let button = genderItemsRef.current[0];
         button?.focus();
       }
 
@@ -190,10 +191,10 @@ const StudentEditPanel = () => {
 
   const handleDropdownMenuItemKeyDown: HandleOptionKeyDown = (event, index) => {
     event.preventDefault();
-    const optionsLength = genderOptionsRef.current.length;
+    const optionsLength = genderItemsRef.current.length;
 
     if (event.key === "Enter") {
-      const item = genderOptionsRef.current[index].textContent;
+      const item = genderItemsRef.current[index].textContent;
       if (item) setSelectedGender(item);
       setGenderDropdownIsOpen(false);
       genderSelectedRef.current?.focus();
@@ -202,12 +203,12 @@ const StudentEditPanel = () => {
     if (event.key === "ArrowDown") {
       const lastMenuItemIdx = optionsLength - 1;
       if (index < lastMenuItemIdx) {
-        genderOptionsRef.current[index + 1].focus();
+        genderItemsRef.current[index + 1].focus();
       }
     }
 
     if (event.key === "ArrowUp") {
-      if (index > 0) genderOptionsRef.current[index - 1].focus();
+      if (index > 0) genderItemsRef.current[index - 1].focus();
       if (index === 0) genderSelectedRef.current?.focus();
     }
 
@@ -323,12 +324,11 @@ const StudentEditPanel = () => {
                     setSelectedGender={setSelectedGender}
                     setGenderDropdownIsOpen={setGenderDropdownIsOpen}
                     // Data
-                    menuItems={genders}
+                    menuItems={GENDERS}
                     selectedMenuItem={selectedGender}
                     // MouseEvent callbacks
                     onSelectedMenuItemClick={handleSelectedMenuItemClick}
                     onDropdownMenuItemClick={handleDropdownMenuItemClick}
-                    // TODO: implement these
                     // KeyboardEvent callbacks
                     onSelectedMenuItemKeyDown={handleSelectedMenuItemKeyDown}
                     onDropdownMenuItemKeyDown={handleDropdownMenuItemKeyDown}
@@ -346,7 +346,7 @@ const StudentEditPanel = () => {
                     {...inputProps}
                     name="date_of_birth"
                     defaultValue={dateOfBirth}
-                    disabled={submitting}
+                    isDisabled={submitting}
                     min={minDate}
                     max={maxDate}
                   />
@@ -376,5 +376,5 @@ const StudentEditPanel = () => {
   );
 };
 
-export { StudentEditPanel };
+export { GENDERS, StudentEditPanel };
 export type { HandleOptionKeyDown, HandleSelectKeyDown };

@@ -46,13 +46,17 @@ const StyledInput = styled.input<{ $size: FieldSize; $dropdownIsOpen: boolean }>
       ? "border-bottom-left-radius: 0; border-bottom-right-radius: 0;"
       : "border-bottom-left-radius: var(--border-radius); border-bottom-right-radius: var(--border-radius);"}
   width: 100%;
-  border: 2px solid var(--text-black);
+  border: var(--border);
   padding: 0 32px 0 8px;
   outline: none;
   &:focus {
     outline: 2px solid blue;
     outline-offset: -2px; // replaces the border, when is focused.
     border: 2px solid transparent;
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 
@@ -113,6 +117,7 @@ const SelectedMenuItem = ({
       {showClearSelectionButton && (
         <StyledClearIconContainer>
           <Button
+            isDisabled={isDisabled}
             appearance="link-with-background"
             size="small"
             iconBefore={<CgClose style={{ width: "14px", height: "14px" }} />}
@@ -130,6 +135,7 @@ const SelectedMenuItem = ({
       )}
       <StyledIconContainer $dropdownIsOpen={dropdownIsOpen}>
         <Button
+          isDisabled={isDisabled}
           appearance="link"
           size="small"
           iconBefore={<FaCaretDown style={{ width: "16px", height: "16px", color: "black" }} />}
