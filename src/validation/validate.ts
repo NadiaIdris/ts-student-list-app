@@ -2,6 +2,7 @@ import { ValidationErrorItem } from "joi";
 import { IUserSignUpData } from "../pages/SignUpPage";
 import { logInSchema, signUpSchema } from "./schemas";
 import { IUserLogInData } from "../pages/LogInPage/LogInPage";
+import { INewUserData } from "../pages/AddStudentModal";
 
 const formatErrorMessages = (
   errorDetails: ValidationErrorItem[],
@@ -66,4 +67,8 @@ const validateLoginForm = (data: IUserLogInData) => {
   return { error, value: value as IUserLogInData };
 };
 
-export { validateSignUpForm, validateLoginForm };
+const validateCreateNewUserData = (data: INewUserData) => { 
+  // const { error, value } = newUserSchema.validate(data, { abortEarly: false });
+};
+
+export { validateSignUpForm, validateLoginForm, validateCreateNewUserData };

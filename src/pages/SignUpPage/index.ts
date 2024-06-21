@@ -1,3 +1,4 @@
-import { SignUpPage, action } from "./SignUpPage";
+import { SignUpPage, action, renderPasswordIcons } from "./SignUpPage";
 import type { IUserSignUpData } from "./SignUpPage";
-export { SignUpPage, action, IUserSignUpData };
+export { SignUpPage, action, renderPasswordIcons };
+export type { IUserSignUpData };

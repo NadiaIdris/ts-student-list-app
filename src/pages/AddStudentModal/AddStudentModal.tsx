@@ -13,6 +13,34 @@ import { ItemsRef, SelectedRef } from "../../components/form/DropdownMenu/Dropdo
 import { MouseEvent } from "react";
 import { DatePicker } from "../../components/form/DatePicker";
 import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
+import { removeWhiteSpace } from "../../utils/utils";
+import { validateCreateNewUserData } from "../../validation/validate";
+
+interface INewUserErrors {
+  first_name: string;
+  last_name: string;
+  email: string;
+  gender: string;
+  date_of_birth: string;
+}
+
+interface INewUserData {
+  first_name: string;
+  last_name: string;
+  email: string;
+  gender: string;
+  date_of_birth: string;
+}
+
+async function action({ request }: { request: Request }) {
+  // Get the values from the form.
+  const formData = await request.formData();
+  // Trim the white spaces from all the form data
+  const trimmedNewUserData = removeWhiteSpace(formData) as unknown as INewUserData;
+  // Validate the values.
+  // const { error } = validateCreateNewUserData(trimmedNewUserData);
+  // Send the values to the server.
+}
 
 const StyledColumn = styled.div`
   display: flex;
@@ -215,4 +243,5 @@ const AddStudentModal = () => {
   );
 };
 
-export { AddStudentModal };
+export { AddStudentModal, action };
+export type { INewUserErrors, INewUserData };
