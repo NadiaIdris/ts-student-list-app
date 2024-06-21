@@ -174,7 +174,7 @@ const StyledAlreadyAMemberDiv = styled.div`
   margin-top: 40px;
   text-align: center;
   font-size: var(--font-size-14);
-  color: var(--color-black-400);
+  color: var(--color-gray-text-light);
   a {
     color: var(--color-danger-500);
     text-decoration: none;

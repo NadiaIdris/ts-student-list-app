@@ -53,6 +53,9 @@
   --color-black-900: rgba(0, 0, 0, 0.9);
   --color-black-1000: rgba(0, 0, 0, 1);
 
+  /* Main grays */
+  --color-gray-text-light: var(--color-black-500);
+
   /* button colors */
   --color-button-primary-bg: var(--color-black);
   --color-button-secondary-bg: var(--color-gray-600);
@@ -92,6 +95,7 @@
 
   /* animation speed */
   --animation--speed1: 0.3s;
+
 }
 
 :root {
@@ -122,10 +126,11 @@ body {
 
 /* Global scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   background-color: var(--color-white);
-  border-bottom-right-radius: var(--border-radius);
+  border-bottom-right-radius: 100px;
+  border-top-right-radius: 100px;
 }
 
 ::-webkit-scrollbar-track {

@@ -1,9 +1,18 @@
+import styled from "styled-components";
+
 interface ModalFooterProps { 
   children: React.ReactNode;
 };
 
+const StyledModalFooter = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 30px;
+`;
+
 const ModalFooter = ({ children }: ModalFooterProps) => {
-  return <div>{children}</div>;
+  return <StyledModalFooter>{children}</StyledModalFooter>;
 };
 
 export { ModalFooter };

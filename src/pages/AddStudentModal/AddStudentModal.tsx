@@ -3,7 +3,6 @@ import { Modal } from "../../components/Modal";
 import { ModalHeader } from "../../components/Modal/ModalHeader";
 import { ModalTitle } from "../../components/Modal/ModalHeader/ModalTitle";
 import { Button } from "../../components/Button";
-import { ModalBody } from "../../components/Modal/ModalBody";
 import { Field } from "../../components/form/Field";
 import { TextField } from "../../components/TextField";
 import styled from "styled-components";
@@ -13,12 +12,32 @@ import { GENDERS } from "../StudentPanel/StudentEditPanel";
 import { ItemsRef, SelectedRef } from "../../components/form/DropdownMenu/DropdownMenu";
 import { MouseEvent } from "react";
 import { DatePicker } from "../../components/form/DatePicker";
+import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 
 const StyledColumn = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
   flex: 1 0 200px;
+  @media (max-width: 600px) {
+    gap: 20px;
+  }
+`;
+
+const StyledCustomModalBody = styled.div`
+  display: flex;
+  gap: 10%;
+  margin: 10px 30px 40px 30px;
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 20px;
+  }
+`;
+
+const StyledRequiredFields = styled.div`
+  font-size: var(--font-size-14);
+  color: var(--color-gray-text-light);
+  margin-top: 20px;
 `;
 
 const AddStudentModal = () => {
@@ -169,7 +188,7 @@ const AddStudentModal = () => {
         <ModalHeader showCloseButton>
           <ModalTitle>Add a new student</ModalTitle>
         </ModalHeader>
-        <ModalBody direction="row">
+        <StyledCustomModalBody>
           <StyledColumn>
             {renderFirstNameField()}
             {renderLastNameField()}
@@ -178,11 +197,19 @@ const AddStudentModal = () => {
           <StyledColumn>
             {renderEmailField()}
             {renderBirthdayField()}
-            <Button type="submit" isLoading={submitting}>
-              Add student
+            <Button
+              type="submit"
+              isLoading={submitting}
+              style={{ top: "22px", position: "relative", display: "flex" }}
+              fullWidth
+            >
+              Add new student
             </Button>
+            <StyledRequiredFields>
+              <RequiredAsterisk /> Required fields
+            </StyledRequiredFields>
           </StyledColumn>
-        </ModalBody>
+        </StyledCustomModalBody>
       </Form>
     </Modal>
   );

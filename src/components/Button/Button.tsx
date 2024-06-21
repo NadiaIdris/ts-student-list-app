@@ -83,8 +83,8 @@ const StyledButton = styled.button<{
     /* Icon button height */
     if (($iconBefore || $iconAfter) && !$children) return "auto";
     /* Regular button height */
-    if ($size === "small") return "36px";
-    else return "42px";
+    if ($size === "small") return "var(--input-height-small)";
+    else return "var(--input-height-medium)";
   }};
   width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "auto")};
   ${({ $size }) => {

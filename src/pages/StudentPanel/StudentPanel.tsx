@@ -168,7 +168,7 @@ const StudentPanel = () => {
         <Button
           appearance="link-with-background"
           size="medium"
-          iconBefore={<CgClose style={{ width: "16px", height: "16px" }} />}
+          iconBefore={<CgClose style={{ width: "24px", height: "24px" }} />}
           onClick={handleCloseStudentPanel}
           ariaLabel="Close student panel"
           tooltip="Close student panel"
