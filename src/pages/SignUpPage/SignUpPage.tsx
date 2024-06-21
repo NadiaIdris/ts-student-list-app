@@ -129,10 +129,10 @@ const StyledFormWrapper = styled.div`
   width: 100%;
 `;
 
-const StyledWrapperDiv = styled.div<{ $isDisabled: boolean; $size: FieldSize }>`
+const StyledWrapperDiv = styled.div<{ $isDisabled: boolean }>`
   position: absolute;
   top: 50%;
-  right: ${({ $size }) => ($size === "small" ? "4px" : "2px")};
+  right: 6px;
   transform: translateY(-50%);
   cursor: pointer;
   display: flex;
@@ -158,7 +158,6 @@ const StyledAlreadyAMemberDiv = styled.div`
 const renderPasswordIcons = (
   id: string,
   isDisabled: boolean,
-  size: FieldSize,
   showPassword: boolean,
   setShowPassword: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
@@ -168,9 +167,9 @@ const renderPasswordIcons = (
       id={`${id}-icon`} // This is useful measuring the width of the icons wrapper span to add the correct padding-right to the input field.
       onClick={() => setShowPassword(!showPassword)}
       $isDisabled={isDisabled}
-      $size={size}
     >
       <Button
+        size="small"
         appearance="link-with-background"
         iconBefore={
           showPassword ? (
@@ -289,8 +288,8 @@ const SignUpPage = () => {
                 placeholder="Enter your password"
                 isInvalid={Boolean(actionData?.errorMsgs?.password)}
                 isDisabled={submitting}
-                renderIcon={(isDisabled, size) =>
-                  renderPasswordIcons("login-password", isDisabled, size, showPassword, setShowPassword)
+                renderIcon={(isDisabled) =>
+                  renderPasswordIcons("login-password", isDisabled, showPassword, setShowPassword)
                 }
                 passwordIsVisible={showPassword}
               />
@@ -311,8 +310,8 @@ const SignUpPage = () => {
                 placeholder="Enter your password again"
                 isInvalid={Boolean(actionData?.errorMsgs?.repeat_password)}
                 isDisabled={submitting}
-                renderIcon={(isDisabled, size) =>
-                  renderPasswordIcons("login-password", isDisabled, size, showPassword, setShowPassword)
+                renderIcon={(isDisabled) =>
+                  renderPasswordIcons("login-password", isDisabled, showPassword, setShowPassword)
                 }
                 passwordIsVisible={showPassword}
               />

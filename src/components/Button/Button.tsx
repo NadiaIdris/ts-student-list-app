@@ -95,8 +95,8 @@ const StyledButton = styled.button<{
     /* Icon button padding */
     if (($iconBefore || $iconAfter) && !$children && $size === "small") return "4px";
     else if (($iconBefore || $iconAfter) && !$children) return "8px";
-    /* Regular button padding */ else if ($size === "small") return "0 16px";
-    else return "0 24px";
+    /* Regular button padding */ else if ($size === "small") return "0 12px";
+    else return "0 16px";
   }};
   background: ${({ $appearance }) => {
     if ($appearance === "primary") return "var(--color-button-primary-bg)";

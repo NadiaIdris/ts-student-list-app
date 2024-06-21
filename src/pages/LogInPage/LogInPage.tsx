@@ -175,8 +175,8 @@ const LogInPage = () => {
                 placeholder="Enter your password"
                 isInvalid={Boolean(passwordErrorMsg)}
                 isDisabled={submitting}
-                renderIcon={(isDisabled, size) =>
-                  renderPasswordIcons("login-password", isDisabled, size, showPassword, setShowPassword)
+                renderIcon={(isDisabled) =>
+                  renderPasswordIcons("login-password", isDisabled, showPassword, setShowPassword)
                 }
                 passwordIsVisible={showPassword}
               />

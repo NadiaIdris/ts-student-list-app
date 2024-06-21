@@ -120,7 +120,7 @@ const SelectedMenuItem = ({
             isDisabled={isDisabled}
             appearance="link-with-background"
             size="small"
-            iconBefore={<CgClose style={{ width: "14px", height: "14px" }} />}
+            iconBefore={<CgClose style={{ width: "16px", height: "16px" }} />}
             onClick={(event) => {
               if (setSelectedGender && setGenderDropdownIsOpen) {
                 event.stopPropagation();
