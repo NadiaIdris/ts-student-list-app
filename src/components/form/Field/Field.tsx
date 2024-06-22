@@ -5,7 +5,7 @@ import { Label } from "../Label";
 import { RequiredAsterisk } from "../RequiredAsterisk";
 
 type Direction = "row" | "column";
-type FieldSize = "small" | "medium";
+type FieldSize = "small" | "medium" | "large";
 
 interface FieldProps {
   id: string;
@@ -52,7 +52,7 @@ const Field = ({
   isRequired = false,
   invalidFieldMessage = "",
   direction = "column",
-  size = "medium",
+  size = "large",
   children,
   testId,
   style,

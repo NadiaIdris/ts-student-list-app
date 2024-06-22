@@ -17,21 +17,22 @@ const StyledDatePicker = styled.input<{ $size: FieldSize }>`
   width: 100%;
   border-radius: var(--border-radius);
   border: var(--border);
-  padding: 0 8px;
+  padding: ${({ $size }) => ($size === "large" ? " 0 12px" : "0 8px")};
   font-family: inherit;
+  background-color: var(--color-gray-800);
   &:disabled {
     opacity: 0.5;
   }
   &:focus {
-    outline: 2px solid blue;
-    outline-offset: -2px;
-    border: 2px solid transparent;
+    border: var(--focus-outline);
   }
 
   ${({ $size }) => {
     if ($size === "small")
       return "height: var(--input-height-small); font-size: var(--font-size-14);"; // ~14px is 0.875rem
-    else if ($size === "medium") return "height: var(--input-height-medium); font-size: var(--font-size-16);"; // ~16px is 1rem
+    else if ($size === "medium")
+      return "height: var(--input-height-medium); font-size: var(--font-size-16);"; // ~16px is 1rem
+    else return "height: var(--input-height-large); font-size: var(--font-size-16);"; // ~16px is 1rem
   }}
 
   &::-webkit-calendar-picker-indicator {

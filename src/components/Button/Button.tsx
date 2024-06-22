@@ -2,7 +2,7 @@ import { CSSProperties, MouseEvent, ReactNode } from "react";
 import styled from "styled-components";
 
 export type Appearance = "primary" | "secondary" | "warning" | "link" | "link-with-background";
-export type Size = "small" | "medium";
+export type Size = "small" | "medium" | "large";
 
 export interface ButtonProps {
   /**
@@ -71,7 +71,7 @@ const StyledButton = styled.button<{
   $isLoading: boolean;
 }>`
   border-radius: ${({ $size, $iconBefore, $iconAfter, $children }) => {
-    if (($iconBefore || $iconAfter) && !$children && ($size === "small" || $size === "medium")) return "100px";
+    if (($iconBefore || $iconAfter) && !$children) return "100px";
     else return "var(--border-radius)";
   }};
   position: relative;
@@ -84,7 +84,8 @@ const StyledButton = styled.button<{
     if (($iconBefore || $iconAfter) && !$children) return "auto";
     /* Regular button height */
     if ($size === "small") return "var(--input-height-small)";
-    else return "var(--input-height-medium)";
+    else if ($size === "medium") return "var(--input-height-medium)";
+    else return "var(--input-height-large)";
   }};
   width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "auto")};
   ${({ $size }) => {
@@ -96,7 +97,8 @@ const StyledButton = styled.button<{
     if (($iconBefore || $iconAfter) && !$children && $size === "small") return "4px";
     else if (($iconBefore || $iconAfter) && !$children) return "8px";
     /* Regular button padding */ else if ($size === "small") return "0 12px";
-    else return "0 16px";
+    else if ($size === "medium") return "0 16px";
+    else return "0 25px";
   }};
   background: ${({ $appearance }) => {
     if ($appearance === "primary") return "var(--color-button-primary-bg)";
@@ -191,7 +193,7 @@ const Button = ({
   type = "button",
   onClick,
   appearance = "primary",
-  size = "medium",
+  size = "large",
   fullWidth = false,
   isLoading = false,
   isDisabled = false,

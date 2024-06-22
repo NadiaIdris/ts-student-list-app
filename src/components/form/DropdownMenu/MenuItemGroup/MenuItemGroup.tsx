@@ -1,11 +1,14 @@
 import styled from "styled-components";
 import { HandleOptionKeyDown } from "../../../../pages/StudentPanel/StudentEditPanel";
 import { FieldSize } from "../../Field";
-import { MenuItemsType, ItemsRef } from "../DropdownMenu";
+import { MenuItemsType, ItemsRef, SelectedRef } from "../DropdownMenu";
 import { MenuItem } from "../MenuItem";
+import { useActionData } from "react-router-dom";
+import { useEffect } from "react";
 
 interface MenuItemGroupProps {
   itemsRef: ItemsRef;
+  selectedRef: SelectedRef;
   isDisabled?: boolean;
   dropdownIsOpen: boolean;
   menuItems: MenuItemsType;
@@ -31,6 +34,7 @@ const StyledMenuItemGroup = styled.div`
 
 const MenuItemGroup = ({
   itemsRef,
+  selectedRef,
   isDisabled,
   dropdownIsOpen,
   menuItems,

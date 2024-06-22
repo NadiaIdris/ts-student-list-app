@@ -264,6 +264,7 @@ const StudentEditPanel = () => {
                 id="first-name"
                 label="First name"
                 direction={fieldDirection}
+                isRequired
                 invalidFieldMessage="" // TODO: add error message
               >
                 {(inputProps) => (
@@ -281,6 +282,7 @@ const StudentEditPanel = () => {
                 id="last-name"
                 label="Last name"
                 direction={fieldDirection}
+                isRequired
                 invalidFieldMessage="" // TODO: add error message
               >
                 {(inputProps) => (
@@ -298,6 +300,7 @@ const StudentEditPanel = () => {
                 id="email"
                 label="Email"
                 direction={fieldDirection}
+                isRequired
                 invalidFieldMessage="" // TODO: add error message
               >
                 {(inputProps) => (
@@ -338,6 +341,7 @@ const StudentEditPanel = () => {
                 id="date-of-birth"
                 label="Birthday"
                 direction={fieldDirection}
+                isRequired
                 invalidFieldMessage="" // TODO: add error message
               >
                 {(inputProps) => (

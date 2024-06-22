@@ -13,8 +13,8 @@ import { TextField } from "../../components/TextField";
 import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateLoginForm } from "../../validation/validate";
-import { removeWhiteSpace } from "../../utils/utils";
-import { renderPasswordIcons } from "../SignUpPage";
+import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
+import { renderPasswordIcons, StyledSmallPrintDiv } from "../SignUpPage";
 
 interface IUserLogInErrors {
   email: string;
@@ -27,7 +27,7 @@ interface ILogInData {
   user: IUser;
 }
 
-export async function action({ request }: { request: Request }) {
+async function action({ request }: { request: Request }) {
   let formData = await request.formData();
   // Trim the white spaces from the email and password
   const trimmedUserLogInData = removeWhiteSpace(formData) as unknown as IUserLogInErrors;
@@ -35,12 +35,7 @@ export async function action({ request }: { request: Request }) {
   // Validate the user login data, before sending it to the server
   const { error } = validateLoginForm(trimmedUserLogInData);
   if (error) {
-    const errorMsgs = error.details.reduce((acc, detail) => {
-      if (detail.context?.key) {
-        return { ...acc, [detail.context.key]: detail.message };
-      }
-      return acc;
-    }, defaultUserLogInData);
+    const errorMsgs = generateErrorMessagesObject(error.details, defaultUserLogInData);
     // Don't continue with the login process if there are errors.
     return { errorMsgs };
   }
@@ -92,20 +87,6 @@ const StyledFormWrapper = styled.div`
   width: 100%;
 `;
 
-const StyledNotAMemberDiv = styled.div`
-  margin-top: 40px;
-  text-align: center;
-  font-size: var(--font-size-14);
-  color: var(--color-gray-text-light);
-  a {
-    color: var(--color-danger-500);
-    text-decoration: none;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-`;
-
 const defaultUserLogInData = {
   email: "",
   password: "",
@@ -152,6 +133,7 @@ const LogInPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
+                size="large"
                 type="email"
                 name="email"
                 placeholder="Enter your email"
@@ -165,11 +147,12 @@ const LogInPage = () => {
             label="Password"
             isRequired
             invalidFieldMessage={passwordErrorMsg}
-            style={{ margin: "0 0 12px 0" }}
+            style={{ margin: "0 0 24px 0" }}
           >
             {(inputProps) => (
               <TextField
                 {...inputProps}
+                size="large"
                 type="password"
                 name="password"
                 placeholder="Enter your password"
@@ -188,18 +171,18 @@ const LogInPage = () => {
               Please check your credentials. The email or password is incorrect.
             </ErrorMessage>
           )}
-          <Button type="submit" fullWidth isLoading={submitting} style={{ marginTop: "24px" }}>
+          <Button size="large" type="submit" fullWidth isLoading={submitting} style={{ marginTop: "24px" }}>
             Log in
           </Button>
         </Form>
-        <StyledNotAMemberDiv>
+        <StyledSmallPrintDiv>
           Not a member? <Link to="/signup">Sign up now</Link>
           <br />
           <RequiredAsterisk /> Required fields
-        </StyledNotAMemberDiv>
+        </StyledSmallPrintDiv>
       </StyledFormWrapper>
     </StyledLoginPageWrapper>
   );
 };
 
-export { LogInPage };
+export { LogInPage, action };

@@ -13,10 +13,12 @@ import { ItemsRef, SelectedRef } from "../../components/form/DropdownMenu/Dropdo
 import { MouseEvent } from "react";
 import { DatePicker } from "../../components/form/DatePicker";
 import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
-import { removeWhiteSpace } from "../../utils/utils";
-import { validateCreateNewUserData } from "../../validation/validate";
+import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
+import { validateNewUserData } from "../../validation/validate";
+import { axiosInstance } from "../../api/axiosConfig";
+import { ADD_STUDENT_ENDPOINT } from "../../api/apiConstants";
 
-interface INewUserErrors {
+interface IStudentErrors {
   first_name: string;
   last_name: string;
   email: string;
@@ -24,22 +26,44 @@ interface INewUserErrors {
   date_of_birth: string;
 }
 
-interface INewUserData {
+interface IStudentData {
   first_name: string;
   last_name: string;
   email: string;
   gender: string;
   date_of_birth: string;
 }
+
+const defaultNewUserData: IStudentData = {
+  first_name: "",
+  last_name: "",
+  email: "",
+  gender: "",
+  date_of_birth: "",
+};
 
 async function action({ request }: { request: Request }) {
   // Get the values from the form.
   const formData = await request.formData();
   // Trim the white spaces from all the form data
-  const trimmedNewUserData = removeWhiteSpace(formData) as unknown as INewUserData;
-  // Validate the values.
-  // const { error } = validateCreateNewUserData(trimmedNewUserData);
+  const trimmedNewUserData = removeWhiteSpace(formData) as unknown as IStudentData;
+  // Validate the student data before sending it to the server.
+  const { error } = validateNewUserData(trimmedNewUserData);
+
+  if (error) {
+    const errorMsgs = generateErrorMessagesObject(error.details, defaultNewUserData);
+    // Don't continue with creating a new student process if there are errors.
+    return { errorMsgs };
+  }
+
   // Send the values to the server.
+  try { 
+    const response = await axiosInstance.post(ADD_STUDENT_ENDPOINT, {trimmedNewUserData})
+  }
+  catch (error: any) {
+    console.error(`[ACTION ERROR]: ${error}`);
+  }
+
 }
 
 const StyledColumn = styled.div`
@@ -244,4 +268,4 @@ const AddStudentModal = () => {
 };
 
 export { AddStudentModal, action };
-export type { INewUserErrors, INewUserData };
+export type { IStudentErrors as INewUserErrors, IStudentData };

@@ -6,7 +6,7 @@ import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
 import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
-import { Field, FieldSize } from "../../components/form/Field";
+import { Field } from "../../components/form/Field";
 import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 import { Heading1 } from "../../components/text/Heading1";
 import { Heading2 } from "../../components/text/Heading2";
@@ -14,7 +14,7 @@ import { TextField } from "../../components/TextField";
 import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateSignUpForm } from "../../validation/validate";
-import { removeWhiteSpace } from "../../utils/utils";
+import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
 
 interface IUserSignUpErrors {
   first_name: string;
@@ -38,26 +38,17 @@ const defaultUserSignUpData = {
   repeat_password: "",
 };
 
-export async function action({ request }: { request: Request }) {
+async function action({ request }: { request: Request }) {
   let formData = await request.formData();
   // Trim the white spaces from all the form data
   const trimmedUserSignUpData = removeWhiteSpace(formData) as unknown as IUserSignUpErrors;
+
   // Validate the user sign up data
   const { error } = validateSignUpForm(trimmedUserSignUpData);
 
   if (error) {
     // Make an object with the error messages
-    const errorMsgs = error.details.reduce((acc, detail) => {
-      const key = detail.context?.key;
-      if (key) {
-        return {
-          ...acc,
-          [key]: detail.message,
-        };
-      }
-      return acc;
-    }, defaultUserSignUpData);
-
+    const errorMsgs = generateErrorMessagesObject(error.details, defaultUserSignUpData);
     return { errorMsgs };
   }
 
@@ -141,13 +132,13 @@ const StyledWrapperDiv = styled.div<{ $isDisabled: boolean }>`
   ${({ $isDisabled }) => $isDisabled && "pointer-events: none; opacity: 0.5; cursor: disabled;"};
 `;
 
-const StyledAlreadyAMemberDiv = styled.div`
-  margin-top: 40px;
+const StyledSmallPrintDiv = styled.div`
+  margin-top: 20px;
   text-align: center;
-  font-size: var(--font-size-14);
+  font-size: var(--font-size-11);
   color: var(--color-gray-text-light);
   a {
-    color: var(--color-danger-500);
+    color: var(--color-danger-800);
     text-decoration: none;
     &:hover {
       text-decoration: underline;
@@ -169,7 +160,7 @@ const renderPasswordIcons = (
       $isDisabled={isDisabled}
     >
       <Button
-        size="small"
+        size="large"
         appearance="link-with-background"
         iconBefore={
           showPassword ? (
@@ -229,6 +220,7 @@ const SignUpPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
+                size="large"
                 type="text"
                 name="first_name"
                 placeholder="Enter your first name"
@@ -247,6 +239,7 @@ const SignUpPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
+                size="large"
                 type="text"
                 name="last_name"
                 placeholder="Enter your last name"
@@ -265,6 +258,7 @@ const SignUpPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
+                size="large"
                 type="email"
                 name="email"
                 placeholder="Enter your email"
@@ -283,6 +277,7 @@ const SignUpPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
+                size="large"
                 type="password"
                 name="password"
                 placeholder="Enter your password"
@@ -300,11 +295,12 @@ const SignUpPage = () => {
             label="Confirm password"
             isRequired
             invalidFieldMessage={actionData?.errorMsgs?.repeat_password}
-            style={{ margin: "0 0 12px 0" }}
+            style={{ margin: "0 0 24px 0" }}
           >
             {(inputProps) => (
               <TextField
                 {...inputProps}
+                size="large"
                 type="password"
                 name="repeat_password"
                 placeholder="Enter your password again"
@@ -318,18 +314,18 @@ const SignUpPage = () => {
             )}
           </Field>
           {actionData?.networkError && showCorrectErrorMsg(actionData?.networkError)}
-          <Button type="submit" fullWidth isLoading={submitting} style={{ marginTop: "24px" }}>
+          <Button size="large" type="submit" fullWidth isLoading={submitting} style={{ marginTop: "24px" }}>
             Sign up
           </Button>
         </Form>
-        <StyledAlreadyAMemberDiv>
+        <StyledSmallPrintDiv>
           Already a member? <Link to="/login">Log in now</Link>
           <br />
           <RequiredAsterisk /> Required fields
-        </StyledAlreadyAMemberDiv>
+        </StyledSmallPrintDiv>
       </StyledFormWrapper>
     </StyledLoginPageWrapper>
   );
 };
 
-export { SignUpPage, renderPasswordIcons };
+export { SignUpPage, renderPasswordIcons, action, StyledSmallPrintDiv };

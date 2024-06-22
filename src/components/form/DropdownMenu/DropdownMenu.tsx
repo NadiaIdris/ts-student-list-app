@@ -46,7 +46,7 @@ const DropdownMenu = forwardRef(
     {
       name,
       id,
-      size = "medium",
+      size = "large",
       isOpen,
       isDisabled,
       // Data
@@ -82,6 +82,7 @@ const DropdownMenu = forwardRef(
         />
         <MenuItemGroup
           itemsRef={optionsRef}
+          selectedRef={selectedRef}
           isDisabled={isDisabled}
           dropdownIsOpen={isOpen}
           menuItems={menuItems}

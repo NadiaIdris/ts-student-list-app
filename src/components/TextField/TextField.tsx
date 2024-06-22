@@ -63,27 +63,25 @@ const StyledTextField = styled.input<{
 }>`
   border-radius: var(--border-radius);
   border: var(--border);
-  padding-left: 8px;
-  width: 100%;
+  background-color: var(--color-gray-800);
+  padding: ${({ $size }) => ($size === "large" ? " 0 12px" : "0 8px")};
   &:disabled {
     opacity: 0.5;
+    cursor: not-allowed;
   }
+  font-family: "Poppins", sans-serif;
+
   ${({ $size }) => {
     if ($size === "small")
-      return "height: var(--input-height-small); font: var(--font-size-14) Poppins, sans-serif;"; // ~14px is 0.875rem
+      return "height: var(--input-height-small); font-size: var(--font-size-14);"; // ~14px is 0.875rem
     else if ($size === "medium")
-      return "height: var(--input-height-medium); font: var(--font-size-16) Poppins, sans-serif;"; // ~16px is 1rem
+      return "height: var(--input-height-medium); font: var(--font-size-16);"; // ~16px is 1rem
+    else return "height: var(--input-height-large); font: var(--font-size-16);"; // ~16px is 1rem
   }}
   ${({ $isInvalid }) => $isInvalid && `border-color: var(--color-danger);`}
 
   &:focus {
-    outline: 2px solid blue;
-    outline-offset: -2px;
-    border: 2px solid transparent;
-  }
-
-  :-internal-autofill-previewed {
-    font-size: 22px !important;
+    border: var(--focus-outline);
   }
 `;
 
@@ -99,7 +97,7 @@ const TextField = ({
   name,
   placeholder,
   autoComplete = "on",
-  size = "medium",
+  size = "large",
   isInvalid = false,
   isDisabled = false,
   renderIcon,

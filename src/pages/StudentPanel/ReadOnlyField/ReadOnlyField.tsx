@@ -28,6 +28,8 @@ const StyledRow = styled.div<{ $icon: ReactNode }>`
   align-items: center;
   flex-direction: row;
   padding: 0 32px 0 40px;
+  height: var(--input-height-large);
+  
   &:hover {
     ${({ $icon }) => $icon && "background-color: var(--color-gray-400); "}
   }
