@@ -69,14 +69,16 @@ const StyledTextField = styled.input<{
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  width: 100%;
   font-family: "Poppins", sans-serif;
 
   ${({ $size }) => {
     if ($size === "small")
       return "height: var(--input-height-small); font-size: var(--font-size-14);"; // ~14px is 0.875rem
     else if ($size === "medium")
-      return "height: var(--input-height-medium); font: var(--font-size-16);"; // ~16px is 1rem
-    else return "height: var(--input-height-large); font: var(--font-size-16);"; // ~16px is 1rem
+      return "height: var(--input-height-medium); font-size: var(--font-size-16);"; // ~16px is 1rem
+    else return "height: var(--input-height-large); font-size: var(--font-size-16);"; // ~16px is 1rem
   }}
   ${({ $isInvalid }) => $isInvalid && `border-color: var(--color-danger);`}
 
