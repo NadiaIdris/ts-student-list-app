@@ -1,11 +1,11 @@
-import { MouseEvent, KeyboardEvent } from "react";
+import { MouseEvent } from "react";
 import styled from "styled-components";
-import { FieldSize } from "../../Field";
-import { OptionsRef } from "../DropdownMenu";
 import { HandleOptionKeyDown } from "../../../../pages/StudentPanel/StudentEditPanel";
+import { FieldSize } from "../../Field";
+import { ItemsRef } from "../DropdownMenu";
 
 interface MenuItemProps {
-  optionsRef: OptionsRef;
+  itemsRef: ItemsRef;
   children: string;
   onClick: (event: MouseEvent<HTMLButtonElement>) => void;
   onDropdownMenuItemKeyDown?: HandleOptionKeyDown;
@@ -48,7 +48,7 @@ const StyledMenuItem = styled.button<{ $size: FieldSize }>`
 `;
 
 const MenuItem = ({
-  optionsRef,
+  itemsRef,
   children,
   onClick,
   onDropdownMenuItemKeyDown,
@@ -56,8 +56,7 @@ const MenuItem = ({
   size = "medium",
   index,
 }: MenuItemProps) => {
-
-  const handleKeyDown: React.KeyboardEventHandler<HTMLButtonElement> = (event) => { 
+  const handleKeyDown: React.KeyboardEventHandler<HTMLButtonElement> = (event) => {
     if (onDropdownMenuItemKeyDown) {
       onDropdownMenuItemKeyDown(event, index);
     }
@@ -67,7 +66,7 @@ const MenuItem = ({
       ref={(node) => {
         // Add this button node to optionsRef array.
         if (node) {
-          optionsRef.current[index] = node;
+          itemsRef.current[index] = node;
         }
       }}
       onClick={onClick}

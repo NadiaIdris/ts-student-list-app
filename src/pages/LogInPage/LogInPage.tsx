@@ -1,18 +1,11 @@
 import { useEffect, useState } from "react";
-import { FiEye, FiEyeOff } from "react-icons/fi";
-import {
-  Form,
-  Link,
-  useActionData,
-  useNavigate,
-  useNavigation,
-} from "react-router-dom";
+import { Form, Link, useActionData, useNavigate, useNavigation } from "react-router-dom";
 import styled from "styled-components";
 import { LOGIN_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
 import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
-import { Field, FieldSize } from "../../components/form/Field";
+import { Field } from "../../components/form/Field";
 import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 import { Heading1 } from "../../components/text/Heading1";
 import { Heading2 } from "../../components/text/Heading2";
@@ -20,6 +13,8 @@ import { TextField } from "../../components/TextField";
 import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateLoginForm } from "../../validation/validate";
+import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
+import { renderPasswordIcons, StyledSmallPrintDiv } from "../SignUpPage";
 
 interface IUserLogInErrors {
   email: string;
@@ -32,44 +27,23 @@ interface ILogInData {
   user: IUser;
 }
 
-// TODO: write unit test for removeWhiteSpace
-const removeWhiteSpace = (formData: FormData) => {
-  return Object.fromEntries(
-    [...formData.entries()].map(([key, value]) => [
-      key,
-      value.toString().trim(),
-    ])
-  );
-};
-
-export async function action({ request }: { request: Request }) {
+async function action({ request }: { request: Request }) {
   let formData = await request.formData();
   // Trim the white spaces from the email and password
-  const trimmedUserLogInData = removeWhiteSpace(
-    formData
-  ) as unknown as IUserLogInErrors;
+  const trimmedUserLogInData = removeWhiteSpace(formData) as unknown as IUserLogInErrors;
 
   // Validate the user login data, before sending it to the server
   const { error } = validateLoginForm(trimmedUserLogInData);
   if (error) {
-    const errorMsgs = error.details.reduce((acc, detail) => {
-      if (detail.context?.key) {
-        return { ...acc, [detail.context.key]: detail.message };
-      }
-      return acc;
-    }, defaultUserLogInData);
+    const errorMsgs = generateErrorMessagesObject(error.details, defaultUserLogInData);
     // Don't continue with the login process if there are errors.
     return { errorMsgs };
   }
 
   try {
-    const response = await axiosInstance.post(
-      LOGIN_ENDPOINT,
-      trimmedUserLogInData
-    );
+    const response = await axiosInstance.post(LOGIN_ENDPOINT, trimmedUserLogInData);
     // Extract the token and user details from the response
-    const bearerToken =
-      response.headers.Authorization || response.headers.authorization;
+    const bearerToken = response.headers.Authorization || response.headers.authorization;
     const token = bearerToken.split(" ")[1];
     const { registered_user_uid, first_name, last_name, email } = response.data;
     const user = {
@@ -104,31 +78,6 @@ const StyledLoginPageWrapper = styled.div`
   gap: 16px;
 `;
 
-const StyledWrapperDiv = styled.div<{ $isLoading: boolean; $size: FieldSize }>`
-  position: absolute;
-  top: 50%;
-  right: ${({ $size }) => ($size === "small" ? "4px" : "2px")};
-  transform: translateY(-50%);
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  gap: 2px;
-  ${({ $isLoading }) =>
-    $isLoading && "pointer-events: none; opacity: 0.5; cursor: disabled;"};
-`;
-
-const StyledIconSpan = styled.span<{ $size: FieldSize }>`
-  padding: ${({ $size }) => ($size === "small" ? "4px" : "8px")};
-  background-color: transparent;
-  border-radius: 100px;
-  display: flex;
-  color: var(--color-black-700);
-  &:hover {
-    background-color: var(--color-gray-600);
-    color: var(--color-black);
-  }
-`;
-
 const StyledFormWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -136,20 +85,6 @@ const StyledFormWrapper = styled.div`
   align-items: center;
   max-width: 340px;
   width: 100%;
-`;
-
-const StyledNotAMemberDiv = styled.div`
-  margin-top: 40px;
-  text-align: center;
-  font-size: var(--font-size-14);
-  color: var(--color-black-400);
-  a {
-    color: var(--color-danger-500);
-    text-decoration: none;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
 `;
 
 const defaultUserLogInData = {
@@ -168,23 +103,6 @@ const LogInPage = () => {
   const emailErrorMsg = actionData?.errorMsgs?.email;
   const passwordErrorMsg = actionData?.errorMsgs?.password;
 
-  const passwordIcons = (id: string, isLoading: boolean, size: FieldSize) => (
-    <StyledWrapperDiv
-      id={`${id}-icon`} // This is useful measuring the width of the icons wrapper span to add the correct padding-right to the input field.
-      onClick={() => setShowPassword(!showPassword)}
-      $isLoading={isLoading}
-      $size={size}
-    >
-      <StyledIconSpan $size={size}>
-        {showPassword ? (
-          <FiEyeOff style={{ width: "16px", height: "16px" }} />
-        ) : (
-          <FiEye style={{ width: "16px", height: "16px" }} />
-        )}
-      </StyledIconSpan>
-    </StyledWrapperDiv>
-  );
-
   useEffect(() => {
     const userData = actionData?.user;
     if (userData) {
@@ -201,9 +119,7 @@ const LogInPage = () => {
 
   return (
     <StyledLoginPageWrapper>
-      <Heading1 style={{ textAlign: "center" }}>
-        Welcome to students app
-      </Heading1>
+      <Heading1 style={{ textAlign: "center" }}>Welcome to students app</Heading1>
       <StyledFormWrapper>
         <Heading2>Log in</Heading2>
         <Form method="post">
@@ -217,6 +133,7 @@ const LogInPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
+                size="large"
                 type="email"
                 name="email"
                 placeholder="Enter your email"
@@ -230,18 +147,19 @@ const LogInPage = () => {
             label="Password"
             isRequired
             invalidFieldMessage={passwordErrorMsg}
-            style={{ margin: "0 0 12px 0" }}
+            style={{ margin: "0 0 24px 0" }}
           >
             {(inputProps) => (
               <TextField
                 {...inputProps}
+                size="large"
                 type="password"
                 name="password"
                 placeholder="Enter your password"
                 isInvalid={Boolean(passwordErrorMsg)}
                 isDisabled={submitting}
-                renderIcon={(isDisabled, size) =>
-                  passwordIcons("login-password", isDisabled, size)
+                renderIcon={(isDisabled) =>
+                  renderPasswordIcons("login-password", isDisabled, showPassword, setShowPassword)
                 }
                 passwordIsVisible={showPassword}
               />
@@ -253,23 +171,18 @@ const LogInPage = () => {
               Please check your credentials. The email or password is incorrect.
             </ErrorMessage>
           )}
-          <Button
-            type="submit"
-            fullWidth
-            isLoading={submitting}
-            style={{ marginTop: "24px" }}
-          >
+          <Button size="large" type="submit" fullWidth isLoading={submitting} style={{ marginTop: "24px" }}>
             Log in
           </Button>
         </Form>
-        <StyledNotAMemberDiv>
+        <StyledSmallPrintDiv>
           Not a member? <Link to="/signup">Sign up now</Link>
           <br />
           <RequiredAsterisk /> Required fields
-        </StyledNotAMemberDiv>
+        </StyledSmallPrintDiv>
       </StyledFormWrapper>
     </StyledLoginPageWrapper>
   );
 };
 
-export { LogInPage };
+export { LogInPage, action };

@@ -1,3 +1,3 @@
-import { Field, FormFieldDirection, FieldSize } from "./Field";
+import { Field, Direction, FieldSize } from "./Field";
 export { Field };
-export type { FormFieldDirection, FieldSize };
+export type { Direction, FieldSize };

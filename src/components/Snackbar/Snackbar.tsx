@@ -11,9 +11,10 @@ interface SnackbarProps {
 const StyledSnackbar = styled.div`
   position: fixed;
   bottom: 0;
-  background-color: var(--color-selection);
-  color: var(--color-button-default-fg);
-  z-index: 30;
+  background-color: var(--color-black-1000);
+  color: var(--color-white);
+  height: var(--input-height-large);
+  z-index: 1000;
   left: 50%;
   transform: translateX(-50%) translateY(100%);
   display: flex;
@@ -55,8 +56,8 @@ const Snackbar = forwardRef(({ text }: SnackbarProps, ref) => {
       {text}
       <Button
         appearance="link"
-        size="medium"
-        iconBefore={<CgClose style={{ width: "16px", height: "16px" }} />}
+        size="large"
+        iconBefore={<CgClose style={{ width: "16px", height: "16px", color: "white" }} />}
         onClick={handleCloseSnackbar}
       />
     </StyledSnackbar>

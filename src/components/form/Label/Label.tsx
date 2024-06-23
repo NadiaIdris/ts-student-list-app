@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import styled from "styled-components";
-import { FieldSize, FormFieldDirection } from "../Field";
+import { FieldSize, Direction } from "../Field";
 
 interface LabelProps {
   /*
@@ -10,7 +10,7 @@ interface LabelProps {
   /*
    * Form field direction.
    */
-  direction?: FormFieldDirection;
+  direction?: Direction;
   /*
    * The content of the label
    */
@@ -27,7 +27,7 @@ interface LabelProps {
 
 const StyledLabel = styled.label<{
   $size: FieldSize;
-  $direction: FormFieldDirection;
+  $direction: Direction;
 }>`
   ${({ $size }) =>
     $size === "small"

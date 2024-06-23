@@ -148,6 +148,15 @@ const StudentPanel = () => {
     }
   };
 
+  const formatBirthday = (date: string) => { 
+    const dateObj = new Date(date);
+    return dateObj.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   useEffect(() => {
     // When use clicks on back button in browser, close the student panel
     window.onpopstate = handleCloseStudentPanel;
@@ -159,7 +168,7 @@ const StudentPanel = () => {
         <Button
           appearance="link-with-background"
           size="medium"
-          iconBefore={<CgClose style={{ width: "16px", height: "16px" }} />}
+          iconBefore={<CgClose style={{ width: "24px", height: "24px" }} />}
           onClick={handleCloseStudentPanel}
           ariaLabel="Close student panel"
           tooltip="Close student panel"
@@ -179,7 +188,7 @@ const StudentPanel = () => {
             iconTooltip="Copy email to clipboard"
           />
           <ReadOnlyField id="gender" label="Gender" value={loaderData?.studentData?.gender ?? "Not specified"} />
-          <ReadOnlyField id="birthday" label="Birthday" value={loaderData?.studentData?.dateOfBirth} />
+          <ReadOnlyField id="birthday" label="Birthday" value={formatBirthday(loaderData?.studentData?.dateOfBirth)} />
         </StyledStudentDataWrapper>
         <StyledButtonsWrapper>
           <Button

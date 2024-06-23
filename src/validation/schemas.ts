@@ -1,15 +1,21 @@
 import Joi from "joi";
 import { IUserSignUpData } from "../pages/SignUpPage";
 
+const validateFirstName = Joi.string().min(1).max(100).required();
+const validateLastName = Joi.string().min(2).max(100).required();
+const validateEmail = Joi.string()
+  .email({ tlds: { allow: false } }) // TLD (top level domain) validation is disabled
+  .min(3)
+  .max(255)
+  .required();
+const validatePassword = Joi.string().min(6).max(1024).required();
+const validateDateOfBirth = Joi.string().required();
+
 const signUpSchema = Joi.object<IUserSignUpData>({
-  first_name: Joi.string().min(1).max(100).required(),
-  last_name: Joi.string().min(2).max(100).required(),
-  email: Joi.string()
-    .email({ tlds: { allow: false } })
-    .min(3)
-    .max(255)
-    .required(),
-  password: Joi.string().min(6).max(1024).required(),
+  first_name: validateFirstName,
+  last_name: validateLastName,
+  email: validateEmail,
+  password: validatePassword,
   repeat_password: Joi.any().valid(Joi.ref("password")).required().messages({
     // Add custom error messages
     "any.only": "Password must match",
@@ -17,12 +23,15 @@ const signUpSchema = Joi.object<IUserSignUpData>({
 });
 
 const logInSchema = Joi.object({
-  email: Joi.string()
-    .email({ tlds: { allow: false } })
-    .min(3)
-    .max(255)
-    .required(),
-  password: Joi.string().min(6).max(1024).required(),
+  email: validateEmail,
+  password: validatePassword,
 });
 
-export { signUpSchema, logInSchema };
+const studentSchema = Joi.object({
+  first_name: validateFirstName,
+  last_name: validateLastName,
+  email: validateEmail,
+  date_of_birth: validateDateOfBirth,
+});
+
+export { signUpSchema, logInSchema, studentSchema };

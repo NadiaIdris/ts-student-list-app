@@ -8,8 +8,20 @@ interface Heading1Props {
 }
 
 const StyledHeading1 = styled.h1`
-  font-size: var(--font-size-40); // 40px is ~2.5rem.
+  /* font-size: var(--font-size-40); // 40px is ~2.5rem. */
   font-weight: 600;
+
+  @media (min-width: 0px) {
+    font-size: 25px;
+  }
+
+  @media (min-width: 500px) {
+    font-size: 30px;
+  }
+
+  @media (min-width: 700px) {
+    font-size: 40px;
+  }
 `;
 
 const Heading1 = ({ children, style, className, ...props }: Heading1Props) => {

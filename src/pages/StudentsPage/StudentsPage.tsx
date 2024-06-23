@@ -223,7 +223,7 @@ const StudentsPage = () => {
   //   }
   // }, [navigate]);
 
-  // const createEndpoint = (url: string, studentId: string) => { 
+  // const createEndpoint = (url: string, studentId: string) => {
   //   if (url === "/") {
   //     return `/students/${studentId}`;
   //   } else {

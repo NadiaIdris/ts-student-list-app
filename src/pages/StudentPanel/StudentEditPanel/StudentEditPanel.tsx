@@ -1,31 +1,53 @@
 import { KeyboardEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
-import { Form, Params, redirect, useLoaderData, useNavigate, useNavigation, useParams } from "react-router-dom";
+import {
+  Form,
+  Params,
+  redirect,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+  useParams,
+} from "react-router-dom";
 import styled from "styled-components";
+import { STUDENTS_ENDPOINT } from "../../../api/apiConstants";
+import { axiosInstance } from "../../../api/axiosConfig";
 import { Button } from "../../../components/Button";
+import { DatePicker } from "../../../components/form/DatePicker";
 import { DropdownMenu } from "../../../components/form/DropdownMenu";
-import { OptionsRef, RefsContainer, SelectedRef } from "../../../components/form/DropdownMenu/DropdownMenu";
-import { Field, FormFieldDirection } from "../../../components/form/Field";
+import { ItemsRef, RefsContainer, SelectedRef } from "../../../components/form/DropdownMenu/DropdownMenu";
+import { Direction, Field } from "../../../components/form/Field";
 import { Heading1 } from "../../../components/text/Heading1";
 import { TextField } from "../../../components/TextField";
 import { useStudentUid } from "../../StudentsPage/StudentsPage";
 import { IStudentFetchData } from "../StudentPanel";
-import { DatePicker } from "../../../components/form/DatePicker";
-import { axiosInstance } from "../../../api/axiosConfig";
-import { STUDENTS_ENDPOINT } from "../../../api/apiConstants";
+import { generateErrorMessagesObject, removeWhiteSpace } from "../../../utils/utils";
+import { defaultStudentData, IStudentData, IStudentErrors } from "../../AddStudentModal";
+import { validateStudentData } from "../../../validation/validate";
 
-export async function action({ request, params }: { request: Request; params: Params }) {
+const GENDERS = ["Female", "Male", "Agender", "Cisgender", "Genderfluid", "Genderqueer", "Non-binary", "Transgender"];
+
+interface IEditStudent {
+  errorMsgs: IStudentErrors;
+}
+
+async function action({ request, params }: { request: Request; params: Params }) {
   let formData = await request.formData();
+  // Trim the white spaces from all the form data
+  const trimmedStudentData = removeWhiteSpace(formData) as unknown as IStudentData;
+  // Validate the student data before sending it to the server.
+  const { error } = validateStudentData(trimmedStudentData);
+
+  if (error) {
+    const errorMsgs = generateErrorMessagesObject(error.details, defaultStudentData);
+    // Don't continue with creating a new student process if there are errors.
+    return { errorMsgs };
+  }
+
   try {
     const endpoint = STUDENTS_ENDPOINT + `/${params.studentId}`;
-    const userInformation = {
-      first_name: formData.get("first_name"),
-      last_name: formData.get("last_name"),
-      email: formData.get("email"),
-      gender: formData.get("gender"),
-      date_of_birth: formData.get("date_of_birth"),
-    };
-    const response = await axiosInstance.put(endpoint, userInformation);
+    const response = await axiosInstance.put(endpoint, trimmedStudentData);
     if (response.status === 200) {
       // Redirect to the student's page after the student data has been updated.
       return redirect(`/students/${params.studentId}`);
@@ -107,19 +129,19 @@ const StudentEditPanel = () => {
   const navigation = useNavigation();
   const { studentId } = useParams();
   const submitting = navigation.state === "submitting";
+  const actionData: IEditStudent | undefined = useActionData() as IEditStudent;
   const loaderData: IStudentFetchData | undefined = useLoaderData() as IStudentFetchData;
   const { setStudentUid } = useStudentUid();
   const navigate = useNavigate();
-  const [fieldDirection, setFieldDirection] = useState<FormFieldDirection>("row");
-  const genders = ["Female", "Male", "Agender", "Cisgender", "Genderfluid", "Genderqueer", "Non-binary", "Transgender"];
+  const [fieldDirection, setFieldDirection] = useState<Direction>("row");
   const [selectedGender, setSelectedGender] = useState(loaderData?.studentData.gender || "");
   const [genderDropdownIsOpen, setGenderDropdownIsOpen] = useState(false);
 
   // Refs for the selects and options.
-  const genderOptionsRef: OptionsRef = useRef([] as HTMLButtonElement[]);
+  const genderItemsRef: ItemsRef = useRef([] as HTMLButtonElement[]);
   const genderSelectedRef: SelectedRef = useRef(null);
   let container: RefsContainer = {
-    optionsRef: genderOptionsRef,
+    itemsRef: genderItemsRef,
     selectedRef: genderSelectedRef,
   };
   const genderRefsObj = useRef(container);
@@ -133,12 +155,12 @@ const StudentEditPanel = () => {
   const scrollToSelectedMenuItem = () => {
     /* Find index is assuming that there is only one instance of a string in an array. If more
       than one instance of the same string, the findIndex method returns the index of the first match.  */
-    const selectedOptionIndex = genders.findIndex((gender) => gender === selectedGender);
+    const selectedOptionIndex = GENDERS.findIndex((gender) => gender === selectedGender);
     // Add a timeout to make sure async setGenderDropdownIsOpen is called first and then our setTimeout is called next from the JS event loop.
     setTimeout(() => {
-      if (genderOptionsRef.current[selectedOptionIndex]) {
-        genderOptionsRef.current[selectedOptionIndex].focus();
-        genderOptionsRef.current[selectedOptionIndex].scrollIntoView({
+      if (genderItemsRef.current[selectedOptionIndex]) {
+        genderItemsRef.current[selectedOptionIndex].focus();
+        genderItemsRef.current[selectedOptionIndex].scrollIntoView({
           behavior: "smooth",
           block: "nearest",
           inline: "center",
@@ -172,7 +194,7 @@ const StudentEditPanel = () => {
 
     if (genderDropdownIsOpen) {
       if (event.key === "ArrowDown") {
-        let button = genderOptionsRef.current[0];
+        let button = genderItemsRef.current[0];
         button?.focus();
       }
 
@@ -190,10 +212,10 @@ const StudentEditPanel = () => {
 
   const handleDropdownMenuItemKeyDown: HandleOptionKeyDown = (event, index) => {
     event.preventDefault();
-    const optionsLength = genderOptionsRef.current.length;
+    const optionsLength = genderItemsRef.current.length;
 
     if (event.key === "Enter") {
-      const item = genderOptionsRef.current[index].textContent;
+      const item = genderItemsRef.current[index].textContent;
       if (item) setSelectedGender(item);
       setGenderDropdownIsOpen(false);
       genderSelectedRef.current?.focus();
@@ -202,12 +224,12 @@ const StudentEditPanel = () => {
     if (event.key === "ArrowDown") {
       const lastMenuItemIdx = optionsLength - 1;
       if (index < lastMenuItemIdx) {
-        genderOptionsRef.current[index + 1].focus();
+        genderItemsRef.current[index + 1].focus();
       }
     }
 
     if (event.key === "ArrowUp") {
-      if (index > 0) genderOptionsRef.current[index - 1].focus();
+      if (index > 0) genderItemsRef.current[index - 1].focus();
       if (index === 0) genderSelectedRef.current?.focus();
     }
 
@@ -244,12 +266,11 @@ const StudentEditPanel = () => {
 
   return (
     <>
-      {/* TODO: make this a component. It's used twice */}
       <StyledCloseIcon>
         <Button
           appearance="link-with-background"
           size="medium"
-          iconBefore={<CgClose style={{ width: "16px", height: "16px" }} />}
+          iconBefore={<CgClose style={{ width: "24px", height: "24px" }} />}
           onClick={handleCloseStudentPanel}
           ariaLabel="Close student panel"
           tooltip="Close student panel  "
@@ -264,15 +285,16 @@ const StudentEditPanel = () => {
                 id="first-name"
                 label="First name"
                 direction={fieldDirection}
-                invalidFieldMessage="" // TODO: add error message
+                isRequired
+                invalidFieldMessage={actionData?.errorMsgs?.first_name}
               >
                 {(inputProps) => (
                   <TextField
                     {...inputProps}
-                    type="text"
                     name="first_name"
                     defaultValue={loaderData?.studentData.firstName}
                     placeholder="Enter student's first name"
+                    isInvalid={Boolean(actionData?.errorMsgs?.first_name)}
                     isDisabled={submitting}
                   />
                 )}
@@ -281,15 +303,16 @@ const StudentEditPanel = () => {
                 id="last-name"
                 label="Last name"
                 direction={fieldDirection}
-                invalidFieldMessage="" // TODO: add error message
+                isRequired
+                invalidFieldMessage={actionData?.errorMsgs?.last_name}
               >
                 {(inputProps) => (
                   <TextField
                     {...inputProps}
-                    type="text"
                     name="last_name"
                     defaultValue={loaderData?.studentData.lastName}
                     placeholder="Enter student's last name"
+                    isInvalid={Boolean(actionData?.errorMsgs?.last_name)}
                     isDisabled={submitting}
                   />
                 )}
@@ -298,7 +321,8 @@ const StudentEditPanel = () => {
                 id="email"
                 label="Email"
                 direction={fieldDirection}
-                invalidFieldMessage="" // TODO: add error message
+                isRequired
+                invalidFieldMessage={actionData?.errorMsgs?.email}
               >
                 {(inputProps) => (
                   <TextField
@@ -307,11 +331,12 @@ const StudentEditPanel = () => {
                     name="email"
                     defaultValue={loaderData?.studentData.email}
                     placeholder="Enter student's email name"
+                    isInvalid={Boolean(actionData?.errorMsgs?.email)}
                     isDisabled={submitting}
                   />
                 )}
               </Field>
-              <Field id="gender-dropdown" label="Gender" direction={fieldDirection} invalidFieldMessage="">
+              <Field id="gender-dropdown" label="Gender" direction={fieldDirection}>
                 {(inputProps) => (
                   <DropdownMenu
                     {...inputProps}
@@ -323,12 +348,11 @@ const StudentEditPanel = () => {
                     setSelectedGender={setSelectedGender}
                     setGenderDropdownIsOpen={setGenderDropdownIsOpen}
                     // Data
-                    menuItems={genders}
+                    menuItems={GENDERS}
                     selectedMenuItem={selectedGender}
                     // MouseEvent callbacks
                     onSelectedMenuItemClick={handleSelectedMenuItemClick}
                     onDropdownMenuItemClick={handleDropdownMenuItemClick}
-                    // TODO: implement these
                     // KeyboardEvent callbacks
                     onSelectedMenuItemKeyDown={handleSelectedMenuItemKeyDown}
                     onDropdownMenuItemKeyDown={handleDropdownMenuItemKeyDown}
@@ -339,14 +363,16 @@ const StudentEditPanel = () => {
                 id="date-of-birth"
                 label="Birthday"
                 direction={fieldDirection}
-                invalidFieldMessage="" // TODO: add error message
+                isRequired
+                invalidFieldMessage={actionData?.errorMsgs?.date_of_birth}
               >
                 {(inputProps) => (
                   <DatePicker
                     {...inputProps}
                     name="date_of_birth"
                     defaultValue={dateOfBirth}
-                    disabled={submitting}
+                    isInvalid={Boolean(actionData?.errorMsgs?.date_of_birth)}
+                    isDisabled={submitting}
                     min={minDate}
                     max={maxDate}
                   />
@@ -376,5 +402,5 @@ const StudentEditPanel = () => {
   );
 };
 
-export { StudentEditPanel };
+export { GENDERS, StudentEditPanel, action };
 export type { HandleOptionKeyDown, HandleSelectKeyDown };

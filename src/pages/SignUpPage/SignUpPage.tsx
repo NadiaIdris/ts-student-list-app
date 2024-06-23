@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import {
-  Form,
-  Link,
-  useActionData,
-  useNavigate,
-  useNavigation,
-} from "react-router-dom";
+import { Form, Link, useActionData, useNavigate, useNavigation } from "react-router-dom";
 import styled from "styled-components";
 import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
 import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
-import { Field, FieldSize } from "../../components/form/Field";
+import { Field } from "../../components/form/Field";
 import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 import { Heading1 } from "../../components/text/Heading1";
 import { Heading2 } from "../../components/text/Heading2";
@@ -20,6 +14,7 @@ import { TextField } from "../../components/TextField";
 import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateSignUpForm } from "../../validation/validate";
+import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
 
 interface IUserSignUpErrors {
   first_name: string;
@@ -43,38 +38,23 @@ const defaultUserSignUpData = {
   repeat_password: "",
 };
 
-export async function action({ request }: { request: Request }) {
+async function action({ request }: { request: Request }) {
   let formData = await request.formData();
   // Trim the white spaces from all the form data
-  const trimmedUserSignUpData = Object.fromEntries(
-    [...formData.entries()].map(([key, value]) => [
-      key,
-      value.toString().trim(),
-    ])
-  ) as unknown as IUserSignUpErrors;
+  const trimmedUserSignUpData = removeWhiteSpace(formData) as unknown as IUserSignUpErrors;
+
   // Validate the user sign up data
   const { error } = validateSignUpForm(trimmedUserSignUpData);
 
   if (error) {
     // Make an object with the error messages
-    const errorMsgs = error.details.reduce((acc, detail) => {
-      const key = detail.context?.key;
-      if (key) {
-        return {
-          ...acc,
-          [key]: detail.message,
-        };
-      }
-      return acc;
-    }, defaultUserSignUpData);
-
+    const errorMsgs = generateErrorMessagesObject(error.details, defaultUserSignUpData);
     return { errorMsgs };
   }
 
   // Delete the repeat_password key from the formData
   const formDataWithoutRepeatPassword = { ...trimmedUserSignUpData };
-  delete (formDataWithoutRepeatPassword as Partial<IUserSignUpData>)
-    .repeat_password;
+  delete (formDataWithoutRepeatPassword as Partial<IUserSignUpData>).repeat_password;
 
   //Send the user data to the server if there are no errors
   try {
@@ -90,16 +70,11 @@ export async function action({ request }: { request: Request }) {
         email: trimmedUserSignUpData.email,
         password: trimmedUserSignUpData.password,
       };
-      const response = await axiosInstance.post(
-        LOGIN_ENDPOINT,
-        userLogInDetails
-      );
+      const response = await axiosInstance.post(LOGIN_ENDPOINT, userLogInDetails);
       // Extract the token and user details from the response
-      const bearerToken =
-        response.headers.Authorization || response.headers.authorization;
+      const bearerToken = response.headers.Authorization || response.headers.authorization;
       const token = bearerToken.split(" ")[1];
-      const { registered_user_uid, first_name, last_name, email } =
-        response.data;
+      const { registered_user_uid, first_name, last_name, email } = response.data;
       const user = {
         isAuthenticated: true,
         token: token,
@@ -145,44 +120,61 @@ const StyledFormWrapper = styled.div`
   width: 100%;
 `;
 
-const StyledWrapperDiv = styled.div<{ $isDisabled: boolean; $size: FieldSize }>`
+const StyledWrapperDiv = styled.div<{ $isDisabled: boolean }>`
   position: absolute;
   top: 50%;
-  right: ${({ $size }) => ($size === "small" ? "4px" : "2px")};
+  right: 6px;
   transform: translateY(-50%);
   cursor: pointer;
   display: flex;
   flex-direction: row;
   gap: 2px;
-  ${({ $isDisabled }) =>
-    $isDisabled && "pointer-events: none; opacity: 0.5; cursor: disabled;"};
+  ${({ $isDisabled }) => $isDisabled && "pointer-events: none; opacity: 0.5; cursor: disabled;"};
 `;
 
-const StyledIconSpan = styled.span<{ $size: FieldSize }>`
-  padding: ${({ $size }) => ($size === "small" ? "4px" : "8px")};
-  background-color: transparent;
-  border-radius: 100px;
-  display: flex;
-  color: var(--color-black-700);
-  &:hover {
-    background-color: var(--color-gray-600);
-    color: var(--color-black);
-  }
-`;
-
-const StyledAlreadyAMemberDiv = styled.div`
-  margin-top: 40px;
+const StyledSmallPrintDiv = styled.div`
+  margin-top: 20px;
   text-align: center;
-  font-size: var(--font-size-14);
-  color: var(--color-black-400);
+  font-size: var(--font-size-11);
+  color: var(--color-gray-text-light);
   a {
-    color: var(--color-danger-500);
+    color: var(--color-danger-800);
     text-decoration: none;
     &:hover {
       text-decoration: underline;
     }
   }
 `;
+
+const renderPasswordIcons = (
+  id: string,
+  isDisabled: boolean,
+  showPassword: boolean,
+  setShowPassword: React.Dispatch<React.SetStateAction<boolean>>
+) => {
+  const showOrHidePasswordText = showPassword ? "Hide password" : "Show password";
+  return (
+    <StyledWrapperDiv
+      id={`${id}-icon`} // This is useful measuring the width of the icons wrapper span to add the correct padding-right to the input field.
+      onClick={() => setShowPassword(!showPassword)}
+      $isDisabled={isDisabled}
+    >
+      <Button
+        size="large"
+        appearance="link-with-background"
+        iconBefore={
+          showPassword ? (
+            <FiEyeOff style={{ width: "16px", height: "16px" }} />
+          ) : (
+            <FiEye style={{ width: "16px", height: "16px" }} />
+          )
+        }
+        tooltip={showOrHidePasswordText}
+        ariaLabel={showOrHidePasswordText}
+      />
+    </StyledWrapperDiv>
+  );
+};
 
 const SignUpPage = () => {
   const { logIn } = useAuthContext();
@@ -200,38 +192,9 @@ const SignUpPage = () => {
         </ErrorMessage>
       );
     } else {
-      return (
-        <ErrorMessage isVisible={true}>
-          An error occurred. Please try again later.
-        </ErrorMessage>
-      );
+      return <ErrorMessage isVisible={true}>An error occurred. Please try again later.</ErrorMessage>;
     }
   };
-
-  const handleTogglePasswordIcon = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const passwordIcons = (
-    id: string,
-    $isDisabled: boolean,
-    $size: FieldSize
-  ) => (
-    <StyledWrapperDiv
-      id={`${id}-icon`} // This is useful measuring the width of the icons wrapper span to add the correct padding-right to the input field.
-      onClick={handleTogglePasswordIcon}
-      $isDisabled={$isDisabled}
-      $size={$size}
-    >
-      <StyledIconSpan $size={$size}>
-        {showPassword ? (
-          <FiEyeOff style={{ width: "16px", height: "16px" }} />
-        ) : (
-          <FiEye style={{ width: "16px", height: "16px" }} />
-        )}
-      </StyledIconSpan>
-    </StyledWrapperDiv>
-  );
 
   useEffect(() => {
     const userData = actionData?.user;
@@ -243,9 +206,7 @@ const SignUpPage = () => {
 
   return (
     <StyledLoginPageWrapper>
-      <Heading1 style={{ textAlign: "center" }}>
-        Welcome to students app
-      </Heading1>
+      <Heading1 style={{ textAlign: "center" }}>Welcome to students app</Heading1>
       <StyledFormWrapper>
         <Heading2>Sign up</Heading2>
         <Form method="post">
@@ -259,6 +220,7 @@ const SignUpPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
+                size="large"
                 type="text"
                 name="first_name"
                 placeholder="Enter your first name"
@@ -277,6 +239,7 @@ const SignUpPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
+                size="large"
                 type="text"
                 name="last_name"
                 placeholder="Enter your last name"
@@ -295,6 +258,7 @@ const SignUpPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
+                size="large"
                 type="email"
                 name="email"
                 placeholder="Enter your email"
@@ -313,15 +277,16 @@ const SignUpPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
+                size="large"
                 type="password"
                 name="password"
                 placeholder="Enter your password"
                 isInvalid={Boolean(actionData?.errorMsgs?.password)}
                 isDisabled={submitting}
-                renderIcon={(isDisabled, $size) =>
-                  passwordIcons("login-password", isDisabled, $size)
+                renderIcon={(isDisabled) =>
+                  renderPasswordIcons("login-password", isDisabled, showPassword, setShowPassword)
                 }
-                showPassword={showPassword}
+                passwordIsVisible={showPassword}
               />
             )}
           </Field>
@@ -330,42 +295,37 @@ const SignUpPage = () => {
             label="Confirm password"
             isRequired
             invalidFieldMessage={actionData?.errorMsgs?.repeat_password}
-            style={{ margin: "0 0 12px 0" }}
+            style={{ margin: "0 0 24px 0" }}
           >
             {(inputProps) => (
               <TextField
                 {...inputProps}
+                size="large"
                 type="password"
                 name="repeat_password"
                 placeholder="Enter your password again"
                 isInvalid={Boolean(actionData?.errorMsgs?.repeat_password)}
                 isDisabled={submitting}
-                renderIcon={(isDisabled, $size) =>
-                  passwordIcons("login-password", isDisabled, $size)
+                renderIcon={(isDisabled) =>
+                  renderPasswordIcons("login-password", isDisabled, showPassword, setShowPassword)
                 }
-                showPassword={showPassword}
+                passwordIsVisible={showPassword}
               />
             )}
           </Field>
-          {actionData?.networkError &&
-            showCorrectErrorMsg(actionData?.networkError)}
-          <Button
-            type="submit"
-            fullWidth
-            isLoading={submitting}
-            style={{ marginTop: "24px" }}
-          >
+          {actionData?.networkError && showCorrectErrorMsg(actionData?.networkError)}
+          <Button size="large" type="submit" fullWidth isLoading={submitting} style={{ marginTop: "24px" }}>
             Sign up
           </Button>
         </Form>
-        <StyledAlreadyAMemberDiv>
+        <StyledSmallPrintDiv>
           Already a member? <Link to="/login">Log in now</Link>
           <br />
           <RequiredAsterisk /> Required fields
-        </StyledAlreadyAMemberDiv>
+        </StyledSmallPrintDiv>
       </StyledFormWrapper>
     </StyledLoginPageWrapper>
   );
 };
 
-export { SignUpPage };
+export { SignUpPage, renderPasswordIcons, action, StyledSmallPrintDiv };
