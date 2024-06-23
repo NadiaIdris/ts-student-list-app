@@ -4,6 +4,7 @@ import { FieldSize } from "../Field";
 interface DatePickerProps {
   name: string;
   defaultValue: string;
+  isInvalid?: boolean;
   isDisabled?: boolean;
   min?: string;
   max?: string;
@@ -13,7 +14,7 @@ interface DatePickerProps {
   size?: FieldSize;
 }
 
-const StyledDatePicker = styled.input<{ $size: FieldSize }>`
+const StyledDatePicker = styled.input<{ $size: FieldSize; $isInvalid: boolean }>`
   width: 100%;
   border-radius: var(--border-radius);
   border: var(--border);
@@ -35,6 +36,9 @@ const StyledDatePicker = styled.input<{ $size: FieldSize }>`
     else return "height: var(--input-height-large); font-size: var(--font-size-16);"; // ~16px is 1rem
   }}
 
+  ${({ $isInvalid }) => $isInvalid && `border-color: var(--color-danger);`}
+
+
   &::-webkit-calendar-picker-indicator {
     border-radius: 50%;
     width: 14px;
@@ -49,7 +53,16 @@ const StyledDatePicker = styled.input<{ $size: FieldSize }>`
   }
 `;
 
-const DatePicker = ({ name, defaultValue, isDisabled, min, max, size = "medium", ...rest }: DatePickerProps) => {
+const DatePicker = ({
+  name,
+  defaultValue,
+  isInvalid = false,
+  isDisabled,
+  min,
+  max,
+  size = "medium",
+  ...rest
+}: DatePickerProps) => {
   return (
     <StyledDatePicker
       {...rest}
@@ -60,6 +73,7 @@ const DatePicker = ({ name, defaultValue, isDisabled, min, max, size = "medium",
       min={min}
       max={max}
       $size={size}
+      $isInvalid={isInvalid}
     />
   );
 };

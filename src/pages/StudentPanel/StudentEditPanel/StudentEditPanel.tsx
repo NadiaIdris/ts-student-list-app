@@ -1,6 +1,6 @@
 import { KeyboardEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
-import { Form, Params, redirect, useLoaderData, useNavigate, useNavigation, useParams } from "react-router-dom";
+import { Form, Params, redirect, useActionData, useLoaderData, useNavigate, useNavigation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { STUDENTS_ENDPOINT } from "../../../api/apiConstants";
 import { axiosInstance } from "../../../api/axiosConfig";
@@ -13,11 +13,37 @@ import { Heading1 } from "../../../components/text/Heading1";
 import { TextField } from "../../../components/TextField";
 import { useStudentUid } from "../../StudentsPage/StudentsPage";
 import { IStudentFetchData } from "../StudentPanel";
+import { generateErrorMessagesObject, removeWhiteSpace } from "../../../utils/utils";
+import { defaultStudentData, IStudentData } from "../../AddStudentModal";
+import { validateStudentData } from "../../../validation/validate";
 
 const GENDERS = ["Female", "Male", "Agender", "Cisgender", "Genderfluid", "Genderqueer", "Non-binary", "Transgender"];
 
-export async function action({ request, params }: { request: Request; params: Params }) {
+interface IUserEditErrors {
+  first_name: string;
+  last_name: string;
+  email: string;
+  gender: string;
+  date_of_birth: string;
+}
+
+interface IEditStudent {
+  errorMsgs: IUserEditErrors;
+}
+
+async function action({ request, params }: { request: Request; params: Params }) {
   let formData = await request.formData();
+  // Trim the white spaces from all the form data
+  const trimmedNewUserData = removeWhiteSpace(formData) as unknown as IStudentData;
+  // Validate the student data before sending it to the server.
+  const { error } = validateStudentData(trimmedNewUserData);
+
+  if (error) {
+    const errorMsgs = generateErrorMessagesObject(error.details, defaultStudentData);
+    // Don't continue with creating a new student process if there are errors.
+    return { errorMsgs };
+  }
+
   try {
     const endpoint = STUDENTS_ENDPOINT + `/${params.studentId}`;
     const userInformation = {
@@ -109,6 +135,7 @@ const StudentEditPanel = () => {
   const navigation = useNavigation();
   const { studentId } = useParams();
   const submitting = navigation.state === "submitting";
+  const actionData: IEditStudent | undefined = useActionData() as IEditStudent;
   const loaderData: IStudentFetchData | undefined = useLoaderData() as IStudentFetchData;
   const { setStudentUid } = useStudentUid();
   const navigate = useNavigate();
@@ -265,7 +292,7 @@ const StudentEditPanel = () => {
                 label="First name"
                 direction={fieldDirection}
                 isRequired
-                invalidFieldMessage="" // TODO: add error message
+                invalidFieldMessage={actionData?.errorMsgs?.first_name}
               >
                 {(inputProps) => (
                   <TextField
@@ -274,6 +301,7 @@ const StudentEditPanel = () => {
                     name="first_name"
                     defaultValue={loaderData?.studentData.firstName}
                     placeholder="Enter student's first name"
+                    isInvalid={Boolean(actionData?.errorMsgs?.first_name)}
                     isDisabled={submitting}
                   />
                 )}
@@ -283,7 +311,7 @@ const StudentEditPanel = () => {
                 label="Last name"
                 direction={fieldDirection}
                 isRequired
-                invalidFieldMessage="" // TODO: add error message
+                invalidFieldMessage={actionData?.errorMsgs?.last_name}
               >
                 {(inputProps) => (
                   <TextField
@@ -292,6 +320,7 @@ const StudentEditPanel = () => {
                     name="last_name"
                     defaultValue={loaderData?.studentData.lastName}
                     placeholder="Enter student's last name"
+                    isInvalid={Boolean(actionData?.errorMsgs?.last_name)}
                     isDisabled={submitting}
                   />
                 )}
@@ -301,7 +330,7 @@ const StudentEditPanel = () => {
                 label="Email"
                 direction={fieldDirection}
                 isRequired
-                invalidFieldMessage="" // TODO: add error message
+                invalidFieldMessage={actionData?.errorMsgs?.email}
               >
                 {(inputProps) => (
                   <TextField
@@ -310,6 +339,7 @@ const StudentEditPanel = () => {
                     name="email"
                     defaultValue={loaderData?.studentData.email}
                     placeholder="Enter student's email name"
+                    isInvalid={Boolean(actionData?.errorMsgs?.email)}
                     isDisabled={submitting}
                   />
                 )}
@@ -342,13 +372,14 @@ const StudentEditPanel = () => {
                 label="Birthday"
                 direction={fieldDirection}
                 isRequired
-                invalidFieldMessage="" // TODO: add error message
+                invalidFieldMessage={actionData?.errorMsgs?.date_of_birth}
               >
                 {(inputProps) => (
                   <DatePicker
                     {...inputProps}
                     name="date_of_birth"
                     defaultValue={dateOfBirth}
+                    isInvalid={Boolean(actionData?.errorMsgs?.date_of_birth)}
                     isDisabled={submitting}
                     min={minDate}
                     max={maxDate}
@@ -379,5 +410,5 @@ const StudentEditPanel = () => {
   );
 };
 
-export { GENDERS, StudentEditPanel };
+export { GENDERS, StudentEditPanel, action };
 export type { HandleOptionKeyDown, HandleSelectKeyDown };

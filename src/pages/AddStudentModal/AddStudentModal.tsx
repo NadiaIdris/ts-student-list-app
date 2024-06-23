@@ -1,4 +1,4 @@
-import { Form, useNavigation } from "react-router-dom";
+import { Form, redirect, useNavigation } from "react-router-dom";
 import { Modal } from "../../components/Modal";
 import { ModalHeader } from "../../components/Modal/ModalHeader";
 import { ModalTitle } from "../../components/Modal/ModalHeader/ModalTitle";
@@ -14,7 +14,7 @@ import { MouseEvent } from "react";
 import { DatePicker } from "../../components/form/DatePicker";
 import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
-import { validateNewUserData } from "../../validation/validate";
+import { validateStudentData } from "../../validation/validate";
 import { axiosInstance } from "../../api/axiosConfig";
 import { ADD_STUDENT_ENDPOINT } from "../../api/apiConstants";
 
@@ -34,7 +34,7 @@ interface IStudentData {
   date_of_birth: string;
 }
 
-const defaultNewUserData: IStudentData = {
+const defaultStudentData: IStudentData = {
   first_name: "",
   last_name: "",
   email: "",
@@ -45,25 +45,29 @@ const defaultNewUserData: IStudentData = {
 async function action({ request }: { request: Request }) {
   // Get the values from the form.
   const formData = await request.formData();
+
   // Trim the white spaces from all the form data
   const trimmedNewUserData = removeWhiteSpace(formData) as unknown as IStudentData;
   // Validate the student data before sending it to the server.
-  const { error } = validateNewUserData(trimmedNewUserData);
+  const { error } = validateStudentData(trimmedNewUserData);
 
   if (error) {
-    const errorMsgs = generateErrorMessagesObject(error.details, defaultNewUserData);
+    const errorMsgs = generateErrorMessagesObject(error.details, defaultStudentData);
     // Don't continue with creating a new student process if there are errors.
     return { errorMsgs };
   }
 
   // Send the values to the server.
-  try { 
-    const response = await axiosInstance.post(ADD_STUDENT_ENDPOINT, {trimmedNewUserData})
-  }
-  catch (error: any) {
+  try {
+    const response = await axiosInstance.post(ADD_STUDENT_ENDPOINT, { trimmedNewUserData });
+    if (response.status === 201) {
+      // Redirect to the student panel page.
+      return redirect("/students")
+      // return { success: true };
+    }
+  } catch (error: any) {
     console.error(`[ACTION ERROR]: ${error}`);
   }
-
 }
 
 const StyledColumn = styled.div`
@@ -87,22 +91,25 @@ const StyledCustomModalBody = styled.div`
 `;
 
 const StyledRequiredFields = styled.div`
-  font-size: var(--font-size-14);
-  color: var(--color-gray-text-light);
   margin-top: 20px;
+  font-size: var(--font-size-11);
+  color: var(--color-gray-text-light);
 `;
 
 const AddStudentModal = () => {
   const navigation = useNavigation();
   const submitting = navigation.state === "submitting";
   const [genderDropdownIsOpen, setGenderDropdownIsOpen] = useState(false);
-  const [selectedGender, setSelectedGender] = useState<string | null>(null);
+  const [selectedGender, setSelectedGender] = useState<string>("");
 
   // Refs for the selects and options. const genderRef
   const genderSelectedRef: SelectedRef = useRef(null);
   const genderItemsRef: ItemsRef = useRef([] as HTMLButtonElement[]);
   const refContainer = { selectedRef: genderSelectedRef, itemsRef: genderItemsRef };
   const genderRefsObj = useRef(refContainer);
+
+  const maxDate = new Date().toISOString().split("T")[0];
+  const minDate = new Date(1900, 0, 1).toISOString().split("T")[0];
 
   // TODO: make this a reusable hook for all dropdowns (another copy is in StudentEditPanel.tsx)
   const scrollToSelectedMenuItem = () => {
@@ -225,10 +232,9 @@ const AddStudentModal = () => {
         <DatePicker
           {...inputProps}
           name="date_of_birth"
-          // defaultValue={dateOfBirth}
           isDisabled={submitting}
-          // min={minDate}
-          // max={maxDate}
+          min={minDate}
+          max={maxDate}
         />
       )}
     </Field>
@@ -267,5 +273,5 @@ const AddStudentModal = () => {
   );
 };
 
-export { AddStudentModal, action };
+export { AddStudentModal, action, defaultStudentData };
 export type { IStudentErrors as INewUserErrors, IStudentData };

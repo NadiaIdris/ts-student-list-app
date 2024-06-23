@@ -58,7 +58,7 @@ const validateLoginForm = (data: IUserLogInData) => {
   return { error, value: value as IUserLogInData };
 };
 
-const validateNewUserData = (data: IStudentData) => {
+const validateStudentData = (data: IStudentData) => {
   const { error, value } = studentSchema.validate(data, { abortEarly: false });
 
   const studentFormErrorLabels = {
@@ -80,4 +80,4 @@ const validateNewUserData = (data: IStudentData) => {
   return { error, value: value as IStudentData };
 };
 
-export { validateSignUpForm, validateLoginForm, validateNewUserData };
+export { validateSignUpForm, validateLoginForm, validateStudentData };

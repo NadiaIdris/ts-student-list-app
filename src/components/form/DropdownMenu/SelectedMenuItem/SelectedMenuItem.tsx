@@ -55,7 +55,7 @@ const StyledInput = styled.input<{ $size: FieldSize; $dropdownIsOpen: boolean }>
   padding-left: ${({ $size }) => ($size === "large" ? "12px" : "8px")};
   outline: none;
 
-  ${({$dropdownIsOpen}) => ($dropdownIsOpen ? "border: 2px solid black;" : "")}
+  ${({ $dropdownIsOpen }) => ($dropdownIsOpen ? "border: 2px solid black;" : "")}
 
   &:focus {
     border: var(--focus-outline);
@@ -72,9 +72,9 @@ const StyledClearIconContainer = styled.div`
   cursor: pointer;
 `;
 
-const StyledIconContainer = styled.div<{ $dropdownIsOpen: boolean, $size: FieldSize }>`
+const StyledIconContainer = styled.div<{ $dropdownIsOpen: boolean; $size: FieldSize }>`
   position: absolute;
-  right: ${({$size}) => ($size === "large" ? "11px" : "6px")};
+  right: ${({ $size }) => ($size === "large" ? "11px" : "6px")};
   ${({ $dropdownIsOpen }) => {
     if ($dropdownIsOpen) {
       return `rotate: -180deg; transition: rotate var(--animation--speed1) ease 0s;`;
@@ -97,7 +97,7 @@ const SelectedMenuItem = ({
   setSelectedGender,
   setGenderDropdownIsOpen,
 }: SelectedMenuItemProps) => {
-  const showClearSelectionButton = selectedMenuItem !== "" ? true : false;
+  const showClearSelectionButton = selectedMenuItem !== "" && selectedMenuItem !== null ? true : false;
   return (
     <StyledInputWrapper
       onClick={onSelectedMenuItemClick}

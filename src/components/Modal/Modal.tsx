@@ -26,21 +26,23 @@ const StyledModal = styled.div<{ $size: ModalSize }>`
   background-color: var(--color-white);
   border-radius: var(--border-radius-large);
   border: var(--border);
-  overflow: hidden auto;
-  max-height: calc(100vh - 40px);
+  max-height: 100vh;
+  overflow-y: auto;
 
   /* The width of the Modal component changes based on the viewport size. max-width defined below is 
    * what is applied when we change the "size" prop of the Modal component. */
   @media (min-width: 0px) {
-    width: calc(100vw - 40px);
+    width: 100vw;
+    overflow-y: auto;
   }
 
   @media (min-width: 400px) {
-    width: calc(100vw - 60px);
+    width: calc(100vw - 30px);
   }
 
   @media (min-width: 600px) {
     width: calc(100vw - 80px);
+    max-height: calc(100vh - 40px);
   }
 
   @media (min-width: 800px) {

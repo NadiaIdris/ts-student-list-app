@@ -8,7 +8,7 @@ import { StudentsPage, loader as studentsLoader } from "./pages/StudentsPage";
 import { SignUpPage, action as signUpAction } from "./pages/SignUpPage";
 import { StudentPanel, loader as studentLoader } from "./pages/StudentPanel";
 import { StudentEditPanel, action as editStudentAction } from "./pages/StudentPanel/StudentEditPanel";
-import { AddStudentModal } from "./pages/AddStudentModal";
+import { AddStudentModal, action as addStudentAction } from "./pages/AddStudentModal";
 
 const router = createBrowserRouter([
   // {
@@ -59,6 +59,7 @@ const router = createBrowserRouter([
           <AddStudentModal />
         ),
         loader: studentLoader,
+        action: addStudentAction,
       },
     ],
   },
