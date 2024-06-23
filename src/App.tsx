@@ -58,7 +58,6 @@ const router = createBrowserRouter([
         element: (
           <AddStudentModal />
         ),
-        loader: studentLoader,
         action: addStudentAction,
       },
     ],

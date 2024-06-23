@@ -1,4 +1,4 @@
-import { Form, redirect, useNavigation } from "react-router-dom";
+import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import { Modal } from "../../components/Modal";
 import { ModalHeader } from "../../components/Modal/ModalHeader";
 import { ModalTitle } from "../../components/Modal/ModalHeader/ModalTitle";
@@ -22,8 +22,11 @@ interface IStudentErrors {
   first_name: string;
   last_name: string;
   email: string;
-  gender: string;
   date_of_birth: string;
+}
+
+interface IAddStudent {
+  errorMsgs: IStudentErrors;
 }
 
 interface IStudentData {
@@ -45,11 +48,13 @@ const defaultStudentData: IStudentData = {
 async function action({ request }: { request: Request }) {
   // Get the values from the form.
   const formData = await request.formData();
-
   // Trim the white spaces from all the form data
-  const trimmedNewUserData = removeWhiteSpace(formData) as unknown as IStudentData;
+  const trimmedNewStudentData = removeWhiteSpace(formData) as unknown as IStudentData;
+  // Because gender can be null and it has certain defained options, we don't need to validate it.
+  const { gender, ...rest } = trimmedNewStudentData;
+  const studentDataWithoutGender = rest;
   // Validate the student data before sending it to the server.
-  const { error } = validateStudentData(trimmedNewUserData);
+  const { error } = validateStudentData(studentDataWithoutGender);
 
   if (error) {
     const errorMsgs = generateErrorMessagesObject(error.details, defaultStudentData);
@@ -59,14 +64,19 @@ async function action({ request }: { request: Request }) {
 
   // Send the values to the server.
   try {
-    const response = await axiosInstance.post(ADD_STUDENT_ENDPOINT, { trimmedNewUserData });
+    const response = await axiosInstance.post(ADD_STUDENT_ENDPOINT, trimmedNewStudentData);
+
     if (response.status === 201) {
-      // Redirect to the student panel page.
-      return redirect("/students")
-      // return { success: true };
+      // Student was successfully added. Redirect to the students page.
+      return redirect("/students");
     }
   } catch (error: any) {
+    // Catch the 409 conflict error if the student with the same email already exists.
+    if (error.response.status === 409) {
+      return { errorMsgs: { email: "Student with the same email already exists" } };
+    }
     console.error(`[ACTION ERROR]: ${error}`);
+    return null;
   }
 }
 
@@ -98,6 +108,7 @@ const StyledRequiredFields = styled.div`
 
 const AddStudentModal = () => {
   const navigation = useNavigation();
+  const actionData: IAddStudent | undefined = useActionData() as IAddStudent;
   const submitting = navigation.state === "submitting";
   const [genderDropdownIsOpen, setGenderDropdownIsOpen] = useState(false);
   const [selectedGender, setSelectedGender] = useState<string>("");
@@ -150,20 +161,13 @@ const AddStudentModal = () => {
   };
 
   const renderFirstNameField = () => (
-    <Field
-      id="first-name"
-      label="First Name"
-      isRequired
-      // TODO: add the invalidFieldMessage prop for all the fields
-      // invalidFieldMessage={actionData?.errorMsgs?.first_name}
-    >
+    <Field id="first-name" label="First Name" isRequired invalidFieldMessage={actionData?.errorMsgs?.first_name}>
       {({ inputProps }) => (
         <TextField
           {...inputProps}
           placeholder="Enter student's first name"
           name="first_name"
-          // TODO: add the isInvalid prop for all the fields
-          // isInvalid={Boolean(actionData?.errorMsgs?.first_name)}
+          isInvalid={Boolean(actionData?.errorMsgs?.first_name)}
           isDisabled={submitting}
         />
       )}
@@ -171,9 +175,15 @@ const AddStudentModal = () => {
   );
 
   const renderLastNameField = () => (
-    <Field id="last-name" label="Last Name" isRequired>
+    <Field id="last-name" label="Last Name" isRequired invalidFieldMessage={actionData?.errorMsgs?.last_name}>
       {({ inputProps }) => (
-        <TextField {...inputProps} placeholder="Enter student's last name" name="last_name" isDisabled={submitting} />
+        <TextField
+          {...inputProps}
+          placeholder="Enter student's last name"
+          name="last_name"
+          isInvalid={Boolean(actionData?.errorMsgs?.last_name)}
+          isDisabled={submitting}
+        />
       )}
     </Field>
   );
@@ -202,19 +212,14 @@ const AddStudentModal = () => {
   );
 
   const renderEmailField = () => (
-    <Field
-      id="email"
-      label="Email"
-      isRequired
-      invalidFieldMessage="" // TODO: add error message
-    >
+    <Field id="email" label="Email" isRequired invalidFieldMessage={actionData?.errorMsgs?.email}>
       {(inputProps) => (
         <TextField
           {...inputProps}
           type="email"
           name="email"
-          // defaultValue={loaderData?.studentData.email}
           placeholder="Enter student's email name"
+          isInvalid={Boolean(actionData?.errorMsgs?.email)}
           isDisabled={submitting}
         />
       )}
@@ -222,12 +227,7 @@ const AddStudentModal = () => {
   );
 
   const renderBirthdayField = () => (
-    <Field
-      id="date-of-birth"
-      label="Birthday"
-      isRequired
-      invalidFieldMessage="" // TODO: add error message
-    >
+    <Field id="date-of-birth" label="Birthday" isRequired invalidFieldMessage={actionData?.errorMsgs?.date_of_birth}>
       {(inputProps) => (
         <DatePicker
           {...inputProps}
@@ -235,6 +235,7 @@ const AddStudentModal = () => {
           isDisabled={submitting}
           min={minDate}
           max={maxDate}
+          isInvalid={Boolean(actionData?.errorMsgs?.date_of_birth)}
         />
       )}
     </Field>
@@ -242,7 +243,7 @@ const AddStudentModal = () => {
 
   return (
     <Modal size="large">
-      <Form>
+      <Form method="post">
         <ModalHeader showCloseButton>
           <ModalTitle>Add a new student</ModalTitle>
         </ModalHeader>
@@ -274,4 +275,4 @@ const AddStudentModal = () => {
 };
 
 export { AddStudentModal, action, defaultStudentData };
-export type { IStudentErrors as INewUserErrors, IStudentData };
+export type { IStudentErrors, IStudentData };

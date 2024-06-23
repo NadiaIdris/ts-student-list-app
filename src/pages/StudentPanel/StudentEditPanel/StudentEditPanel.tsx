@@ -1,6 +1,15 @@
 import { KeyboardEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
-import { Form, Params, redirect, useActionData, useLoaderData, useNavigate, useNavigation, useParams } from "react-router-dom";
+import {
+  Form,
+  Params,
+  redirect,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+  useParams,
+} from "react-router-dom";
 import styled from "styled-components";
 import { STUDENTS_ENDPOINT } from "../../../api/apiConstants";
 import { axiosInstance } from "../../../api/axiosConfig";
@@ -14,29 +23,21 @@ import { TextField } from "../../../components/TextField";
 import { useStudentUid } from "../../StudentsPage/StudentsPage";
 import { IStudentFetchData } from "../StudentPanel";
 import { generateErrorMessagesObject, removeWhiteSpace } from "../../../utils/utils";
-import { defaultStudentData, IStudentData } from "../../AddStudentModal";
+import { defaultStudentData, IStudentData, IStudentErrors } from "../../AddStudentModal";
 import { validateStudentData } from "../../../validation/validate";
 
 const GENDERS = ["Female", "Male", "Agender", "Cisgender", "Genderfluid", "Genderqueer", "Non-binary", "Transgender"];
 
-interface IUserEditErrors {
-  first_name: string;
-  last_name: string;
-  email: string;
-  gender: string;
-  date_of_birth: string;
-}
-
 interface IEditStudent {
-  errorMsgs: IUserEditErrors;
+  errorMsgs: IStudentErrors;
 }
 
 async function action({ request, params }: { request: Request; params: Params }) {
   let formData = await request.formData();
   // Trim the white spaces from all the form data
-  const trimmedNewUserData = removeWhiteSpace(formData) as unknown as IStudentData;
+  const trimmedStudentData = removeWhiteSpace(formData) as unknown as IStudentData;
   // Validate the student data before sending it to the server.
-  const { error } = validateStudentData(trimmedNewUserData);
+  const { error } = validateStudentData(trimmedStudentData);
 
   if (error) {
     const errorMsgs = generateErrorMessagesObject(error.details, defaultStudentData);
@@ -46,14 +47,7 @@ async function action({ request, params }: { request: Request; params: Params })
 
   try {
     const endpoint = STUDENTS_ENDPOINT + `/${params.studentId}`;
-    const userInformation = {
-      first_name: formData.get("first_name"),
-      last_name: formData.get("last_name"),
-      email: formData.get("email"),
-      gender: formData.get("gender"),
-      date_of_birth: formData.get("date_of_birth"),
-    };
-    const response = await axiosInstance.put(endpoint, userInformation);
+    const response = await axiosInstance.put(endpoint, trimmedStudentData);
     if (response.status === 200) {
       // Redirect to the student's page after the student data has been updated.
       return redirect(`/students/${params.studentId}`);
@@ -297,7 +291,6 @@ const StudentEditPanel = () => {
                 {(inputProps) => (
                   <TextField
                     {...inputProps}
-                    type="text"
                     name="first_name"
                     defaultValue={loaderData?.studentData.firstName}
                     placeholder="Enter student's first name"
@@ -316,7 +309,6 @@ const StudentEditPanel = () => {
                 {(inputProps) => (
                   <TextField
                     {...inputProps}
-                    type="text"
                     name="last_name"
                     defaultValue={loaderData?.studentData.lastName}
                     placeholder="Enter student's last name"
@@ -344,7 +336,7 @@ const StudentEditPanel = () => {
                   />
                 )}
               </Field>
-              <Field id="gender-dropdown" label="Gender" direction={fieldDirection} invalidFieldMessage="">
+              <Field id="gender-dropdown" label="Gender" direction={fieldDirection}>
                 {(inputProps) => (
                   <DropdownMenu
                     {...inputProps}

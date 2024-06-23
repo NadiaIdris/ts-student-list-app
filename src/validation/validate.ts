@@ -2,7 +2,7 @@ import { ValidationErrorItem } from "joi";
 import { IUserSignUpData } from "../pages/SignUpPage";
 import { logInSchema, signUpSchema, studentSchema } from "./schemas";
 import { IUserLogInData } from "../pages/LogInPage/LogInPage";
-import { IStudentData } from "../pages/AddStudentModal";
+import { IStudentErrors } from "../pages/AddStudentModal";
 
 const formatErrorMessages = (errorDetails: ValidationErrorItem[], errorLabels: Record<string, string>) => {
   const formattedErrorMessages = errorDetails.map((detail) => {
@@ -58,14 +58,13 @@ const validateLoginForm = (data: IUserLogInData) => {
   return { error, value: value as IUserLogInData };
 };
 
-const validateStudentData = (data: IStudentData) => {
+const validateStudentData = (data: IStudentErrors) => {
   const { error, value } = studentSchema.validate(data, { abortEarly: false });
 
   const studentFormErrorLabels = {
     first_name: "First name",
     last_name: "Last name",
     email: "Email",
-    gender: "Gender",
     date_of_birth: "Birthday",
   };
 
@@ -77,7 +76,7 @@ const validateStudentData = (data: IStudentData) => {
       detail.message = updatedErrorMessages[index];
     });
   }
-  return { error, value: value as IStudentData };
+  return { error, value: value as IStudentErrors };
 };
 
 export { validateSignUpForm, validateLoginForm, validateStudentData };

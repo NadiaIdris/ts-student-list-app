@@ -148,6 +148,5 @@ body {
 :-webkit-autofill:active,
 :-webkit-autofill:focus,
 :-webkit-autofill:hover {
-  border: 2px solid var(--color-gray-800) !important;
   -webkit-box-shadow: 0 0 0px 40rem var(--color-gray-800) inset;
 }

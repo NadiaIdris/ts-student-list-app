@@ -1,3 +1,3 @@
-import { AddStudentModal, action, INewUserErrors, IStudentData, defaultStudentData } from "./AddStudentModal";
+import { AddStudentModal, action, IStudentErrors, IStudentData, defaultStudentData } from "./AddStudentModal";
 export { AddStudentModal, action, defaultStudentData };
-export type { INewUserErrors, IStudentData };
+export type { IStudentErrors, IStudentData };

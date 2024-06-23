@@ -9,7 +9,6 @@ const validateEmail = Joi.string()
   .max(255)
   .required();
 const validatePassword = Joi.string().min(6).max(1024).required();
-const validateGender = Joi.string();
 const validateDateOfBirth = Joi.string().required();
 
 const signUpSchema = Joi.object<IUserSignUpData>({
@@ -32,7 +31,6 @@ const studentSchema = Joi.object({
   first_name: validateFirstName,
   last_name: validateLastName,
   email: validateEmail,
-  gender: validateGender,
   date_of_birth: validateDateOfBirth,
 });
 
