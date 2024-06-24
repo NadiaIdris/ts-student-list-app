@@ -1,14 +1,15 @@
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./App.css";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthContextProvider } from "./context/AuthContext";
-import { LogInPage, action as logInAction } from "./pages/LogInPage";
-import { StudentsPage, loader as studentsLoader } from "./pages/StudentsPage";
-import { SignUpPage, action as signUpAction } from "./pages/SignUpPage";
-import { StudentPanel, loader as studentLoader } from "./pages/StudentPanel";
-import { StudentEditPanel, action as editStudentAction } from "./pages/StudentPanel/StudentEditPanel";
 import { AddStudentModal, action as addStudentAction } from "./pages/AddStudentModal";
+import { DeleteStudentModal, action as deleteStudentAction } from "./pages/DeleteStudentModal";
+import { LogInPage, action as logInAction } from "./pages/LogInPage";
+import { SignUpPage, action as signUpAction } from "./pages/SignUpPage";
+import { StudentEditPanel, action as editStudentAction } from "./pages/StudentEditPanel";
+import { StudentPanel, loader as studentLoader } from "./pages/StudentPanel";
+import { StudentsPage, loader as studentsLoader } from "./pages/StudentsPage";
 
 const router = createBrowserRouter([
   // {
@@ -54,15 +55,19 @@ const router = createBrowserRouter([
         action: editStudentAction,
       },
       {
+        path: ":studentId/delete",
+        element: <DeleteStudentModal />,
+        loader: studentLoader,
+        action: deleteStudentAction,
+      },
+      {
         path: "add",
-        element: (
-          <AddStudentModal />
-        ),
+        element: <AddStudentModal />,
         action: addStudentAction,
       },
     ],
   },
-  
+
   {
     path: "/login",
     element: <LogInPage />,

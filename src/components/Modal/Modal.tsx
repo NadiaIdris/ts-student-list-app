@@ -27,7 +27,6 @@ const StyledModal = styled.div<{ $size: ModalSize }>`
   border-radius: var(--border-radius-large);
   border: var(--border);
   max-height: 100vh;
-  overflow-y: auto;
 
   /* The width of the Modal component changes based on the viewport size. max-width defined below is 
    * what is applied when we change the "size" prop of the Modal component. */
@@ -43,6 +42,7 @@ const StyledModal = styled.div<{ $size: ModalSize }>`
   @media (min-width: 600px) {
     width: calc(100vw - 80px);
     max-height: calc(100vh - 40px);
+    overflow-y: visible;
   }
 
   @media (min-width: 800px) {

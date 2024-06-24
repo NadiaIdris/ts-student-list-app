@@ -1,22 +1,21 @@
+import { MouseEvent, useRef, useState } from "react";
 import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
+import styled from "styled-components";
+import { ADD_STUDENT_ENDPOINT } from "../../api/apiConstants";
+import { axiosInstance } from "../../api/axiosConfig";
+import { Button } from "../../components/Button";
+import { DatePicker } from "../../components/form/DatePicker";
+import { DropdownMenu } from "../../components/form/DropdownMenu";
+import { ItemsRef, SelectedRef } from "../../components/form/DropdownMenu/DropdownMenu";
+import { Field } from "../../components/form/Field";
+import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 import { Modal } from "../../components/Modal";
 import { ModalHeader } from "../../components/Modal/ModalHeader";
 import { ModalTitle } from "../../components/Modal/ModalHeader/ModalTitle";
-import { Button } from "../../components/Button";
-import { Field } from "../../components/form/Field";
 import { TextField } from "../../components/TextField";
-import styled from "styled-components";
-import { useRef, useState } from "react";
-import { DropdownMenu } from "../../components/form/DropdownMenu";
-import { GENDERS } from "../StudentPanel/StudentEditPanel";
-import { ItemsRef, SelectedRef } from "../../components/form/DropdownMenu/DropdownMenu";
-import { MouseEvent } from "react";
-import { DatePicker } from "../../components/form/DatePicker";
-import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
 import { validateStudentData } from "../../validation/validate";
-import { axiosInstance } from "../../api/axiosConfig";
-import { ADD_STUDENT_ENDPOINT } from "../../api/apiConstants";
+import { GENDERS } from "../StudentEditPanel";
 
 interface IStudentErrors {
   first_name: string;
@@ -104,6 +103,11 @@ const StyledRequiredFields = styled.div`
   margin-top: 20px;
   font-size: var(--font-size-11);
   color: var(--color-gray-text-light);
+`;
+
+const StyledContentWrapper = styled.div`
+  position: relative;
+  overflow-y: visible;
 `;
 
 const AddStudentModal = () => {
@@ -244,35 +248,35 @@ const AddStudentModal = () => {
   return (
     <Modal size="large">
       <Form method="post">
-        <ModalHeader showCloseButton>
-          <ModalTitle>Add a new student</ModalTitle>
-        </ModalHeader>
-        <StyledCustomModalBody>
-          <StyledColumn>
-            {renderFirstNameField()}
-            {renderLastNameField()}
-            {renderGenderField()}
-          </StyledColumn>
-          <StyledColumn>
-            {renderEmailField()}
-            {renderBirthdayField()}
-            <Button
-              type="submit"
-              isLoading={submitting}
-              style={{ top: "22px", position: "relative", display: "flex" }}
-              fullWidth
-            >
-              Add new student
-            </Button>
-            <StyledRequiredFields>
-              <RequiredAsterisk /> Required fields
-            </StyledRequiredFields>
-          </StyledColumn>
-        </StyledCustomModalBody>
+          <ModalHeader showCloseButton>
+            <ModalTitle>Add a new student</ModalTitle>
+          </ModalHeader>
+          <StyledCustomModalBody>
+            <StyledColumn>
+              {renderFirstNameField()}
+              {renderLastNameField()}
+              {renderGenderField()}
+            </StyledColumn>
+            <StyledColumn>
+              {renderEmailField()}
+              {renderBirthdayField()}
+              <Button
+                type="submit"
+                isLoading={submitting}
+                style={{ top: "22px", position: "relative", display: "flex" }}
+                fullWidth
+              >
+                Add new student
+              </Button>
+              <StyledRequiredFields>
+                <RequiredAsterisk /> Required fields
+              </StyledRequiredFields>
+            </StyledColumn>
+          </StyledCustomModalBody>
       </Form>
     </Modal>
   );
 };
 
-export { AddStudentModal, action, defaultStudentData };
-export type { IStudentErrors, IStudentData };
+export { action, AddStudentModal, defaultStudentData };
+export type { IStudentData, IStudentErrors };

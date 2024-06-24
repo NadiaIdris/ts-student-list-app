@@ -9,6 +9,7 @@ const StyledModalFooter = styled.div`
   justify-content: flex-start;
   align-items: center;
   margin: 30px;
+  gap: 12px;
 `;
 
 const ModalFooter = ({ children }: ModalFooterProps) => {

@@ -1,6 +1,6 @@
 import { ForwardedRef, forwardRef, MutableRefObject } from "react";
 import styled from "styled-components";
-import { HandleOptionKeyDown, HandleSelectKeyDown } from "../../../pages/StudentPanel/StudentEditPanel";
+import { HandleOptionKeyDown, HandleSelectKeyDown } from "../../../pages/StudentEditPanel";
 import { FieldSize } from "../Field";
 import { MenuItemGroup } from "./MenuItemGroup";
 import { SelectedMenuItem } from "./SelectedMenuItem";

@@ -1,5 +1,4 @@
 import { KeyboardEvent, MouseEvent, useEffect, useRef, useState } from "react";
-import { CgClose } from "react-icons/cg";
 import {
   Form,
   Params,
@@ -11,20 +10,21 @@ import {
   useParams,
 } from "react-router-dom";
 import styled from "styled-components";
-import { STUDENTS_ENDPOINT } from "../../../api/apiConstants";
-import { axiosInstance } from "../../../api/axiosConfig";
-import { Button } from "../../../components/Button";
-import { DatePicker } from "../../../components/form/DatePicker";
-import { DropdownMenu } from "../../../components/form/DropdownMenu";
-import { ItemsRef, RefsContainer, SelectedRef } from "../../../components/form/DropdownMenu/DropdownMenu";
-import { Direction, Field } from "../../../components/form/Field";
-import { Heading1 } from "../../../components/text/Heading1";
-import { TextField } from "../../../components/TextField";
-import { useStudentUid } from "../../StudentsPage/StudentsPage";
-import { IStudentFetchData } from "../StudentPanel";
-import { generateErrorMessagesObject, removeWhiteSpace } from "../../../utils/utils";
-import { defaultStudentData, IStudentData, IStudentErrors } from "../../AddStudentModal";
-import { validateStudentData } from "../../../validation/validate";
+import { STUDENTS_ENDPOINT } from "../../api/apiConstants";
+import { axiosInstance } from "../../api/axiosConfig";
+import { Button } from "../../components/Button";
+import { DatePicker } from "../../components/form/DatePicker";
+import { DropdownMenu } from "../../components/form/DropdownMenu";
+import { ItemsRef, RefsContainer, SelectedRef } from "../../components/form/DropdownMenu/DropdownMenu";
+import { Direction, Field } from "../../components/form/Field";
+import { TextField } from "../../components/TextField";
+import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
+import { validateStudentData } from "../../validation/validate";
+import { defaultStudentData, IStudentData, IStudentErrors } from "../AddStudentModal";
+import { IStudentFetchData } from "../StudentPanel/StudentPanel";
+import { useStudentUid } from "../StudentsPage/StudentsPage";
+import { SidePanel } from "../../components/SidePanel";
+import { SidePanelHeader } from "../../components/SidePanel/SidePanelHeader";
 
 const GENDERS = ["Female", "Male", "Agender", "Cisgender", "Genderfluid", "Genderqueer", "Non-binary", "Transgender"];
 
@@ -61,46 +61,6 @@ async function action({ request, params }: { request: Request; params: Params })
 type HandleSelectKeyDown = (event: KeyboardEvent<HTMLDivElement>) => void;
 
 type HandleOptionKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => void;
-
-const StyledCloseIcon = styled.div`
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 101;
-  cursor: pointer;
-`;
-
-const StyledStudentOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 100;
-  max-width: 500px;
-  width: 100%;
-  height: 100%;
-  background-color: var(--color-white);
-`;
-
-const StyledHeading1 = styled(Heading1)`
-  padding: 0 40px;
-  margin: 40px 0 20px 0;
-
-  @media (max-width: 500px) {
-    padding: 0 20px;
-    margin: 20px 0 10px 0;
-  }
-`;
-
-const StyledStudentPageCover = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 10;
-  width: 100%;
-  height: 100%;
-  background-color: var(--color-black-300);
-  pointer-events: none;
-`;
 
 const StyledStudentDataWrapper = styled.div`
   display: flex;
@@ -265,142 +225,131 @@ const StudentEditPanel = () => {
   }, []);
 
   return (
-    <>
-      <StyledCloseIcon>
-        <Button
-          appearance="link-with-background"
-          size="medium"
-          iconBefore={<CgClose style={{ width: "24px", height: "24px" }} />}
-          onClick={handleCloseStudentPanel}
-          ariaLabel="Close student panel"
-          tooltip="Close student panel  "
-        />
-      </StyledCloseIcon>
-      <StyledStudentOverlay>
-        <StyledHeading1>Edit</StyledHeading1>
-        <StyledStudentDataWrapper>
-          <Form method="put">
-            <StyledFieldsWrapper>
-              <Field
-                id="first-name"
-                label="First name"
-                direction={fieldDirection}
-                isRequired
-                invalidFieldMessage={actionData?.errorMsgs?.first_name}
-              >
-                {(inputProps) => (
-                  <TextField
-                    {...inputProps}
-                    name="first_name"
-                    defaultValue={loaderData?.studentData.firstName}
-                    placeholder="Enter student's first name"
-                    isInvalid={Boolean(actionData?.errorMsgs?.first_name)}
-                    isDisabled={submitting}
-                  />
-                )}
-              </Field>
-              <Field
-                id="last-name"
-                label="Last name"
-                direction={fieldDirection}
-                isRequired
-                invalidFieldMessage={actionData?.errorMsgs?.last_name}
-              >
-                {(inputProps) => (
-                  <TextField
-                    {...inputProps}
-                    name="last_name"
-                    defaultValue={loaderData?.studentData.lastName}
-                    placeholder="Enter student's last name"
-                    isInvalid={Boolean(actionData?.errorMsgs?.last_name)}
-                    isDisabled={submitting}
-                  />
-                )}
-              </Field>
-              <Field
-                id="email"
-                label="Email"
-                direction={fieldDirection}
-                isRequired
-                invalidFieldMessage={actionData?.errorMsgs?.email}
-              >
-                {(inputProps) => (
-                  <TextField
-                    {...inputProps}
-                    type="email"
-                    name="email"
-                    defaultValue={loaderData?.studentData.email}
-                    placeholder="Enter student's email name"
-                    isInvalid={Boolean(actionData?.errorMsgs?.email)}
-                    isDisabled={submitting}
-                  />
-                )}
-              </Field>
-              <Field id="gender-dropdown" label="Gender" direction={fieldDirection}>
-                {(inputProps) => (
-                  <DropdownMenu
-                    {...inputProps}
-                    name="gender"
-                    ref={genderRefsObj}
-                    isOpen={genderDropdownIsOpen}
-                    isDisabled={submitting}
-                    // Function component state setters
-                    setSelectedGender={setSelectedGender}
-                    setGenderDropdownIsOpen={setGenderDropdownIsOpen}
-                    // Data
-                    menuItems={GENDERS}
-                    selectedMenuItem={selectedGender}
-                    // MouseEvent callbacks
-                    onSelectedMenuItemClick={handleSelectedMenuItemClick}
-                    onDropdownMenuItemClick={handleDropdownMenuItemClick}
-                    // KeyboardEvent callbacks
-                    onSelectedMenuItemKeyDown={handleSelectedMenuItemKeyDown}
-                    onDropdownMenuItemKeyDown={handleDropdownMenuItemKeyDown}
-                  />
-                )}
-              </Field>
-              <Field
-                id="date-of-birth"
-                label="Birthday"
-                direction={fieldDirection}
-                isRequired
-                invalidFieldMessage={actionData?.errorMsgs?.date_of_birth}
-              >
-                {(inputProps) => (
-                  <DatePicker
-                    {...inputProps}
-                    name="date_of_birth"
-                    defaultValue={dateOfBirth}
-                    isInvalid={Boolean(actionData?.errorMsgs?.date_of_birth)}
-                    isDisabled={submitting}
-                    min={minDate}
-                    max={maxDate}
-                  />
-                )}
-              </Field>
-            </StyledFieldsWrapper>
-            <StyledButtonsWrapper>
-              <Button type="submit" isLoading={submitting}>
-                Save
-              </Button>
-              <Button
-                type="button"
-                appearance="secondary"
-                isLoading={submitting}
-                onClick={() => {
-                  navigate(`/students/${studentId}`);
-                }}
-              >
-                Cancel
-              </Button>
-            </StyledButtonsWrapper>
-          </Form>
-        </StyledStudentDataWrapper>
-      </StyledStudentOverlay>
-      <StyledStudentPageCover />
-    </>
+    <SidePanel>
+      <SidePanelHeader showCloseButton navigateToURL="/students">
+        Edit
+      </SidePanelHeader>
+      <StyledStudentDataWrapper>
+        <Form method="put">
+          <StyledFieldsWrapper>
+            <Field
+              id="first-name"
+              label="First name"
+              direction={fieldDirection}
+              isRequired
+              invalidFieldMessage={actionData?.errorMsgs?.first_name}
+            >
+              {(inputProps) => (
+                <TextField
+                  {...inputProps}
+                  name="first_name"
+                  defaultValue={loaderData?.studentData.firstName}
+                  placeholder="Enter student's first name"
+                  isInvalid={Boolean(actionData?.errorMsgs?.first_name)}
+                  isDisabled={submitting}
+                />
+              )}
+            </Field>
+            <Field
+              id="last-name"
+              label="Last name"
+              direction={fieldDirection}
+              isRequired
+              invalidFieldMessage={actionData?.errorMsgs?.last_name}
+            >
+              {(inputProps) => (
+                <TextField
+                  {...inputProps}
+                  name="last_name"
+                  defaultValue={loaderData?.studentData.lastName}
+                  placeholder="Enter student's last name"
+                  isInvalid={Boolean(actionData?.errorMsgs?.last_name)}
+                  isDisabled={submitting}
+                />
+              )}
+            </Field>
+            <Field
+              id="email"
+              label="Email"
+              direction={fieldDirection}
+              isRequired
+              invalidFieldMessage={actionData?.errorMsgs?.email}
+            >
+              {(inputProps) => (
+                <TextField
+                  {...inputProps}
+                  type="email"
+                  name="email"
+                  defaultValue={loaderData?.studentData.email}
+                  placeholder="Enter student's email name"
+                  isInvalid={Boolean(actionData?.errorMsgs?.email)}
+                  isDisabled={submitting}
+                />
+              )}
+            </Field>
+            <Field id="gender-dropdown" label="Gender" direction={fieldDirection}>
+              {(inputProps) => (
+                <DropdownMenu
+                  {...inputProps}
+                  name="gender"
+                  ref={genderRefsObj}
+                  isOpen={genderDropdownIsOpen}
+                  isDisabled={submitting}
+                  // Function component state setters
+                  setSelectedGender={setSelectedGender}
+                  setGenderDropdownIsOpen={setGenderDropdownIsOpen}
+                  // Data
+                  menuItems={GENDERS}
+                  selectedMenuItem={selectedGender}
+                  // MouseEvent callbacks
+                  onSelectedMenuItemClick={handleSelectedMenuItemClick}
+                  onDropdownMenuItemClick={handleDropdownMenuItemClick}
+                  // KeyboardEvent callbacks
+                  onSelectedMenuItemKeyDown={handleSelectedMenuItemKeyDown}
+                  onDropdownMenuItemKeyDown={handleDropdownMenuItemKeyDown}
+                />
+              )}
+            </Field>
+            <Field
+              id="date-of-birth"
+              label="Birthday"
+              direction={fieldDirection}
+              isRequired
+              invalidFieldMessage={actionData?.errorMsgs?.date_of_birth}
+            >
+              {(inputProps) => (
+                <DatePicker
+                  {...inputProps}
+                  name="date_of_birth"
+                  defaultValue={dateOfBirth}
+                  isInvalid={Boolean(actionData?.errorMsgs?.date_of_birth)}
+                  isDisabled={submitting}
+                  min={minDate}
+                  max={maxDate}
+                />
+              )}
+            </Field>
+          </StyledFieldsWrapper>
+          <StyledButtonsWrapper>
+            <Button type="submit" isLoading={submitting}>
+              Save
+            </Button>
+            <Button
+              type="button"
+              appearance="secondary"
+              isLoading={submitting}
+              onClick={() => {
+                navigate(`/students/${studentId}`);
+              }}
+            >
+              Cancel
+            </Button>
+          </StyledButtonsWrapper>
+        </Form>
+      </StyledStudentDataWrapper>
+    </SidePanel>
   );
 };
 
-export { GENDERS, StudentEditPanel, action };
+export { action, GENDERS, StudentEditPanel };
 export type { HandleOptionKeyDown, HandleSelectKeyDown };
