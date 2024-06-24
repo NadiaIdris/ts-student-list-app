@@ -1,10 +1,8 @@
 import styled from "styled-components";
-import { HandleOptionKeyDown } from "../../../../pages/StudentPanel/StudentEditPanel";
+import { HandleOptionKeyDown } from "../../../../pages/StudentEditPanel";
 import { FieldSize } from "../../Field";
-import { MenuItemsType, ItemsRef, SelectedRef } from "../DropdownMenu";
+import { ItemsRef, MenuItemsType, SelectedRef } from "../DropdownMenu";
 import { MenuItem } from "../MenuItem";
-import { useActionData } from "react-router-dom";
-import { useEffect } from "react";
 
 interface MenuItemGroupProps {
   itemsRef: ItemsRef;

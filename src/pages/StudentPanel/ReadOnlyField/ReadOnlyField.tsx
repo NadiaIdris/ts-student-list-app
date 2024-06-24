@@ -23,16 +23,12 @@ interface ReadOnlyFieldProps {
   className?: string;
 }
 
-const StyledRow = styled.div<{ $icon: ReactNode }>`
+const StyledRow = styled.div`
   display: flex;
   align-items: center;
   flex-direction: row;
   padding: 0 32px 0 40px;
   height: var(--input-height-large);
-  
-  &:hover {
-    ${({ $icon }) => $icon && "background-color: var(--color-gray-400); "}
-  }
 
   @media (max-width: 500px) {
     padding: 0 12px 0 20px;
@@ -77,7 +73,6 @@ const ReadOnlyField = ({
       style={style}
       className={className}
       data-testid={testId}
-      $icon={icon}
     >
       <StyledLabel>{label}</StyledLabel>
       <StyledValue>

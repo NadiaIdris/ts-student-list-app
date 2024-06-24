@@ -1,6 +1,6 @@
 import { MouseEvent } from "react";
 import styled from "styled-components";
-import { HandleOptionKeyDown } from "../../../../pages/StudentPanel/StudentEditPanel";
+import { HandleOptionKeyDown } from "../../../../pages/StudentEditPanel";
 import { FieldSize } from "../../Field";
 import { ItemsRef } from "../DropdownMenu";
 

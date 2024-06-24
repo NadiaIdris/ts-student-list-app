@@ -32,6 +32,8 @@ const ModalHeader = ({ children, showCloseButton = false }: ModalHeaderProps) =>
           onClick={closeModal}
           appearance="link-with-background"
           iconBefore={<CgClose style={{ width: "24px", height: "24px" }} />}
+          tooltip="Close modal"
+          ariaLabel="Close modal"
         />
       )}
     </StyledModalHeader>

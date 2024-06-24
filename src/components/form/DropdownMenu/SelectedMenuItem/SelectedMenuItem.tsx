@@ -1,11 +1,11 @@
+import { KeyboardEvent } from "react";
 import { CgClose } from "react-icons/cg";
 import { FaCaretDown } from "react-icons/fa";
 import styled from "styled-components";
+import { HandleSelectKeyDown } from "../../../../pages/StudentEditPanel";
 import { Button } from "../../../Button";
 import { FieldSize } from "../../Field";
 import { SelectedRef } from "../DropdownMenu";
-import { KeyboardEvent } from "react";
-import { HandleSelectKeyDown } from "../../../../pages/StudentPanel/StudentEditPanel";
 
 interface SelectedMenuItemProps {
   name?: string;

@@ -29,29 +29,29 @@ export async function loader() {
 }
 
 const StudentsPageWrapper = styled.div<{ $noPointerEvents: boolean }>`
-  ${({ $noPointerEvents }) => $noPointerEvents && "pointer-events: none;"}
+  /* ${({ $noPointerEvents }) => $noPointerEvents && "pointer-events: none;"} */
 `;
 
 const TableBodyWrapper = styled.div`
   padding: 0 48px;
   overflow-y: auto;
   overflow-x: auto;
-  height: calc(100vh - 58px - 52px);
+  height: calc(100vh - 64px - 52px);
   background-color: var(--color-white);
 
   @media (max-width: 770px) {
     padding: 0 20px;
-    height: calc(100vh - 58px - 86px); // 58px is the height of the bottom bar with 'Add new student' button.
+    height: calc(100vh - 64px - 86px); // 58px is the height of the bottom bar with 'Add new student' button.
   }
 
   @media (max-width: 500px) {
     padding: 0 8px;
-    height: calc(100vh - 58px - 63px);
+    height: calc(100vh - 64px - 64px);
   }
 
   @media (max-width: 420px) {
     padding: 0 8px;
-    height: calc(100vh - 58px - 121px);
+    height: calc(100vh - 64px - 128px);
   }
 `;
 
@@ -145,7 +145,7 @@ const StyledTableCell = styled.div`
 
 const StyledIconsWrapper = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 12px;
 `;
 
 const StyledButtonWrapper = styled.div`
@@ -198,18 +198,21 @@ const StudentsPage = () => {
     console.log("Open dropdown");
   };
 
-  // TODO: Implement handleEditStudent function
-
   const handleEditStudent = (event: MouseEvent<HTMLButtonElement>, studentId: string) => {
-    // Don't bubble up the event to the parent element
+    // Prevent the default behavior of the button: submitting data to the server
+    event.preventDefault();
+    // Don't bubble up the mouse event to the parent element
     event.stopPropagation();
-    console.log("Edit student with id: ", studentId);
-    navigate(`/students/${studentId}`);
+    navigate(`/students/${studentId}/edit`);
   };
 
   // TODO: Implement handleDeleteStudent function
-  const handleDeleteStudent = (studentId: string) => {
-    console.log("Delete student with id: ", studentId);
+  const handleDeleteStudent = (event: MouseEvent<HTMLButtonElement>, studentId: string) => {
+    // Prevent the default behavior of the button: submitting data to the server
+    event.preventDefault();
+    // Don't bubble up the mouse event to the parent element
+    event.stopPropagation();
+    navigate(`/students/${studentId}/delete`);
   };
 
   useEffect(() => {
@@ -281,7 +284,9 @@ const StudentsPage = () => {
                         />
                         <Button
                           iconBefore={<RiDeleteBinLine style={{ width: "16px", height: "16px" }} />}
-                          onClick={() => handleDeleteStudent(student.student_uid)}
+                          onClick={(event: MouseEvent<HTMLButtonElement>) =>
+                            handleDeleteStudent(event, student.student_uid)
+                          }
                           tooltip="Delete student"
                           ariaLabel="Delete student"
                           appearance="link"
