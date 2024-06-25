@@ -118,7 +118,7 @@ const StyledButton = styled.button<{
       if ($appearance === "primary") return "var(--color-button-primary-bg-hover)";
       else if ($appearance === "secondary") return "var(--color-button-secondary-bg-hover)";
       else if ($appearance === "warning") return "var(--color-button-warning-bg-hover)";
-      else if ($appearance === "link-with-background") return "var(--color-button-secondary-bg)";
+      else if ($appearance === "link-with-background") return "var(--color-button-secondary-bg-hover)";
       else return "var(--color-button-default-bg-hover)";
     }};
     color: ${({ $appearance }) => {

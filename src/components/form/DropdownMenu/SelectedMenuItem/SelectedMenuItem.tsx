@@ -60,7 +60,6 @@ const StyledInput = styled.input<{ $size: FieldSize; $dropdownIsOpen: boolean }>
   &:focus {
     border: var(--focus-outline);
   }
-  
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;

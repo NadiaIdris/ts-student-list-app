@@ -12,28 +12,16 @@ import { StudentPanel, loader as studentLoader } from "./pages/StudentPanel";
 import { StudentsPage, loader as studentsLoader } from "./pages/StudentsPage";
 
 const router = createBrowserRouter([
-  // {
-  //   path: "/",
-  //   element: (
-  //     <ProtectedRoute>
-  //       <StudentsPage />
-  //     </ProtectedRoute>
-  //   ),
-  //   loader: studentsLoader,
-  //   children: [
-  //     {
-  //       path: "/students/:studentId",
-  //       element: <StudentPanel />,
-  //       loader: studentLoader,
-  //     },
-  //     {
-  //       path: "/students/:studentId/edit",
-  //       element: <StudentEditPanel />,
-  //       loader: studentLoader,
-  //       // action: editStudentAction,
-  //     },
-  //   ],
-  // },
+  {
+    path: "/",
+    element: (
+      <ProtectedRoute>
+        <StudentsPage />
+      </ProtectedRoute>
+    ),
+    loader: studentsLoader,
+  },
+
   {
     path: "/students/",
     element: (
