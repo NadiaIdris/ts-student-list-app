@@ -5,6 +5,7 @@ export type Appearance = "primary" | "secondary" | "warning" | "link" | "link-wi
 export type Size = "small" | "medium" | "large";
 
 export interface ButtonProps {
+  active?: boolean;
   /**
    * aria-label attribute for accessibility.
    */
@@ -62,6 +63,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const StyledButton = styled.button<{
+  $active: boolean;
   $size: Size;
   $fullWidth: boolean;
   $appearance: Appearance;
@@ -74,7 +76,6 @@ const StyledButton = styled.button<{
     if (($iconBefore || $iconAfter) && !$children) return "100px";
     else return "var(--border-radius)";
   }};
-  position: relative;
   border: transparent;
   font: inherit;
   font-weight: 900;
@@ -119,13 +120,30 @@ const StyledButton = styled.button<{
       if ($appearance === "primary") return "var(--color-button-primary-bg-hover)";
       else if ($appearance === "secondary") return "var(--color-button-secondary-bg-hover)";
       else if ($appearance === "warning") return "var(--color-button-warning-bg-hover)";
-      else if ($appearance === "link-with-background") return "var(--color-button-secondary-bg)";
+      else if ($appearance === "link-with-background") return "var(--color-button-secondary-bg-hover)";
       else return "var(--color-button-default-bg-hover)";
     }};
     color: ${({ $appearance }) => {
       if ($appearance === "link" || $appearance === "link-with-background") return "var(--text-black)";
     }};
   }
+
+  /* For link button where we want to dynamically set active.  */
+  ${({ $active }) => $active && "color: black;"}
+
+  &:active {
+    background: ${({ $appearance }) => {
+      if ($appearance === "primary") return "var(--color-button-primary-bg-active)";
+      else if ($appearance === "secondary") return "var(--color-button-secondary-bg-active)";
+      else if ($appearance === "warning") return "var(--color-button-warning-bg-active)";
+      else if ($appearance === "link-with-background") return "var(--color-button-link-with-background-active)";
+      else return "var(--color-button-default-bg-active)";
+    }};
+    color: ${({ $appearance }) => {
+      if ($appearance === "link" || $appearance === "link-with-background") return "var(--color-black)";
+    }};
+  }
+
   &:disabled {
     cursor: not-allowed;
     opacity: 0.6;
@@ -188,6 +206,7 @@ const StyledSpinner = styled.span<{ $isLoading: boolean }>`
 `;
 
 const Button = ({
+  active = false,
   ariaLabel,
   children,
   type = "button",
@@ -213,6 +232,7 @@ const Button = ({
         type={type}
         onClick={onClick && !isLoading ? onClick : undefined}
         $appearance={appearance}
+        $active={active}
         $size={size}
         $fullWidth={fullWidth}
         $iconBefore={iconBefore}

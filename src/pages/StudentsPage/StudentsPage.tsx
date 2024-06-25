@@ -10,14 +10,16 @@ import { Button } from "../../components/Button";
 import { Heading1 } from "../../components/text/Heading1";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { StudentsSkeleton } from "./StudentsSkeleton";
+import { UserAccountDropdown } from "./UserAccountDropdown";
 
 interface IStudents {
-  students: Student[];
+  students: Student[] | null;
   error: any;
 }
 
 export async function loader() {
   try {
+    // Add setTimeout to simulate loading time.
     const response = await axiosInstance.get(STUDENTS_ENDPOINT);
     if (response.status !== 200) throw new Error(response.statusText); // Throw an error when the
     // response is not OK so that it proceeds directly to the catch block.
@@ -187,15 +189,22 @@ const StudentsPage = () => {
   const loaderData: IStudents | undefined = useLoaderData() as IStudents;
   const [isLoading, setIsLoading] = useState(true);
   const [studentUid, setStudentUid] = useState<string>("");
+  const [userDropdownIsOpen, setUserDropdownIsOpen] = useState(false);
 
   const handleLogOut = () => {
     logOut();
     navigate("/login", { replace: true });
   };
 
-  // TODO: Implement openDropdown function
+  // TODO: implement delete confirmation.
+  const handleDeleteAccount = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log("Delete account");
+  };
+
   const openDropdown = () => {
-    console.log("Open dropdown");
+    setUserDropdownIsOpen((prev) => !prev);
   };
 
   const handleEditStudent = (event: MouseEvent<HTMLButtonElement>, studentId: string) => {
@@ -206,7 +215,6 @@ const StudentsPage = () => {
     navigate(`/students/${studentId}/edit`);
   };
 
-  // TODO: Implement handleDeleteStudent function
   const handleDeleteStudent = (event: MouseEvent<HTMLButtonElement>, studentId: string) => {
     // Prevent the default behavior of the button: submitting data to the server
     event.preventDefault();
@@ -216,23 +224,15 @@ const StudentsPage = () => {
   };
 
   useEffect(() => {
-    (loaderData?.students?.length > 0 || loaderData?.error) && setIsLoading(false);
+    (loaderData?.students || loaderData?.error) && setIsLoading(false);
   }, [loaderData.students, loaderData.error]);
 
-  // useEffect(() => {
-  //   // if url endoint is '/' redirect to '/students'
-  //   if (window.location.pathname === "/") {
-  //     navigate("/students");
-  //   }
-  // }, [navigate]);
-
-  // const createEndpoint = (url: string, studentId: string) => {
-  //   if (url === "/") {
-  //     return `/students/${studentId}`;
-  //   } else {
-  //     return `/${studentId}`;
-  //   }
-  // };
+  useEffect(() => {
+    // if url endoint is '/' redirect to '/students'
+    if (window.location.pathname === "/") {
+      navigate("/students");
+    }
+  }, [navigate]);
 
   return (
     <>
@@ -240,13 +240,12 @@ const StudentsPage = () => {
         <StyledHeader>
           <Heading1>All students</Heading1>
           <StyledNavButtonsWrapper>
-            <Button
-              appearance="link"
-              onClick={openDropdown}
-              iconAfter={<GoTriangleDown style={{ width: "16px", height: "16px" }} />}
-            >
-              {user?.firstName}
-            </Button>
+            <UserAccountDropdown
+              user={user}
+              openDropdown={openDropdown}
+              handleDeleteAccount={handleDeleteAccount}
+              userDropdownIsOpen={userDropdownIsOpen}
+            />
             <Button appearance="secondary" onClick={handleLogOut}>
               Log out
             </Button>
@@ -263,7 +262,6 @@ const StudentsPage = () => {
             </StyledTableHeader>
             {isLoading && <StudentsSkeleton />}
             {!isLoading &&
-              loaderData?.students?.length > 0 &&
               loaderData?.students?.map((student, index) => (
                 <StyledTableRow key={student.student_uid} to={`${student.student_uid}`}>
                   <StyledRowGrid>

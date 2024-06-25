@@ -11,7 +11,7 @@ interface SnackbarProps {
 const StyledSnackbar = styled.div`
   position: fixed;
   bottom: 0;
-  background-color: var(--color-black-1000);
+  background-color: var(--color-black);
   color: var(--color-white);
   height: var(--input-height-large);
   z-index: 1000;
