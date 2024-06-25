@@ -11,6 +11,7 @@ import { Heading1 } from "../../components/text/Heading1";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { StudentsSkeleton } from "./StudentsSkeleton";
 import { UserAccountDropdown } from "./UserAccountDropdown";
+import { IUser } from "../../context/AuthContext";
 
 interface IStudents {
   students: Student[] | null;
@@ -172,7 +173,6 @@ type Student = {
   student_uid: string;
   first_name: string;
   last_name: string;
-  age: number;
   gender: string | null;
   email: string;
   date_of_birth: string;
@@ -196,14 +196,13 @@ const StudentsPage = () => {
     navigate("/login", { replace: true });
   };
 
-  // TODO: implement delete confirmation.
   const handleDeleteAccount = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    console.log("Delete account");
+    navigate(`${user?.userId}/delete-user`);
   };
 
-  const openDropdown = () => {
+  const toggleDropdown = () => {
     setUserDropdownIsOpen((prev) => !prev);
   };
 
@@ -232,7 +231,15 @@ const StudentsPage = () => {
     if (window.location.pathname === "/") {
       navigate("/students");
     }
-  }, [navigate]);
+  }, [ navigate ]);
+  
+  // Add overflow: hidden; to the body when logged in
+  useEffect(() => { 
+    document.body.style.overflowY = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
 
   return (
     <>
@@ -242,7 +249,7 @@ const StudentsPage = () => {
           <StyledNavButtonsWrapper>
             <UserAccountDropdown
               user={user}
-              openDropdown={openDropdown}
+              openDropdown={toggleDropdown}
               handleDeleteAccount={handleDeleteAccount}
               userDropdownIsOpen={userDropdownIsOpen}
             />

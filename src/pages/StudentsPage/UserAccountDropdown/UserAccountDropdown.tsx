@@ -28,7 +28,6 @@ const StyledDropdown = styled.div`
 const StyledUserInfoWrapper = styled.div`
   padding: 20px 25px 8px 25px;
   :first-child {
-    font-weight: 900;
     margin-bottom: 4px;
   }
 `;

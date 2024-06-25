@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Form, Link, useActionData, useNavigate, useNavigation } from "react-router-dom";
 import styled from "styled-components";
-import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../api/apiConstants";
+import { USER_ENDPOINT} from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
 import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
@@ -58,6 +58,7 @@ async function action({ request }: { request: Request }) {
 
   //Send the user data to the server if there are no errors
   try {
+    const SIGNUP_ENDPOINT = `${USER_ENDPOINT}/signup`;
     await axiosInstance.post(SIGNUP_ENDPOINT, formDataWithoutRepeatPassword, {
       headers: {
         "Content-Type": "application/json",
@@ -70,6 +71,7 @@ async function action({ request }: { request: Request }) {
         email: trimmedUserSignUpData.email,
         password: trimmedUserSignUpData.password,
       };
+      const LOGIN_ENDPOINT = `${USER_ENDPOINT}/login`;
       const response = await axiosInstance.post(LOGIN_ENDPOINT, userLogInDetails);
       // Extract the token and user details from the response
       const bearerToken = response.headers.Authorization || response.headers.authorization;
