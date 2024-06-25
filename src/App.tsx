@@ -10,6 +10,7 @@ import { SignUpPage, action as signUpAction } from "./pages/SignUpPage";
 import { StudentEditPanel, action as editStudentAction } from "./pages/StudentEditPanel";
 import { StudentPanel, loader as studentLoader } from "./pages/StudentPanel";
 import { StudentsPage, loader as studentsLoader } from "./pages/StudentsPage";
+import { DeleteUserModal, action as deleteUserAction } from "./pages/DeleteUserModal";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,11 @@ const router = createBrowserRouter([
         element: <AddStudentModal />,
         action: addStudentAction,
       },
+      {
+        path: ":userId/delete-user",
+        element: <DeleteUserModal />,
+        action: deleteUserAction,
+      }
     ],
   },
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, Link, useActionData, useNavigate, useNavigation } from "react-router-dom";
 import styled from "styled-components";
-import { LOGIN_ENDPOINT } from "../../api/apiConstants";
+import { USER_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
 import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
@@ -41,6 +41,7 @@ async function action({ request }: { request: Request }) {
   }
 
   try {
+    const LOGIN_ENDPOINT = `${USER_ENDPOINT}/login`;
     const response = await axiosInstance.post(LOGIN_ENDPOINT, trimmedUserLogInData);
     // Extract the token and user details from the response
     const bearerToken = response.headers.Authorization || response.headers.authorization;
