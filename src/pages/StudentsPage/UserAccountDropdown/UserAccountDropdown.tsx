@@ -46,6 +46,7 @@ const UserAccountDropdown = ({ userDropdownIsOpen, openDropdown, handleDeleteAcc
   return (
     <StyledDropdown>
       <Button
+        active={userDropdownIsOpen}
         appearance="link"
         onClick={openDropdown}
         iconAfter={
