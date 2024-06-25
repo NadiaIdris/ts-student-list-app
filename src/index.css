@@ -2,56 +2,20 @@
 
 :root {
   /* colors */
-  --color-primary: rgba(21, 227, 255, 1);
-  --color-secondary: #6c757d;
-  --color-success: rgba(40, 167, 69, 1);
-  --color-warning: rgba(255, 193, 7, 1);
-  --color-danger: var(--color-danger-1000);
-  --color-danger-100: rgba(234, 26, 151, 0.1);
-  --color-danger-200: rgba(234, 26, 151, 0.2);
-  --color-danger-300: rgba(234, 26, 151, 0.3);
-  --color-danger-400: rgba(234, 26, 151, 0.4);
-  --color-danger-500: rgba(234, 26, 151, 0.5);
-  --color-danger-600: rgba(234, 26, 151, 0.6);
-  --color-danger-700: rgba(234, 26, 151, 0.7);
+  --color-danger: rgba(234, 26, 151, 1);
   --color-danger-800: rgba(234, 26, 151, 0.8);
-  --color-danger-900: rgba(234, 26, 151, 0.9);
-  --color-danger-1000: rgba(234, 26, 151, 1);
   --color-danger-darker: rgb(197, 3, 119);
   --color-selection: rgba(0, 244, 141, 1);
   --color-focus: var(--color-black-1000);
-  --color-white: var(--color-white-1000);
-  --color-black: var(--color-black-1000);
-  --color-white-100: rgba(255, 255, 255, 0.1);
-  --color-white-200: rgba(255, 255, 255, 0.2);
-  --color-white-300: rgba(255, 255, 255, 0.3);
-  --color-white-400: rgba(255, 255, 255, 0.4);
-  --color-white-500: rgba(255, 255, 255, 0.5);
-  --color-white-600: rgba(255, 255, 255, 0.6);
-  --color-white-700: rgba(255, 255, 255, 0.7);
-  --color-white-800: rgba(255, 255, 255, 0.8);
-  --color-white-900: rgba(255, 255, 255, 0.9);
-  --color-white-1000: rgba(255, 255, 255, 1);
-  --color-gray-100: rgba(238, 238, 238, 0.1);
-  --color-gray-200: rgba(238, 238, 238, 0.2);
-  --color-gray-300: rgba(238, 238, 238, 0.3);
+  --color-white: white;
+  --color-black: black;
   --color-gray-400: rgba(238, 238, 238, 0.4);
-  --color-gray-500: rgba(238, 238, 238, 0.5);
-  --color-gray-600: rgba(238, 238, 238, 0.6);
-  --color-gray-700: rgba(238, 238, 238, 0.7);
   --color-gray-800: rgba(238, 238, 238, 0.8);
-  --color-gray-900: rgba(238, 238, 238, 0.9);
   --color-gray-1000: rgba(238, 238, 238, 1);
-  --color-black-100: rgba(0, 0, 0, 0.1);
-  --color-black-200: rgba(0, 0, 0, 0.2);
   --color-black-300: rgba(0, 0, 0, 0.3);
-  --color-black-400: rgba(0, 0, 0, 0.4);
-  --color-black-500: rgba(0, 0, 0, 0.5);
   --color-black-600: rgba(0, 0, 0, 0.6);
   --color-black-700: rgba(0, 0, 0, 0.7);
   --color-black-800: rgba(0, 0, 0, 0.8);
-  --color-black-900: rgba(0, 0, 0, 0.9);
-  --color-black-1000: rgba(0, 0, 0, 1);
 
   /* Main grays */
   --color-gray-text-light: var(--color-black-600);
@@ -67,6 +31,13 @@
   --color-button-secondary-bg-hover: var(--color-gray-1000);
   --color-button-default-bg-hover: transparent;
   --color-button-warning-bg-hover: var(--color-danger-darker);
+
+  /* button active colors */
+  --color-button-primary-bg-active: rgb(75, 75, 75);
+  --color-button-secondary-bg-active: #e3e3e3;
+  --color-button-link-with-background-active: var(--color-gray-1000);
+  --color-button-default-bg-active: transparent;
+  --color-button-warning-bg-active: #ad0369;
 
   /* button text colors */
   --color-button-primary-fg: var(--color-white);
@@ -149,4 +120,7 @@ body {
 :-webkit-autofill:focus,
 :-webkit-autofill:hover {
   -webkit-box-shadow: 0 0 0px 40rem var(--color-gray-800) inset;
+  /* outline: 2px solid transparent;
+  offset: -2px;
+  border: 2px solid blue; */
 }

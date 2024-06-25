@@ -22,7 +22,6 @@ import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils
 import { validateStudentData } from "../../validation/validate";
 import { defaultStudentData, IStudentData, IStudentErrors } from "../AddStudentModal";
 import { IStudentFetchData } from "../StudentPanel/StudentPanel";
-import { useStudentUid } from "../StudentsPage/StudentsPage";
 import { SidePanel } from "../../components/SidePanel";
 import { SidePanelHeader } from "../../components/SidePanel/SidePanelHeader";
 
@@ -91,7 +90,6 @@ const StudentEditPanel = () => {
   const submitting = navigation.state === "submitting";
   const actionData: IEditStudent | undefined = useActionData() as IEditStudent;
   const loaderData: IStudentFetchData | undefined = useLoaderData() as IStudentFetchData;
-  const { setStudentUid } = useStudentUid();
   const navigate = useNavigate();
   const [fieldDirection, setFieldDirection] = useState<Direction>("row");
   const [selectedGender, setSelectedGender] = useState(loaderData?.studentData.gender || "");
@@ -105,12 +103,6 @@ const StudentEditPanel = () => {
     selectedRef: genderSelectedRef,
   };
   const genderRefsObj = useRef(container);
-
-  const handleCloseStudentPanel = () => {
-    // Reset the studentUid to remove css property pointer-events: none from the students page.
-    setStudentUid("");
-    navigate("/students");
-  };
 
   const scrollToSelectedMenuItem = () => {
     /* Find index is assuming that there is only one instance of a string in an array. If more

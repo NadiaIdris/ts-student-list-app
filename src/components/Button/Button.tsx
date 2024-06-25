@@ -74,7 +74,6 @@ const StyledButton = styled.button<{
     if (($iconBefore || $iconAfter) && !$children) return "100px";
     else return "var(--border-radius)";
   }};
-  position: relative;
   border: transparent;
   font: inherit;
   font-weight: 900;
@@ -126,6 +125,17 @@ const StyledButton = styled.button<{
       if ($appearance === "link" || $appearance === "link-with-background") return "var(--text-black)";
     }};
   }
+  /* TODO: add active styling */
+  &:active {
+    background: ${({ $appearance }) => {
+      if ($appearance === "primary") return "var(--color-button-primary-bg-active)";
+      else if ($appearance === "secondary") return "var(--color-button-secondary-bg-active)";
+      else if ($appearance === "warning") return "var(--color-button-warning-bg-active)";
+      else if ($appearance === "link-with-background") return "var(--color-button-link-with-background-active)";
+      else return "var(--color-button-default-bg-active)";
+    }};
+  }
+
   &:disabled {
     cursor: not-allowed;
     opacity: 0.6;

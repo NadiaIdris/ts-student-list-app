@@ -166,6 +166,26 @@ const EmptyState = styled.p`
   color: var(--color-black-700);
 `;
 
+const StyledDropdownWrapper = styled.div`
+  position: absolute;
+  top: 55px;
+  background-color: white;
+  z-index: 200;
+  border-radius: var(--border-radius);
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.2);
+  padding: 12px;
+`;
+
+const StyledDropdown = styled.div`
+  position: relative;
+`;
+
+const StyledDropdownItem = styled.div`
+  padding: 8px;
+  height: fit-content;
+  border-radius: var(--border-radius);
+`;
+
 type Student = {
   student_uid: string;
   first_name: string;
@@ -206,7 +226,6 @@ const StudentsPage = () => {
     navigate(`/students/${studentId}/edit`);
   };
 
-  // TODO: Implement handleDeleteStudent function
   const handleDeleteStudent = (event: MouseEvent<HTMLButtonElement>, studentId: string) => {
     // Prevent the default behavior of the button: submitting data to the server
     event.preventDefault();
@@ -240,13 +259,24 @@ const StudentsPage = () => {
         <StyledHeader>
           <Heading1>All students</Heading1>
           <StyledNavButtonsWrapper>
-            <Button
-              appearance="link"
-              onClick={openDropdown}
-              iconAfter={<GoTriangleDown style={{ width: "16px", height: "16px" }} />}
-            >
-              {user?.firstName}
-            </Button>
+            <StyledDropdown>
+              <Button
+                appearance="link"
+                onClick={openDropdown}
+                iconAfter={<GoTriangleDown style={{ width: "16px", height: "16px" }} />}
+              >
+                {user?.firstName}
+              </Button>
+              <StyledDropdownWrapper>
+                <StyledDropdownItem>
+                  {user?.firstName} {user?.lastName}
+                </StyledDropdownItem>
+                <StyledDropdownItem>{user?.email}</StyledDropdownItem>
+                <StyledDropdownItem>
+                  <Button onClick={handleLogOut}>Log out</Button>
+                </StyledDropdownItem>
+              </StyledDropdownWrapper>
+            </StyledDropdown>
             <Button appearance="secondary" onClick={handleLogOut}>
               Log out
             </Button>

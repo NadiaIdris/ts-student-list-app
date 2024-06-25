@@ -105,11 +105,6 @@ const StyledRequiredFields = styled.div`
   color: var(--color-gray-text-light);
 `;
 
-const StyledContentWrapper = styled.div`
-  position: relative;
-  overflow-y: visible;
-`;
-
 const AddStudentModal = () => {
   const navigation = useNavigation();
   const actionData: IAddStudent | undefined = useActionData() as IAddStudent;
