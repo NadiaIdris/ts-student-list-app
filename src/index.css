@@ -10,9 +10,9 @@
   --color-white: white;
   --color-black: black;
   --color-gray-400: rgba(238, 238, 238, 0.4);
-  --color-gray-600: rgba(238, 238, 238, 0.6);
-  --color-gray-800: rgba(238, 238, 238, 0.8);
-  --color-gray-1000: rgba(238, 238, 238, 1);
+  --color-gray-600: #F6F6F6;
+  --color-gray-800: #F2F2F2;
+  --color-gray-1000: rgba(238, 238, 238);
   --color-black-300: rgba(0, 0, 0, 0.3);
   --color-black-600: rgba(0, 0, 0, 0.6);
   --color-black-700: rgba(0, 0, 0, 0.7);
