@@ -36,7 +36,7 @@ const DeleteStudentModal = () => {
       </ModalHeader>
       <ModalBody>Are you sure you want to delete student {firstAndLastName}?</ModalBody>
       <ModalFooter>
-        <Form method="post">
+        <Form method="delete">
           <Button type="submit" appearance="warning">
             Delete student {firstAndLastName}
           </Button>

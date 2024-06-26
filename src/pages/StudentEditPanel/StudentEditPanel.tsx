@@ -35,8 +35,11 @@ async function action({ request, params }: { request: Request; params: Params })
   let formData = await request.formData();
   // Trim the white spaces from all the form data
   const trimmedStudentData = removeWhiteSpace(formData) as unknown as IStudentData;
+  /* Gender can be null and it has set options to choose from. So we don't need to validate gender. */
+  const { gender, ...rest } = trimmedStudentData;
+  const studentDataWithoutGender = rest;
   // Validate the student data before sending it to the server.
-  const { error } = validateStudentData(trimmedStudentData);
+  const { error } = validateStudentData(studentDataWithoutGender);
 
   if (error) {
     const errorMsgs = generateErrorMessagesObject(error.details, defaultStudentData);
@@ -52,6 +55,7 @@ async function action({ request, params }: { request: Request; params: Params })
       return redirect(`/students/${params.studentId}`);
     }
   } catch (error: any) {
+    console.log("error.message: ", error.message);
     console.error(error.message);
     return { error };
   }
