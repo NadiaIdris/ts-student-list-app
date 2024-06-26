@@ -56,9 +56,6 @@
   --border-radius: 8px;
   --border-radius-large: 14px;
 
-  /* focus */
-  --focus-outline: 2px solid var(--color-focus);
-
   /* font sizes */
   --font-size-11: 0.6875rem;
   --font-size-14: 0.875rem;

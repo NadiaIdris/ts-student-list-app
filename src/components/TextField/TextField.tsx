@@ -83,7 +83,7 @@ const StyledTextField = styled.input<{
   ${({ $isInvalid }) => $isInvalid && `border-color: var(--color-danger);`}
 
   &:focus {
-    border: var(--focus-outline);
+    border: 2x solid black;
   }
 `;
 

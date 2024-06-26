@@ -25,7 +25,7 @@ const StyledDatePicker = styled.input<{ $size: FieldSize; $isInvalid: boolean }>
     opacity: 0.5;
   }
   &:focus {
-    border: var(--focus-outline);
+    border: 2px solid black;
   }
 
   ${({ $size }) => {

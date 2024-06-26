@@ -19,7 +19,7 @@ interface RefsContainer {
 interface DropdownMenuProps {
   name?: string;
   id: string;
-  isOpen: boolean;
+  dropdownIsOpen: boolean;
   isDisabled?: boolean;
   menuItems: MenuItemsType;
   selectedMenuItem: string;
@@ -31,8 +31,8 @@ interface DropdownMenuProps {
   onSelectedMenuItemKeyDown?: HandleSelectKeyDown;
   onDropdownMenuItemKeyDown?: HandleOptionKeyDown;
   size?: FieldSize;
-  setSelectedGender?: React.Dispatch<React.SetStateAction<string>>;
-  setGenderDropdownIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedMenuItem?: React.Dispatch<React.SetStateAction<string>>;
+  setDropdownIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const StyledDropDownMenu = styled.div`
@@ -47,7 +47,7 @@ const DropdownMenu = forwardRef(
       name,
       id,
       size = "large",
-      isOpen,
+      dropdownIsOpen,
       isDisabled,
       // Data
       menuItems,
@@ -59,8 +59,8 @@ const DropdownMenu = forwardRef(
       onDropdownMenuItemKeyDown,
       onSelectedMenuItemKeyDown,
       // Function component state setters
-      setSelectedGender,
-      setGenderDropdownIsOpen,
+      setSelectedMenuItem,
+      setDropdownIsOpen,
     }: DropdownMenuProps,
     ref: ForwardedRef<RefsContainer>
   ) => {
@@ -72,19 +72,19 @@ const DropdownMenu = forwardRef(
           id={id}
           selectedRef={selectedRef}
           isDisabled={isDisabled}
-          dropdownIsOpen={isOpen}
+          dropdownIsOpen={dropdownIsOpen}
           onSelectedMenuItemClick={onSelectedMenuItemClick}
           onSelectedMenuItemKeyDown={onSelectedMenuItemKeyDown}
           selectedMenuItem={selectedMenuItem}
           size={size}
-          setSelectedGender={setSelectedGender}
-          setGenderDropdownIsOpen={setGenderDropdownIsOpen}
+          setSelectedMenuItem={setSelectedMenuItem}
+          setDropdownIsOpen={setDropdownIsOpen}
         />
         <MenuItemGroup
           itemsRef={optionsRef}
           selectedRef={selectedRef}
           isDisabled={isDisabled}
-          dropdownIsOpen={isOpen}
+          dropdownIsOpen={dropdownIsOpen}
           menuItems={menuItems}
           onDropdownMenuItemClick={onDropdownMenuItemClick}
           onDropdownMenuItemKeyDown={onDropdownMenuItemKeyDown}

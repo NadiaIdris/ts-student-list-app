@@ -21,8 +21,8 @@ interface SelectedMenuItemProps {
    */
   size?: FieldSize;
   selectedMenuItem: string;
-  setSelectedGender?: React.Dispatch<React.SetStateAction<string>>;
-  setGenderDropdownIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedMenuItem?: React.Dispatch<React.SetStateAction<string>>;
+  setDropdownIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const StyledInputWrapper = styled.div`
@@ -58,7 +58,7 @@ const StyledInput = styled.input<{ $size: FieldSize; $dropdownIsOpen: boolean }>
   ${({ $dropdownIsOpen }) => ($dropdownIsOpen ? "border: 2px solid black;" : "")}
 
   &:focus {
-    border: var(--focus-outline);
+    border: 2px solid black;
   }
   &:disabled {
     opacity: 0.5;
@@ -94,8 +94,8 @@ const SelectedMenuItem = ({
   onSelectedMenuItemKeyDown,
   size = "large",
   selectedMenuItem,
-  setSelectedGender,
-  setGenderDropdownIsOpen,
+  setSelectedMenuItem,
+  setDropdownIsOpen,
 }: SelectedMenuItemProps) => {
   const showClearSelectionButton = selectedMenuItem !== "" && selectedMenuItem !== null ? true : false;
   return (
@@ -128,9 +128,9 @@ const SelectedMenuItem = ({
             size="large"
             iconBefore={<CgClose style={{ width: "16px", height: "16px" }} />}
             onClick={(event) => {
-              if (setSelectedGender && setGenderDropdownIsOpen) {
+              if (setSelectedMenuItem && setDropdownIsOpen) {
                 event.stopPropagation();
-                setSelectedGender("");
+                setSelectedMenuItem("");
                 selectedRef.current?.focus();
               }
             }}

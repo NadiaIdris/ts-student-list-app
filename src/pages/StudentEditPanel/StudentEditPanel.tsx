@@ -17,13 +17,13 @@ import { DatePicker } from "../../components/form/DatePicker";
 import { DropdownMenu } from "../../components/form/DropdownMenu";
 import { ItemsRef, RefsContainer, SelectedRef } from "../../components/form/DropdownMenu/DropdownMenu";
 import { Direction, Field } from "../../components/form/Field";
+import { SidePanel } from "../../components/SidePanel";
+import { SidePanelHeader } from "../../components/SidePanel/SidePanelHeader";
 import { TextField } from "../../components/TextField";
 import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
 import { validateStudentData } from "../../validation/validate";
 import { defaultStudentData, IStudentData, IStudentErrors } from "../AddStudentModal";
 import { IStudentFetchData } from "../StudentPanel/StudentPanel";
-import { SidePanel } from "../../components/SidePanel";
-import { SidePanelHeader } from "../../components/SidePanel/SidePanelHeader";
 
 const GENDERS = ["Female", "Male", "Agender", "Cisgender", "Genderfluid", "Genderqueer", "Non-binary", "Transgender"];
 
@@ -114,7 +114,8 @@ const StudentEditPanel = () => {
     const selectedOptionIndex = GENDERS.findIndex((gender) => gender === selectedGender);
     // Add a timeout to make sure async setGenderDropdownIsOpen is called first and then our setTimeout is called next from the JS event loop.
     setTimeout(() => {
-      if (genderItemsRef.current[selectedOptionIndex]) {
+      if (genderItemsRef.current[ selectedOptionIndex ]) {
+        console.log("genderItemsRef.current[selectedOptionIndex]: ", genderItemsRef.current[selectedOptionIndex])
         genderItemsRef.current[selectedOptionIndex].focus();
         genderItemsRef.current[selectedOptionIndex].scrollIntoView({
           behavior: "smooth",
@@ -126,12 +127,11 @@ const StudentEditPanel = () => {
   };
 
   const handleSelectedMenuItemClick = (event: MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
     // Prevent propagating of the click event to outer elements in the container.
     event.stopPropagation();
     setGenderDropdownIsOpen((prev) => {
-      if (!prev) {
-        scrollToSelectedMenuItem();
-      }
+      if (!prev) scrollToSelectedMenuItem();
       genderSelectedRef.current?.focus();
       return !prev;
     });
@@ -139,17 +139,18 @@ const StudentEditPanel = () => {
 
   const handleSelectedMenuItemKeyDown: HandleSelectKeyDown = (event) => {
     event.preventDefault();
+    event.stopPropagation();
 
     if (event.key === "Enter") {
       setGenderDropdownIsOpen((prev) => {
-        const isOpen = !prev;
-        if (isOpen) scrollToSelectedMenuItem();
+        if (!prev) scrollToSelectedMenuItem();
         return !prev;
       });
     }
 
     if (genderDropdownIsOpen) {
       if (event.key === "ArrowDown") {
+        console.log("ArrowDown: ", event.key);
         let button = genderItemsRef.current[0];
         button?.focus();
       }
@@ -168,7 +169,10 @@ const StudentEditPanel = () => {
 
   const handleDropdownMenuItemKeyDown: HandleOptionKeyDown = (event, index) => {
     event.preventDefault();
+    // event.stopPropagation();
     const optionsLength = genderItemsRef.current.length;
+
+    console.log("event.key inside handleDropdownMenuItemDown: ", event.key);
 
     if (event.key === "Enter") {
       const item = genderItemsRef.current[index].textContent;
@@ -180,6 +184,7 @@ const StudentEditPanel = () => {
     if (event.key === "ArrowDown") {
       const lastMenuItemIdx = optionsLength - 1;
       if (index < lastMenuItemIdx) {
+        console.log("genderItemsRef.current[index + 1]: ", genderItemsRef.current[index + 1])
         genderItemsRef.current[index + 1].focus();
       }
     }
@@ -289,14 +294,14 @@ const StudentEditPanel = () => {
                   {...inputProps}
                   name="gender"
                   ref={genderRefsObj}
-                  isOpen={genderDropdownIsOpen}
+                  dropdownIsOpen={genderDropdownIsOpen}
                   isDisabled={submitting}
-                  // Function component state setters
-                  setSelectedGender={setSelectedGender}
-                  setGenderDropdownIsOpen={setGenderDropdownIsOpen}
                   // Data
                   menuItems={GENDERS}
                   selectedMenuItem={selectedGender}
+                  // Function component state setters
+                  setSelectedMenuItem={setSelectedGender}
+                  setDropdownIsOpen={setGenderDropdownIsOpen}
                   // MouseEvent callbacks
                   onSelectedMenuItemClick={handleSelectedMenuItemClick}
                   onDropdownMenuItemClick={handleDropdownMenuItemClick}

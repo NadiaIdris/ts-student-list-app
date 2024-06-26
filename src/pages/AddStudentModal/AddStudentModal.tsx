@@ -194,7 +194,7 @@ const AddStudentModal = () => {
           {...genderDropdownProps}
           name="gender"
           ref={genderRefsObj}
-          isOpen={genderDropdownIsOpen}
+          dropdownIsOpen={genderDropdownIsOpen}
           isDisabled={submitting}
           // Data
           menuItems={GENDERS}
@@ -203,8 +203,8 @@ const AddStudentModal = () => {
           onSelectedMenuItemClick={handleSelectedMenuItemClick}
           onDropdownMenuItemClick={handleDropdownMenuItemClick}
           // Function component state setters
-          setSelectedGender={setSelectedGender}
-          setGenderDropdownIsOpen={setGenderDropdownIsOpen}
+          setSelectedMenuItem={setSelectedGender}
+          setDropdownIsOpen={setGenderDropdownIsOpen}
         />
       )}
     </Field>
@@ -243,31 +243,31 @@ const AddStudentModal = () => {
   return (
     <Modal size="large">
       <Form method="post">
-          <ModalHeader showCloseButton>
-            <ModalTitle>Add a new student</ModalTitle>
-          </ModalHeader>
-          <StyledCustomModalBody>
-            <StyledColumn>
-              {renderFirstNameField()}
-              {renderLastNameField()}
-              {renderGenderField()}
-            </StyledColumn>
-            <StyledColumn>
-              {renderEmailField()}
-              {renderBirthdayField()}
-              <Button
-                type="submit"
-                isLoading={submitting}
-                style={{ top: "22px", position: "relative", display: "flex" }}
-                fullWidth
-              >
-                Add new student
-              </Button>
-              <StyledRequiredFields>
-                <RequiredAsterisk /> Required fields
-              </StyledRequiredFields>
-            </StyledColumn>
-          </StyledCustomModalBody>
+        <ModalHeader showCloseButton>
+          <ModalTitle>Add a new student</ModalTitle>
+        </ModalHeader>
+        <StyledCustomModalBody>
+          <StyledColumn>
+            {renderFirstNameField()}
+            {renderLastNameField()}
+            {renderGenderField()}
+          </StyledColumn>
+          <StyledColumn>
+            {renderEmailField()}
+            {renderBirthdayField()}
+            <Button
+              type="submit"
+              isLoading={submitting}
+              style={{ top: "22px", position: "relative", display: "flex" }}
+              fullWidth
+            >
+              Add new student
+            </Button>
+            <StyledRequiredFields>
+              <RequiredAsterisk /> Required fields
+            </StyledRequiredFields>
+          </StyledColumn>
+        </StyledCustomModalBody>
       </Form>
     </Modal>
   );

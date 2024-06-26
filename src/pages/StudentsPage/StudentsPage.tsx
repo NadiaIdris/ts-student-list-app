@@ -1,5 +1,4 @@
 import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react";
-import { GoTriangleDown } from "react-icons/go";
 import { LuPencil } from "react-icons/lu";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { Link, Outlet, useLoaderData, useNavigate, useOutletContext } from "react-router-dom";
@@ -11,7 +10,6 @@ import { Heading1 } from "../../components/text/Heading1";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { StudentsSkeleton } from "./StudentsSkeleton";
 import { UserAccountDropdown } from "./UserAccountDropdown";
-import { IUser } from "../../context/AuthContext";
 
 interface IStudents {
   students: Student[] | null;
