@@ -15,7 +15,7 @@ import { ModalTitle } from "../../components/Modal/ModalHeader/ModalTitle";
 import { TextField } from "../../components/TextField";
 import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
 import { validateStudentData } from "../../validation/validate";
-import { GENDERS } from "../StudentEditPanel";
+import { GENDERS, HandleOptionKeyDown, HandleSelectKeyDown } from "../StudentEditPanel";
 
 interface IStudentErrors {
   first_name: string;
@@ -121,7 +121,6 @@ const AddStudentModal = () => {
   const maxDate = new Date().toISOString().split("T")[0];
   const minDate = new Date(1900, 0, 1).toISOString().split("T")[0];
 
-  // TODO: make this a reusable hook for all dropdowns (another copy is in StudentEditPanel.tsx)
   const scrollToSelectedMenuItem = () => {
     /* Find index is assuming that there is only one instance of a string in an array. If more
       than one instance of the same string, the findIndex method returns the index of the first match.  */
@@ -139,7 +138,6 @@ const AddStudentModal = () => {
     }, 0);
   };
 
-  // TODO: make this a reusable hook for all dropdowns (another copy is in StudentEditPanel.tsx)
   const handleSelectedMenuItemClick = (event: MouseEvent<HTMLButtonElement, MouseEvent>) => {
     // Prevent propagating of the click event to outer elements in the container.
     event.stopPropagation();
@@ -152,11 +150,69 @@ const AddStudentModal = () => {
     });
   };
 
-  // TODO: make this a reusable hook for all dropdowns + key down events (another copy is in StudentEditPanel.tsx)
   const handleDropdownMenuItemClick = (item: string) => {
     setSelectedGender(item);
     setGenderDropdownIsOpen((prev) => !prev);
     genderSelectedRef.current?.focus();
+  };
+
+  const handleSelectedMenuItemKeyDown: HandleSelectKeyDown = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (event.key === "Enter") {
+      setGenderDropdownIsOpen((prev) => {
+        if (!prev) scrollToSelectedMenuItem();
+        return !prev;
+      });
+    }
+
+    if (genderDropdownIsOpen) {
+      if (event.key === "ArrowDown") {
+        console.log("ArrowDown: ", event.key);
+        let button = genderItemsRef.current[0];
+        button?.focus();
+      }
+
+      if (event.key === "Escape") {
+        setGenderDropdownIsOpen(false);
+      }
+    }
+  };
+
+  const handleDropdownMenuItemKeyDown: HandleOptionKeyDown = (event, index) => {
+    event.preventDefault();
+    // event.stopPropagation();
+    const optionsLength = genderItemsRef.current.length;
+
+    console.log("event.key inside handleDropdownMenuItemDown: ", event.key);
+
+    if (event.key === "Enter") {
+      const item = genderItemsRef.current[index].textContent;
+      if (item) setSelectedGender(item);
+      setGenderDropdownIsOpen(false);
+      genderSelectedRef.current?.focus();
+    }
+
+    if (event.key === "ArrowDown") {
+      const lastMenuItemIdx = optionsLength - 1;
+      if (index < lastMenuItemIdx) {
+        console.log("genderItemsRef.current[index + 1]: ", genderItemsRef.current[index + 1]);
+        genderItemsRef.current[index + 1].focus();
+      }
+    }
+
+    if (event.key === "ArrowUp") {
+      if (index > 0) genderItemsRef.current[index - 1].focus();
+      if (index === 0) genderSelectedRef.current?.focus();
+    }
+
+    if (event.key === "Escape") {
+      setGenderDropdownIsOpen(false);
+      if (genderSelectedRef.current) genderSelectedRef.current?.focus();
+    }
+
+    // TODO: implement custom Tab behavior following the behavior of ArrowDown and ArrowUp.
   };
 
   const renderFirstNameField = () => (
@@ -199,12 +255,15 @@ const AddStudentModal = () => {
           // Data
           menuItems={GENDERS}
           selectedMenuItem={selectedGender}
-          // MouseEvent callbacks
-          onSelectedMenuItemClick={handleSelectedMenuItemClick}
-          onDropdownMenuItemClick={handleDropdownMenuItemClick}
           // Function component state setters
           setSelectedMenuItem={setSelectedGender}
           setDropdownIsOpen={setGenderDropdownIsOpen}
+          // MouseEvent callbacks
+          onSelectedMenuItemClick={handleSelectedMenuItemClick}
+          onDropdownMenuItemClick={handleDropdownMenuItemClick}
+          // KeyboardEvent callbacks
+          onSelectedMenuItemKeyDown={handleSelectedMenuItemKeyDown}
+          onDropdownMenuItemKeyDown={handleDropdownMenuItemKeyDown}
         />
       )}
     </Field>
