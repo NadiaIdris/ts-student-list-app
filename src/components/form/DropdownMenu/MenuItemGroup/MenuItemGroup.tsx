@@ -1,12 +1,11 @@
+import { ForwardedRef, forwardRef, MutableRefObject } from "react";
 import styled from "styled-components";
 import { HandleOptionKeyDown } from "../../../../pages/StudentEditPanel";
 import { FieldSize } from "../../Field";
-import { ItemsRef, MenuItemsType, SelectedRef } from "../DropdownMenu";
+import { MenuItemsType, RefsContainer } from "../DropdownMenu";
 import { MenuItem } from "../MenuItem";
 
 interface MenuItemGroupProps {
-  itemsRef: ItemsRef;
-  selectedRef: SelectedRef;
   isDisabled?: boolean;
   dropdownIsOpen: boolean;
   menuItems: MenuItemsType;
@@ -30,37 +29,39 @@ const StyledMenuItemGroup = styled.div`
   background-color: var(--color-white);
 `;
 
-const MenuItemGroup = ({
-  itemsRef,
-  selectedRef,
-  isDisabled,
-  dropdownIsOpen,
-  menuItems,
-  size = "medium",
-  onDropdownMenuItemClick,
-  onDropdownMenuItemKeyDown,
-}: MenuItemGroupProps) => {
-  return (
-    <>
-      {dropdownIsOpen && (
-        <StyledMenuItemGroup>
-          {menuItems.map((item, index) => (
-            <MenuItem
-              key={index}
-              index={index}
-              isDisabled={isDisabled}
-              onClick={() => onDropdownMenuItemClick(item)}
-              onDropdownMenuItemKeyDown={onDropdownMenuItemKeyDown}
-              size={size}
-              itemsRef={itemsRef}
-            >
-              {item}
-            </MenuItem>
-          ))}
-        </StyledMenuItemGroup>
-      )}
-    </>
-  );
-};
+const MenuItemGroup = forwardRef(
+  ({
+    isDisabled,
+    dropdownIsOpen,
+    menuItems,
+    size = "medium",
+    onDropdownMenuItemClick,
+    onDropdownMenuItemKeyDown,
+  }: MenuItemGroupProps, ref: ForwardedRef<RefsContainer>) => {
+    const { itemsRef} = (ref as MutableRefObject<RefsContainer>)?.current;
+
+    return (
+      <>
+        {dropdownIsOpen && (
+          <StyledMenuItemGroup>
+            {menuItems.map((item, index) => (
+              <MenuItem
+                key={index}
+                index={index}
+                isDisabled={isDisabled}
+                onClick={() => onDropdownMenuItemClick(item)}
+                onDropdownMenuItemKeyDown={onDropdownMenuItemKeyDown}
+                size={size}
+                itemsRef={itemsRef}
+              >
+                {item}
+              </MenuItem>
+            ))}
+          </StyledMenuItemGroup>
+        )}
+      </>
+    );
+  }
+);
 
 export { MenuItemGroup };

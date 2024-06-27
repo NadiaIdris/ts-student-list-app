@@ -1,4 +1,3 @@
-import { MouseEvent, useRef, useState } from "react";
 import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import styled from "styled-components";
 import { ADD_STUDENT_ENDPOINT } from "../../api/apiConstants";
@@ -6,7 +5,6 @@ import { axiosInstance } from "../../api/axiosConfig";
 import { Button } from "../../components/Button";
 import { DatePicker } from "../../components/form/DatePicker";
 import { DropdownMenu } from "../../components/form/DropdownMenu";
-import { ItemsRef, SelectedRef } from "../../components/form/DropdownMenu/DropdownMenu";
 import { Field } from "../../components/form/Field";
 import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 import { Modal } from "../../components/Modal";
@@ -15,7 +13,7 @@ import { ModalTitle } from "../../components/Modal/ModalHeader/ModalTitle";
 import { TextField } from "../../components/TextField";
 import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
 import { validateStudentData } from "../../validation/validate";
-import { GENDERS, HandleOptionKeyDown, HandleSelectKeyDown } from "../StudentEditPanel";
+import { GENDERS } from "../StudentEditPanel";
 
 interface IStudentErrors {
   first_name: string;
@@ -109,111 +107,9 @@ const AddStudentModal = () => {
   const navigation = useNavigation();
   const actionData: IAddStudent | undefined = useActionData() as IAddStudent;
   const submitting = navigation.state === "submitting";
-  const [genderDropdownIsOpen, setGenderDropdownIsOpen] = useState(false);
-  const [selectedGender, setSelectedGender] = useState<string>("");
-
-  // Refs for the selects and options. const genderRef
-  const genderSelectedRef: SelectedRef = useRef(null);
-  const genderItemsRef: ItemsRef = useRef([] as HTMLButtonElement[]);
-  const refContainer = { selectedRef: genderSelectedRef, itemsRef: genderItemsRef };
-  const genderRefsObj = useRef(refContainer);
 
   const maxDate = new Date().toISOString().split("T")[0];
   const minDate = new Date(1900, 0, 1).toISOString().split("T")[0];
-
-  const scrollToSelectedMenuItem = () => {
-    /* Find index is assuming that there is only one instance of a string in an array. If more
-      than one instance of the same string, the findIndex method returns the index of the first match.  */
-    const selectedOptionIndex = GENDERS.findIndex((gender) => gender === selectedGender);
-    // Add a timeout to make sure async setGenderDropdownIsOpen is called first and then our setTimeout is called next from the JS event loop.
-    setTimeout(() => {
-      if (genderItemsRef.current[selectedOptionIndex]) {
-        genderItemsRef.current[selectedOptionIndex].focus();
-        genderItemsRef.current[selectedOptionIndex].scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-          inline: "center",
-        });
-      }
-    }, 0);
-  };
-
-  const handleSelectedMenuItemClick = (event: MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    // Prevent propagating of the click event to outer elements in the container.
-    event.stopPropagation();
-    setGenderDropdownIsOpen((prev) => {
-      if (!prev) {
-        scrollToSelectedMenuItem();
-      }
-      genderSelectedRef.current?.focus();
-      return !prev;
-    });
-  };
-
-  const handleDropdownMenuItemClick = (item: string) => {
-    setSelectedGender(item);
-    setGenderDropdownIsOpen((prev) => !prev);
-    genderSelectedRef.current?.focus();
-  };
-
-  const handleSelectedMenuItemKeyDown: HandleSelectKeyDown = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (event.key === "Enter") {
-      setGenderDropdownIsOpen((prev) => {
-        if (!prev) scrollToSelectedMenuItem();
-        return !prev;
-      });
-    }
-
-    if (genderDropdownIsOpen) {
-      if (event.key === "ArrowDown") {
-        console.log("ArrowDown: ", event.key);
-        let button = genderItemsRef.current[0];
-        button?.focus();
-      }
-
-      if (event.key === "Escape") {
-        setGenderDropdownIsOpen(false);
-      }
-    }
-  };
-
-  const handleDropdownMenuItemKeyDown: HandleOptionKeyDown = (event, index) => {
-    event.preventDefault();
-    // event.stopPropagation();
-    const optionsLength = genderItemsRef.current.length;
-
-    console.log("event.key inside handleDropdownMenuItemDown: ", event.key);
-
-    if (event.key === "Enter") {
-      const item = genderItemsRef.current[index].textContent;
-      if (item) setSelectedGender(item);
-      setGenderDropdownIsOpen(false);
-      genderSelectedRef.current?.focus();
-    }
-
-    if (event.key === "ArrowDown") {
-      const lastMenuItemIdx = optionsLength - 1;
-      if (index < lastMenuItemIdx) {
-        console.log("genderItemsRef.current[index + 1]: ", genderItemsRef.current[index + 1]);
-        genderItemsRef.current[index + 1].focus();
-      }
-    }
-
-    if (event.key === "ArrowUp") {
-      if (index > 0) genderItemsRef.current[index - 1].focus();
-      if (index === 0) genderSelectedRef.current?.focus();
-    }
-
-    if (event.key === "Escape") {
-      setGenderDropdownIsOpen(false);
-      if (genderSelectedRef.current) genderSelectedRef.current?.focus();
-    }
-
-    // TODO: implement custom Tab behavior following the behavior of ArrowDown and ArrowUp.
-  };
 
   const renderFirstNameField = () => (
     <Field id="first-name" label="First Name" isRequired invalidFieldMessage={actionData?.errorMsgs?.first_name}>
@@ -249,21 +145,9 @@ const AddStudentModal = () => {
         <DropdownMenu
           {...genderDropdownProps}
           name="gender"
-          ref={genderRefsObj}
-          dropdownIsOpen={genderDropdownIsOpen}
           isDisabled={submitting}
           // Data
           menuItems={GENDERS}
-          selectedMenuItem={selectedGender}
-          // Function component state setters
-          setSelectedMenuItem={setSelectedGender}
-          setDropdownIsOpen={setGenderDropdownIsOpen}
-          // MouseEvent callbacks
-          onSelectedMenuItemClick={handleSelectedMenuItemClick}
-          onDropdownMenuItemClick={handleDropdownMenuItemClick}
-          // KeyboardEvent callbacks
-          onSelectedMenuItemKeyDown={handleSelectedMenuItemKeyDown}
-          onDropdownMenuItemKeyDown={handleDropdownMenuItemKeyDown}
         />
       )}
     </Field>
@@ -334,3 +218,4 @@ const AddStudentModal = () => {
 
 export { action, AddStudentModal, defaultStudentData };
 export type { IStudentData, IStudentErrors };
+

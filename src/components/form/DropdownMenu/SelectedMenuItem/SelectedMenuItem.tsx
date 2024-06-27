@@ -1,28 +1,26 @@
-import { KeyboardEvent } from "react";
+import { ForwardedRef, forwardRef, MouseEvent, MutableRefObject } from "react";
 import { CgClose } from "react-icons/cg";
 import { FaCaretDown } from "react-icons/fa";
 import styled from "styled-components";
 import { HandleSelectKeyDown } from "../../../../pages/StudentEditPanel";
 import { Button } from "../../../Button";
 import { FieldSize } from "../../Field";
-import { SelectedRef } from "../DropdownMenu";
+import { RefsContainer } from "../DropdownMenu";
 
 interface SelectedMenuItemProps {
   name?: string;
   id: string;
-  selectedRef: SelectedRef;
   isDisabled?: boolean;
   placeholder?: string;
   dropdownIsOpen: boolean;
-  onSelectedMenuItemClick: () => void;
-  onSelectedMenuItemKeyDown?: HandleSelectKeyDown;
+  onSelectedMenuItemClick: (event: MouseEvent<HTMLButtonElement | HTMLDivElement>) => void;
+  onSelectedMenuItemKeyDown: HandleSelectKeyDown;
   /**
    * The `size` prop specifies the size of the input field. The default value is "medium".
    */
   size?: FieldSize;
   selectedMenuItem: string;
-  setSelectedMenuItem?: React.Dispatch<React.SetStateAction<string>>;
-  setDropdownIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedMenuItem: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const StyledInputWrapper = styled.div`
@@ -83,75 +81,81 @@ const StyledIconContainer = styled.div<{ $dropdownIsOpen: boolean; $size: FieldS
   }}
 `;
 
-const SelectedMenuItem = ({
-  name,
-  id,
-  selectedRef,
-  isDisabled,
-  placeholder = "Choose one",
-  dropdownIsOpen,
-  onSelectedMenuItemClick,
-  onSelectedMenuItemKeyDown,
-  size = "large",
-  selectedMenuItem,
-  setSelectedMenuItem,
-  setDropdownIsOpen,
-}: SelectedMenuItemProps) => {
-  const showClearSelectionButton = selectedMenuItem !== "" && selectedMenuItem !== null ? true : false;
-  return (
-    <StyledInputWrapper
-      onClick={onSelectedMenuItemClick}
-      onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
-        onSelectedMenuItemKeyDown && onSelectedMenuItemKeyDown(event);
-      }}
-    >
-      <StyledInput
-        name={name}
-        id={id}
-        ref={selectedRef}
-        disabled={isDisabled}
-        readOnly
-        placeholder={placeholder}
-        value={selectedMenuItem}
-        onMouseDown={(event) => {
-          // Prevent text selection on mouse down.
-          event.preventDefault();
-        }}
-        $size={size}
-        $dropdownIsOpen={dropdownIsOpen}
-      />
-      {showClearSelectionButton && (
-        <StyledClearIconContainer>
+const SelectedMenuItem = forwardRef(
+  (
+    {
+      name,
+      id,
+      // selectedRef,
+      isDisabled,
+      placeholder = "Choose one",
+      dropdownIsOpen,
+      onSelectedMenuItemClick,
+      onSelectedMenuItemKeyDown,
+      size = "large",
+      selectedMenuItem,
+      setSelectedMenuItem,
+    }: SelectedMenuItemProps,
+    ref: ForwardedRef<RefsContainer>
+  ) => {
+    const { selectedRef } = (ref as MutableRefObject<RefsContainer>)?.current;
+    const showClearSelectionButton = selectedMenuItem !== "" && selectedMenuItem !== null ? true : false;
+
+    const handleClearingSelection = (event: MouseEvent<HTMLButtonElement>) => {
+      if (setSelectedMenuItem) {
+        event.stopPropagation();
+        setSelectedMenuItem("");
+        selectedRef.current?.focus();
+      }
+    };
+
+    return (
+      <StyledInputWrapper
+        onClick={onSelectedMenuItemClick}
+        onKeyDown={onSelectedMenuItemKeyDown}
+      >
+        <StyledInput
+          name={name}
+          id={id}
+          ref={selectedRef}
+          disabled={isDisabled}
+          readOnly
+          placeholder={placeholder}
+          value={selectedMenuItem}
+          onMouseDown={(event) => {
+            // Prevent text selection on mouse down.
+            event.preventDefault();
+          }}
+          $size={size}
+          $dropdownIsOpen={dropdownIsOpen}
+        />
+        {showClearSelectionButton && (
+          <StyledClearIconContainer>
+            <Button
+              isDisabled={isDisabled}
+              appearance="link-with-background"
+              size="large"
+              iconBefore={<CgClose style={{ width: "16px", height: "16px" }} />}
+              onClick={handleClearingSelection}
+              ariaLabel="Clear selection"
+              tooltip="Clear selection"
+            />
+          </StyledClearIconContainer>
+        )}
+        <StyledIconContainer $dropdownIsOpen={dropdownIsOpen} $size={size}>
           <Button
             isDisabled={isDisabled}
-            appearance="link-with-background"
-            size="large"
-            iconBefore={<CgClose style={{ width: "16px", height: "16px" }} />}
-            onClick={(event) => {
-              if (setSelectedMenuItem && setDropdownIsOpen) {
-                event.stopPropagation();
-                setSelectedMenuItem("");
-                selectedRef.current?.focus();
-              }
-            }}
-            ariaLabel="Clear selection"
-            tooltip="Clear selection"
+            appearance="link"
+            size="small"
+            iconBefore={<FaCaretDown style={{ width: "16px", height: "16px", color: "black" }} />}
+            onClick={onSelectedMenuItemClick}
+            ariaLabel="Toggle dropdown"
+            tooltip="Toggle dropdown"
           />
-        </StyledClearIconContainer>
-      )}
-      <StyledIconContainer $dropdownIsOpen={dropdownIsOpen} $size={size}>
-        <Button
-          isDisabled={isDisabled}
-          appearance="link"
-          size="small"
-          iconBefore={<FaCaretDown style={{ width: "16px", height: "16px", color: "black" }} />}
-          onClick={() => onSelectedMenuItemClick}
-          ariaLabel="Toggle dropdown"
-          tooltip="Toggle dropdown"
-        />
-      </StyledIconContainer>
-    </StyledInputWrapper>
-  );
-};
+        </StyledIconContainer>
+      </StyledInputWrapper>
+    );
+  }
+);
 
 export { SelectedMenuItem };
