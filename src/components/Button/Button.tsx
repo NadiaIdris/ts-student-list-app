@@ -72,6 +72,8 @@ const StyledButton = styled.button<{
   $children: ReactNode;
   $isLoading: boolean;
 }>`
+  /* Do not move position relative, because it positiona spinner on loading over the button. */
+  position: relative;
   border-radius: ${({ $size, $iconBefore, $iconAfter, $children }) => {
     if (($iconBefore || $iconAfter) && !$children) return "100px";
     else return "var(--border-radius)";

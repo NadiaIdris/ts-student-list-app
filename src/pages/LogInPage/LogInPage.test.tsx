@@ -1,53 +1,50 @@
 import "@testing-library/jest-dom";
-import * as React from "react";
+import mockAxios from "jest-mock-axios";
 import { render, screen, waitFor } from "@testing-library/react";
-import axios from "axios";
-import { LogInPage } from "./LogInPage";
-import { USER_ENDPOINT } from "../../api/apiConstants";
-const LOGIN_ENDPOINT = `${USER_ENDPOINT}/login`;
+import { LogInPage, action as logInAction } from "./LogInPage";
+import { AuthContextProvider, IUser } from "../../context/AuthContext";
+import { createMemoryRouter, RouterProvider } from "react-router-dom";
 
-/*
-In order to mock axios, jest complains about an error:
-"Cannot use import statement outside a module" with Axios".
+afterEach(() => {
+  // cleaning up the mess left behind the previous test
+  mockAxios.reset();
+});
 
-In order to fix this, the configuration for `package.json` to get axios import working
-needs to be updated, by adding:
-"jest": {
-    "moduleNameMapper": {
-      "^axios$": "axios/dist/node/axios.cjs"
-    }
-},
-More info: https://stackoverflow.com/a/74297004/2085356
-*/
+it("renders the LogInPage", async () => {
+  const router = createMemoryRouter([
+    {
+      path: "/",
+      element: <LogInPage />,
+      action: logInAction,
+    },
+    {
+      path: "/login",
+      element: <LogInPage />,
+      action: logInAction,
+    },
+  ]);
 
-/*
-You can mock `axios` using this tutorial: 
-https://zaklaughton.dev/blog/the-only-3-steps-you-need-to-mock-an-api-call-in-jest
-*/
-jest.mock("axios");
+  render(
+    <AuthContextProvider>
+      <RouterProvider router={router} />
+    </AuthContextProvider>
+  );
 
-async function getFirstAlbumTitle() {
-  const response = await axios.get("https://jsonplaceholder.typicode.com/albums");
-  return response.data[0].title;
-}
+  const button = screen.getByRole("button", { name: /log in/i });
+  expect(button).toBeInTheDocument();
+  button.click();
 
-// This is the actual test code.
-it("returns the title of the first album", async () => {
-  // This is the mock implementation of axios.get
-  (axios.get as jest.Mock).mockResolvedValue({
-    data: [
-      {
-        userId: 1,
-        id: 1,
-        title: "My First Album",
-      },
-      {
-        userId: 1,
-        id: 2,
-        title: "Album: The Sequel",
-      },
-    ],
-  });
-  const title = await getFirstAlbumTitle();
-  expect(title).toEqual("My First Album");
+  // simulating a server response
+  let responseObj = {
+    data: {
+      isAuthenticated: true,
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIyNDMwOGY1MS1jNjdkLTQzYzMtOGVkZS1mZjI1NDM1NjhmNTQiLCJpYXQiOjE3MTk1MjM5NTh9.GLMSKCG7QjuKj2rqDhFwP",
+      userId: "24308f51-c67d-43c3-8ede-ff2543568f53",
+      firstName: "Mary",
+      lastName: "Smith",
+      email: "test@example.com",
+    },
+  };
+  mockAxios.mockResponse(responseObj);
 });

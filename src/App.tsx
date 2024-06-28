@@ -22,7 +22,6 @@ const router = createBrowserRouter([
     ),
     loader: studentsLoader,
   },
-
   {
     path: "/students/",
     element: (
