@@ -14,7 +14,7 @@ import { TextField } from "../../components/TextField";
 import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateSignUpForm } from "../../validation/validate";
-import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
+import { generateErrorMessagesObject, trimWhiteSpace } from "../../utils/utils";
 
 interface IUserSignUpErrors {
   first_name: string;
@@ -41,7 +41,7 @@ const defaultUserSignUpData = {
 async function action({ request }: { request: Request }) {
   let formData = await request.formData();
   // Trim the white spaces from all the form data
-  const trimmedUserSignUpData = removeWhiteSpace(formData) as unknown as IUserSignUpErrors;
+  const trimmedUserSignUpData = trimWhiteSpace(formData) as unknown as IUserSignUpErrors;
 
   // Validate the user sign up data
   const { error } = validateSignUpForm(trimmedUserSignUpData);

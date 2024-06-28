@@ -1,12 +1,11 @@
 import { ValidationErrorItem } from "joi";
 
-const removeWhiteSpace = (formData: FormData) => {
-  return Object.fromEntries(
-    [...formData.entries()].map(([key, value]) => [
-      key,
-      value.toString().trim(),
-    ])
-  );
+const trimWhiteSpace = (formData: FormData) => {
+  const trimmedData: { [key: string]: string } = {};
+  for (const [formKey, formValue] of formData.entries()) {
+    trimmedData[formKey] = formValue.toString().trim();
+  }
+  return trimmedData;
 };
 
 const generateErrorMessagesObject = (errorMsgsArr: ValidationErrorItem[], defaultData: any) => {
@@ -21,5 +20,4 @@ const generateErrorMessagesObject = (errorMsgsArr: ValidationErrorItem[], defaul
   return errorMsgs;
 };
 
-
-export { removeWhiteSpace, generateErrorMessagesObject };
+export { trimWhiteSpace, generateErrorMessagesObject };

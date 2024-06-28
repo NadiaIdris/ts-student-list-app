@@ -13,7 +13,7 @@ import { TextField } from "../../components/TextField";
 import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { validateLoginForm } from "../../validation/validate";
-import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
+import { generateErrorMessagesObject, trimWhiteSpace } from "../../utils/utils";
 import { renderPasswordIcons, StyledSmallPrintDiv } from "../SignUpPage";
 
 interface IUserLogInErrors {
@@ -30,10 +30,11 @@ interface ILogInData {
 async function action({ request }: { request: Request }) {
   let formData = await request.formData();
   // Trim the white spaces from the email and password
-  const trimmedUserLogInData = removeWhiteSpace(formData) as unknown as IUserLogInErrors;
+  const trimmedUserLogInData = trimWhiteSpace(formData) as unknown as IUserLogInErrors;
 
   // Validate the user login data, before sending it to the server
   const { error } = validateLoginForm(trimmedUserLogInData);
+  console.log("error.details: ", error?.details)
   if (error) {
     const errorMsgs = generateErrorMessagesObject(error.details, defaultUserLogInData);
     // Don't continue with the login process if there are errors.

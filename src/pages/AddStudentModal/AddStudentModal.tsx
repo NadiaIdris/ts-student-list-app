@@ -11,7 +11,7 @@ import { Modal } from "../../components/Modal";
 import { ModalHeader } from "../../components/Modal/ModalHeader";
 import { ModalTitle } from "../../components/Modal/ModalHeader/ModalTitle";
 import { TextField } from "../../components/TextField";
-import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
+import { generateErrorMessagesObject, trimWhiteSpace } from "../../utils/utils";
 import { validateStudentData } from "../../validation/validate";
 import { GENDERS } from "../StudentEditPanel";
 
@@ -46,7 +46,7 @@ async function action({ request }: { request: Request }) {
   // Get the values from the form.
   const formData = await request.formData();
   // Trim the white spaces from all the form data
-  const trimmedNewStudentData = removeWhiteSpace(formData) as unknown as IStudentData;
+  const trimmedNewStudentData = trimWhiteSpace(formData) as unknown as IStudentData;
   // Because gender can be null and it has certain defained options, we don't need to validate it.
   const { gender, ...rest } = trimmedNewStudentData;
   const studentDataWithoutGender = rest;
@@ -139,7 +139,7 @@ const AddStudentModal = () => {
     </Field>
   );
 
-  const renderGenderField = () => (
+  const renderGenderDropdown = () => (
     <Field id="gender" label="Gender">
       {(genderDropdownProps) => (
         <DropdownMenu
@@ -168,7 +168,7 @@ const AddStudentModal = () => {
     </Field>
   );
 
-  const renderBirthdayField = () => (
+  const renderBirthdayDropdown = () => (
     <Field id="date-of-birth" label="Birthday" isRequired invalidFieldMessage={actionData?.errorMsgs?.date_of_birth}>
       {(inputProps) => (
         <DatePicker
@@ -193,11 +193,11 @@ const AddStudentModal = () => {
           <StyledColumn>
             {renderFirstNameField()}
             {renderLastNameField()}
-            {renderGenderField()}
+            {renderGenderDropdown()}
           </StyledColumn>
           <StyledColumn>
             {renderEmailField()}
-            {renderBirthdayField()}
+            {renderBirthdayDropdown()}
             <Button
               type="submit"
               isLoading={submitting}

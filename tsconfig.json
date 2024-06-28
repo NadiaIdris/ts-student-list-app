@@ -23,6 +23,6 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src" // Specify the directory containing your TypeScript files
+    "src", // Specify the directory containing your TypeScript files,
   ]
 }

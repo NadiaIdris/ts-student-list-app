@@ -19,7 +19,7 @@ import { Direction, Field } from "../../components/form/Field";
 import { SidePanel } from "../../components/SidePanel";
 import { SidePanelHeader } from "../../components/SidePanel/SidePanelHeader";
 import { TextField } from "../../components/TextField";
-import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
+import { generateErrorMessagesObject, trimWhiteSpace } from "../../utils/utils";
 import { validateStudentData } from "../../validation/validate";
 import { defaultStudentData, IStudentData, IStudentErrors } from "../AddStudentModal";
 import { IStudentFetchData } from "../StudentPanel/StudentPanel";
@@ -33,7 +33,7 @@ interface IEditStudent {
 async function action({ request, params }: { request: Request; params: Params }) {
   let formData = await request.formData();
   // Trim the white spaces from all the form data
-  const trimmedStudentData = removeWhiteSpace(formData) as unknown as IStudentData;
+  const trimmedStudentData = trimWhiteSpace(formData) as unknown as IStudentData;
   /* Gender can be null and it has set options to choose from. So we don't need to validate gender. */
   const { gender, ...rest } = trimmedStudentData;
   const studentDataWithoutGender = rest;
