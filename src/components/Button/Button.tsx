@@ -72,8 +72,6 @@ const StyledButton = styled.button<{
   $children: ReactNode;
   $isLoading: boolean;
 }>`
-  /* Do not move position relative, because it positiona spinner on loading over the button. */
-  position: relative;
   border-radius: ${({ $size, $iconBefore, $iconAfter, $children }) => {
     if (($iconBefore || $iconAfter) && !$children) return "100px";
     else return "var(--border-radius)";
@@ -180,6 +178,9 @@ const StyledSpinner = styled.span<{ $isLoading: boolean }>`
   ${({ $isLoading }) =>
     $isLoading &&
     `
+  position: relative; /* This is important to center the loading spinner*/
+  display: block; /* This is important to center the loading spinner*/
+
   &:after {
     content: "";
     position: absolute;
@@ -228,33 +229,35 @@ const Button = ({
   ...props
 }: ButtonProps) => {
   return (
-    <ButtonWrapper style={style} className={className}>
-      <StyledButton
-        aria-label={ariaLabel}
-        type={type}
-        onClick={onClick && !isLoading ? onClick : undefined}
-        $appearance={appearance}
-        $active={active}
-        $size={size}
-        $fullWidth={fullWidth}
-        $iconBefore={iconBefore}
-        $iconAfter={iconAfter}
-        $children={children}
-        $isLoading={isLoading}
-        title={tooltip}
-        disabled={isDisabled}
-        ref={ref}
-        data-testid={testId}
-        {...props}
-      >
+    // <ButtonWrapper style={style} className={className}>
+    <StyledButton
+      aria-label={ariaLabel}
+      type={type}
+      onClick={onClick && !isLoading ? onClick : undefined}
+      $appearance={appearance}
+      $active={active}
+      $size={size}
+      $fullWidth={fullWidth}
+      $iconBefore={iconBefore}
+      $iconAfter={iconAfter}
+      $children={children}
+      $isLoading={isLoading}
+      title={tooltip}
+      disabled={isDisabled}
+      ref={ref}
+      data-testid={testId}
+      {...props}
+    >
+      <StyledSpinner $isLoading={isLoading}>
         <StyledButtonText $iconBefore={iconBefore} $iconAfter={iconAfter} $isLoading={isLoading}>
           {iconBefore}
           {children}
           {iconAfter}
         </StyledButtonText>
-        <StyledSpinner $isLoading={isLoading} />
-      </StyledButton>
-    </ButtonWrapper>
+        {/* <StyledSpinner $isLoading={isLoading} /> */}
+      </StyledSpinner>
+    </StyledButton>
+    // </ButtonWrapper>
   );
 };
 

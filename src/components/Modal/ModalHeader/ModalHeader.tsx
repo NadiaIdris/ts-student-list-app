@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button } from "../../Button";
 import { CgClose } from "react-icons/cg";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface ModalHeaderProps {
   children: React.ReactNode;
@@ -18,9 +18,17 @@ const StyledModalHeader = styled.div`
 
 const ModalHeader = ({ children, showCloseButton = false }: ModalHeaderProps) => {
   const navigate = useNavigate();
+  const previousHistoryEntry = useLocation();
+  const loginPage = previousHistoryEntry.state?.from === "login";
 
   const closeModal = () => {
-    navigate(-1);
+    // If the previous history entry is the login page, navigate to the students
+    // Otherwise, navigate back to the previous history entry
+    if (loginPage) {
+      navigate("/students");
+    } else {
+      navigate(-1);
+    }
   };
 
   return (

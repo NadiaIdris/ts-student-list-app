@@ -116,9 +116,9 @@ const LogInPage = () => {
       // Redirect to the url that the user was trying to access
       const intendedUrl = localStorage.getItem("endpoint");
       if (intendedUrl) {
-        navigate(intendedUrl);
+        navigate(intendedUrl, { state: { from: "login" }, replace: true });
       } else {
-        navigate("/students");
+        navigate("/students", { replace: true });
       }
     }
   }, [actionData?.user, navigate, logIn]);
