@@ -15,6 +15,7 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { generateErrorMessagesObject, trimWhiteSpace } from "../../utils/utils";
 import { validateLoginForm } from "../../validation/validate";
 import { renderPasswordIcons, StyledSmallPrintDiv } from "../SignUpPage";
+import { AxiosResponse } from "axios";
 
 interface IUserLogInErrors {
   email: string;
@@ -26,6 +27,21 @@ interface ILogInData {
   wrongCredentials: boolean;
   user: IUser;
 }
+
+const makeUser = (response: AxiosResponse): IUser => {
+  // Extract the token and user details from the response
+  const bearerToken = response.headers.Authorization || response.headers.authorization;
+  const token = bearerToken.split(" ")[1];
+  const { registered_user_uid, first_name, last_name, email } = response.data;
+  return {
+    isAuthenticated: true,
+    token: token,
+    userId: registered_user_uid,
+    firstName: first_name,
+    lastName: last_name,
+    email: email,
+  };
+};
 
 async function action({ request }: { request: Request }) {
   let formData = await request.formData();
@@ -43,18 +59,7 @@ async function action({ request }: { request: Request }) {
   try {
     const LOGIN_ENDPOINT = `${USER_ENDPOINT}/login`;
     const response = await axiosInstance.post(LOGIN_ENDPOINT, trimmedUserLogInData);
-    // Extract the token and user details from the response
-    const bearerToken = response.headers.Authorization || response.headers.authorization;
-    const token = bearerToken.split(" ")[1];
-    const { registered_user_uid, first_name, last_name, email } = response.data;
-    const user = {
-      isAuthenticated: true,
-      token: token,
-      userId: registered_user_uid,
-      firstName: first_name,
-      lastName: last_name,
-      email: email,
-    };
+    const user = makeUser(response);
     return { user };
   } catch (error: any) {
     console.error(`[ACTION ERROR]: ${error}`);
@@ -186,4 +191,4 @@ const LogInPage = () => {
   );
 };
 
-export { action, LogInPage };
+export { action, LogInPage, makeUser };
