@@ -85,6 +85,10 @@ const StyledColumn = styled.div`
   @media (max-width: 600px) {
     gap: 20px;
   }
+  //Button styling
+  /* button {
+    margin-top: 20px;
+  } */
 `;
 
 const StyledCustomModalBody = styled.div`
@@ -95,6 +99,10 @@ const StyledCustomModalBody = styled.div`
     flex-direction: column;
     gap: 20px;
   }
+`;
+
+const StyledButtonWrapper = styled.div`
+  margin-top: 22px;
 `;
 
 const StyledRequiredFields = styled.div`
@@ -112,7 +120,7 @@ const AddStudentModal = () => {
   const minDate = new Date(1900, 0, 1).toISOString().split("T")[0];
 
   const renderFirstNameField = () => (
-    <Field id="first-name" label="First Name" isRequired invalidFieldMessage={actionData?.errorMsgs?.first_name}>
+    <Field id="first-name" label="First name" isRequired invalidFieldMessage={actionData?.errorMsgs?.first_name}>
       {({ inputProps }) => (
         <TextField
           {...inputProps}
@@ -126,7 +134,7 @@ const AddStudentModal = () => {
   );
 
   const renderLastNameField = () => (
-    <Field id="last-name" label="Last Name" isRequired invalidFieldMessage={actionData?.errorMsgs?.last_name}>
+    <Field id="last-name" label="Last name" isRequired invalidFieldMessage={actionData?.errorMsgs?.last_name}>
       {({ inputProps }) => (
         <TextField
           {...inputProps}
@@ -146,7 +154,6 @@ const AddStudentModal = () => {
           {...genderDropdownProps}
           name="gender"
           isDisabled={submitting}
-          // Data
           menuItems={GENDERS}
         />
       )}
@@ -198,17 +205,18 @@ const AddStudentModal = () => {
           <StyledColumn>
             {renderEmailField()}
             {renderBirthdayDropdown()}
-            <Button
-              type="submit"
-              isLoading={submitting}
-              style={{ top: "22px", position: "relative", display: "flex" }}
-              fullWidth
-            >
-              Add new student
-            </Button>
-            <StyledRequiredFields>
-              <RequiredAsterisk /> Required fields
-            </StyledRequiredFields>
+            <StyledButtonWrapper>
+              <Button
+                type="submit"
+                isLoading={submitting}
+                fullWidth
+              >
+                Add new student
+              </Button>
+              <StyledRequiredFields>
+                <RequiredAsterisk /> Required fields
+              </StyledRequiredFields>
+            </StyledButtonWrapper>
           </StyledColumn>
         </StyledCustomModalBody>
       </Form>
@@ -218,4 +226,3 @@ const AddStudentModal = () => {
 
 export { action, AddStudentModal, defaultStudentData };
 export type { IStudentData, IStudentErrors };
-

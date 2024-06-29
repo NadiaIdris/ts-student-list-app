@@ -23,6 +23,7 @@ import { generateErrorMessagesObject, trimWhiteSpace } from "../../utils/utils";
 import { validateStudentData } from "../../validation/validate";
 import { defaultStudentData, IStudentData, IStudentErrors } from "../AddStudentModal";
 import { IStudentFetchData } from "../StudentPanel/StudentPanel";
+import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 
 const GENDERS = ["Female", "Male", "Agender", "Cisgender", "Genderfluid", "Genderqueer", "Non-binary", "Transgender"];
 
@@ -84,6 +85,12 @@ const StyledButtonsWrapper = styled.div`
   display: flex;
   gap: 12px;
   margin-top: 24px;
+`;
+
+const StyledRequiredFields = styled.div`
+  margin-top: 20px;
+  font-size: var(--font-size-11);
+  color: var(--color-gray-text-light);
 `;
 
 const StudentEditPanel = () => {
@@ -248,6 +255,9 @@ const StudentEditPanel = () => {
               Cancel
             </Button>
           </StyledButtonsWrapper>
+          <StyledRequiredFields>
+            <RequiredAsterisk /> Required fields
+          </StyledRequiredFields>
         </Form>
       </StyledStudentDataWrapper>
     </SidePanel>
