@@ -12,8 +12,8 @@ import { Heading2 } from "../../components/text/Heading2";
 import { TextField } from "../../components/TextField";
 import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
-import { validateLoginForm } from "../../validation/validate";
 import { generateErrorMessagesObject, trimWhiteSpace } from "../../utils/utils";
+import { validateLoginForm } from "../../validation/validate";
 import { renderPasswordIcons, StyledSmallPrintDiv } from "../SignUpPage";
 
 interface IUserLogInErrors {
@@ -34,7 +34,6 @@ async function action({ request }: { request: Request }) {
 
   // Validate the user login data, before sending it to the server
   const { error } = validateLoginForm(trimmedUserLogInData);
-  console.log("error.details: ", error?.details)
   if (error) {
     const errorMsgs = generateErrorMessagesObject(error.details, defaultUserLogInData);
     // Don't continue with the login process if there are errors.
@@ -187,4 +186,4 @@ const LogInPage = () => {
   );
 };
 
-export { LogInPage, action };
+export { action, LogInPage };
