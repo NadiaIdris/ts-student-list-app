@@ -1,4 +1,4 @@
-import { KeyboardEvent, MouseEvent, useEffect, useRef, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import {
   Form,
   Params,
@@ -15,15 +15,15 @@ import { axiosInstance } from "../../api/axiosConfig";
 import { Button } from "../../components/Button";
 import { DatePicker } from "../../components/form/DatePicker";
 import { DropdownMenu } from "../../components/form/DropdownMenu";
-import { ItemsRef, RefsContainer, SelectedRef } from "../../components/form/DropdownMenu/DropdownMenu";
 import { Direction, Field } from "../../components/form/Field";
 import { SidePanel } from "../../components/SidePanel";
 import { SidePanelHeader } from "../../components/SidePanel/SidePanelHeader";
 import { TextField } from "../../components/TextField";
-import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
+import { generateErrorMessagesObject, trimWhiteSpace } from "../../utils/utils";
 import { validateStudentData } from "../../validation/validate";
 import { defaultStudentData, IStudentData, IStudentErrors } from "../AddStudentModal";
 import { IStudentFetchData } from "../StudentPanel/StudentPanel";
+import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 
 const GENDERS = ["Female", "Male", "Agender", "Cisgender", "Genderfluid", "Genderqueer", "Non-binary", "Transgender"];
 
@@ -34,7 +34,7 @@ interface IEditStudent {
 async function action({ request, params }: { request: Request; params: Params }) {
   let formData = await request.formData();
   // Trim the white spaces from all the form data
-  const trimmedStudentData = removeWhiteSpace(formData) as unknown as IStudentData;
+  const trimmedStudentData = trimWhiteSpace(formData) as unknown as IStudentData;
   /* Gender can be null and it has set options to choose from. So we don't need to validate gender. */
   const { gender, ...rest } = trimmedStudentData;
   const studentDataWithoutGender = rest;
@@ -55,7 +55,6 @@ async function action({ request, params }: { request: Request; params: Params })
       return redirect(`/students/${params.studentId}`);
     }
   } catch (error: any) {
-    console.log("error.message: ", error.message);
     console.error(error.message);
     return { error };
   }
@@ -88,6 +87,12 @@ const StyledButtonsWrapper = styled.div`
   margin-top: 24px;
 `;
 
+const StyledRequiredFields = styled.div`
+  margin-top: 20px;
+  font-size: var(--font-size-11);
+  color: var(--color-gray-text-light);
+`;
+
 const StudentEditPanel = () => {
   const navigation = useNavigation();
   const { studentId } = useParams();
@@ -96,111 +101,6 @@ const StudentEditPanel = () => {
   const loaderData: IStudentFetchData | undefined = useLoaderData() as IStudentFetchData;
   const navigate = useNavigate();
   const [fieldDirection, setFieldDirection] = useState<Direction>("row");
-  const [selectedGender, setSelectedGender] = useState(loaderData?.studentData.gender || "");
-  const [genderDropdownIsOpen, setGenderDropdownIsOpen] = useState(false);
-
-  // Refs for the selects and options.
-  const genderItemsRef: ItemsRef = useRef([] as HTMLButtonElement[]);
-  const genderSelectedRef: SelectedRef = useRef(null);
-  let container: RefsContainer = {
-    itemsRef: genderItemsRef,
-    selectedRef: genderSelectedRef,
-  };
-  const genderRefsObj = useRef(container);
-
-  const scrollToSelectedMenuItem = () => {
-    /* Find index is assuming that there is only one instance of a string in an array. If more
-      than one instance of the same string, the findIndex method returns the index of the first match.  */
-    const selectedOptionIndex = GENDERS.findIndex((gender) => gender === selectedGender);
-    // Add a timeout to make sure async setGenderDropdownIsOpen is called first and then our setTimeout is called next from the JS event loop.
-    setTimeout(() => {
-      if (genderItemsRef.current[ selectedOptionIndex ]) {
-        console.log("genderItemsRef.current[selectedOptionIndex]: ", genderItemsRef.current[selectedOptionIndex])
-        genderItemsRef.current[selectedOptionIndex].focus();
-        genderItemsRef.current[selectedOptionIndex].scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-          inline: "center",
-        });
-      }
-    }, 0);
-  };
-
-  const handleSelectedMenuItemClick = (event: MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.preventDefault();
-    // Prevent propagating of the click event to outer elements in the container.
-    event.stopPropagation();
-    setGenderDropdownIsOpen((prev) => {
-      if (!prev) scrollToSelectedMenuItem();
-      genderSelectedRef.current?.focus();
-      return !prev;
-    });
-  };
-
-  const handleSelectedMenuItemKeyDown: HandleSelectKeyDown = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (event.key === "Enter") {
-      setGenderDropdownIsOpen((prev) => {
-        if (!prev) scrollToSelectedMenuItem();
-        return !prev;
-      });
-    }
-
-    if (genderDropdownIsOpen) {
-      if (event.key === "ArrowDown") {
-        console.log("ArrowDown: ", event.key);
-        let button = genderItemsRef.current[0];
-        button?.focus();
-      }
-
-      if (event.key === "Escape") {
-        setGenderDropdownIsOpen(false);
-      }
-    }
-  };
-
-  const handleDropdownMenuItemClick = (item: string) => {
-    setSelectedGender(item);
-    setGenderDropdownIsOpen((prev) => !prev);
-    genderSelectedRef.current?.focus();
-  };
-
-  const handleDropdownMenuItemKeyDown: HandleOptionKeyDown = (event, index) => {
-    event.preventDefault();
-    // event.stopPropagation();
-    const optionsLength = genderItemsRef.current.length;
-
-    console.log("event.key inside handleDropdownMenuItemDown: ", event.key);
-
-    if (event.key === "Enter") {
-      const item = genderItemsRef.current[index].textContent;
-      if (item) setSelectedGender(item);
-      setGenderDropdownIsOpen(false);
-      genderSelectedRef.current?.focus();
-    }
-
-    if (event.key === "ArrowDown") {
-      const lastMenuItemIdx = optionsLength - 1;
-      if (index < lastMenuItemIdx) {
-        console.log("genderItemsRef.current[index + 1]: ", genderItemsRef.current[index + 1])
-        genderItemsRef.current[index + 1].focus();
-      }
-    }
-
-    if (event.key === "ArrowUp") {
-      if (index > 0) genderItemsRef.current[index - 1].focus();
-      if (index === 0) genderSelectedRef.current?.focus();
-    }
-
-    if (event.key === "Escape") {
-      setGenderDropdownIsOpen(false);
-      if (genderSelectedRef.current) genderSelectedRef.current?.focus();
-    }
-
-    // TODO: implement custom Tab behavior following the behavior of ArrowDown and ArrowUp.
-  };
 
   const sanitizeDateFromServer = (date: string) => {
     const formattedDate = new Date(date).toISOString().split("T")[0];
@@ -225,6 +125,107 @@ const StudentEditPanel = () => {
     });
   }, []);
 
+  const renderFirstNameField = () => (
+    <Field
+      id="first-name"
+      label="First name"
+      direction={fieldDirection}
+      isRequired
+      invalidFieldMessage={actionData?.errorMsgs?.first_name}
+    >
+      {(inputProps) => (
+        <TextField
+          {...inputProps}
+          name="first_name"
+          defaultValue={loaderData?.studentData.firstName}
+          placeholder="Enter student's first name"
+          isInvalid={Boolean(actionData?.errorMsgs?.first_name)}
+          isDisabled={submitting}
+        />
+      )}
+    </Field>
+  );
+
+  const renderLastNameField = () => (
+    <Field
+      id="last-name"
+      label="Last name"
+      direction={fieldDirection}
+      isRequired
+      invalidFieldMessage={actionData?.errorMsgs?.last_name}
+    >
+      {(inputProps) => (
+        <TextField
+          {...inputProps}
+          name="last_name"
+          defaultValue={loaderData?.studentData.lastName}
+          placeholder="Enter student's last name"
+          isInvalid={Boolean(actionData?.errorMsgs?.last_name)}
+          isDisabled={submitting}
+        />
+      )}
+    </Field>
+  );
+
+  const renderEmailField = () => (
+    <Field
+      id="email"
+      label="Email"
+      direction={fieldDirection}
+      isRequired
+      invalidFieldMessage={actionData?.errorMsgs?.email}
+    >
+      {(inputProps) => (
+        <TextField
+          {...inputProps}
+          type="email"
+          name="email"
+          defaultValue={loaderData?.studentData.email}
+          placeholder="Enter student's email name"
+          isInvalid={Boolean(actionData?.errorMsgs?.email)}
+          isDisabled={submitting}
+        />
+      )}
+    </Field>
+  );
+
+  const renderGenderDropdown = () => (
+    <Field id="gender-dropdown" label="Gender" direction={fieldDirection}>
+      {(inputProps) => (
+        <DropdownMenu
+          {...inputProps}
+          name="gender"
+          isDisabled={submitting}
+          // Data
+          menuItems={GENDERS}
+          defaultSelectedMenuItem={loaderData?.studentData.gender}
+        />
+      )}
+    </Field>
+  );
+
+  const renderBirthdayDropdown = () => (
+    <Field
+      id="date-of-birth"
+      label="Birthday"
+      direction={fieldDirection}
+      isRequired
+      invalidFieldMessage={actionData?.errorMsgs?.date_of_birth}
+    >
+      {(inputProps) => (
+        <DatePicker
+          {...inputProps}
+          name="date_of_birth"
+          defaultValue={dateOfBirth}
+          isInvalid={Boolean(actionData?.errorMsgs?.date_of_birth)}
+          isDisabled={submitting}
+          min={minDate}
+          max={maxDate}
+        />
+      )}
+    </Field>
+  );
+
   return (
     <SidePanel>
       <SidePanelHeader showCloseButton navigateToURL="/students">
@@ -233,103 +234,11 @@ const StudentEditPanel = () => {
       <StyledStudentDataWrapper>
         <Form method="put">
           <StyledFieldsWrapper>
-            <Field
-              id="first-name"
-              label="First name"
-              direction={fieldDirection}
-              isRequired
-              invalidFieldMessage={actionData?.errorMsgs?.first_name}
-            >
-              {(inputProps) => (
-                <TextField
-                  {...inputProps}
-                  name="first_name"
-                  defaultValue={loaderData?.studentData.firstName}
-                  placeholder="Enter student's first name"
-                  isInvalid={Boolean(actionData?.errorMsgs?.first_name)}
-                  isDisabled={submitting}
-                />
-              )}
-            </Field>
-            <Field
-              id="last-name"
-              label="Last name"
-              direction={fieldDirection}
-              isRequired
-              invalidFieldMessage={actionData?.errorMsgs?.last_name}
-            >
-              {(inputProps) => (
-                <TextField
-                  {...inputProps}
-                  name="last_name"
-                  defaultValue={loaderData?.studentData.lastName}
-                  placeholder="Enter student's last name"
-                  isInvalid={Boolean(actionData?.errorMsgs?.last_name)}
-                  isDisabled={submitting}
-                />
-              )}
-            </Field>
-            <Field
-              id="email"
-              label="Email"
-              direction={fieldDirection}
-              isRequired
-              invalidFieldMessage={actionData?.errorMsgs?.email}
-            >
-              {(inputProps) => (
-                <TextField
-                  {...inputProps}
-                  type="email"
-                  name="email"
-                  defaultValue={loaderData?.studentData.email}
-                  placeholder="Enter student's email name"
-                  isInvalid={Boolean(actionData?.errorMsgs?.email)}
-                  isDisabled={submitting}
-                />
-              )}
-            </Field>
-            <Field id="gender-dropdown" label="Gender" direction={fieldDirection}>
-              {(inputProps) => (
-                <DropdownMenu
-                  {...inputProps}
-                  name="gender"
-                  ref={genderRefsObj}
-                  dropdownIsOpen={genderDropdownIsOpen}
-                  isDisabled={submitting}
-                  // Data
-                  menuItems={GENDERS}
-                  selectedMenuItem={selectedGender}
-                  // Function component state setters
-                  setSelectedMenuItem={setSelectedGender}
-                  setDropdownIsOpen={setGenderDropdownIsOpen}
-                  // MouseEvent callbacks
-                  onSelectedMenuItemClick={handleSelectedMenuItemClick}
-                  onDropdownMenuItemClick={handleDropdownMenuItemClick}
-                  // KeyboardEvent callbacks
-                  onSelectedMenuItemKeyDown={handleSelectedMenuItemKeyDown}
-                  onDropdownMenuItemKeyDown={handleDropdownMenuItemKeyDown}
-                />
-              )}
-            </Field>
-            <Field
-              id="date-of-birth"
-              label="Birthday"
-              direction={fieldDirection}
-              isRequired
-              invalidFieldMessage={actionData?.errorMsgs?.date_of_birth}
-            >
-              {(inputProps) => (
-                <DatePicker
-                  {...inputProps}
-                  name="date_of_birth"
-                  defaultValue={dateOfBirth}
-                  isInvalid={Boolean(actionData?.errorMsgs?.date_of_birth)}
-                  isDisabled={submitting}
-                  min={minDate}
-                  max={maxDate}
-                />
-              )}
-            </Field>
+            {renderFirstNameField()}
+            {renderLastNameField()}
+            {renderEmailField()}
+            {renderGenderDropdown()}
+            {renderBirthdayDropdown()}
           </StyledFieldsWrapper>
           <StyledButtonsWrapper>
             <Button type="submit" isLoading={submitting}>
@@ -346,6 +255,9 @@ const StudentEditPanel = () => {
               Cancel
             </Button>
           </StyledButtonsWrapper>
+          <StyledRequiredFields>
+            <RequiredAsterisk /> Required fields
+          </StyledRequiredFields>
         </Form>
       </StyledStudentDataWrapper>
     </SidePanel>

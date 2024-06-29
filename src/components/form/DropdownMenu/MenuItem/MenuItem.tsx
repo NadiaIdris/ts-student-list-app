@@ -24,6 +24,7 @@ const StyledMenuItem = styled.button<{ $size: FieldSize }>`
   align-items: center;
   justify-content: flex-start;
   text-align: start;
+  font-family: inherit;
 
   ${({ $size }) =>
     $size === "small"

@@ -25,6 +25,12 @@ export interface ButtonProps {
    * If the button is disabled, users cannot interact with the button: the button cannot be clicked, focused, or hovered.
    **/
   isDisabled?: boolean;
+  /**
+   * Ref object for the button.
+   * Use this to interact with the button imperatively.
+   * E.g. to focus the button, call `buttonRef.current.focus()`.
+   * E.g. to click the button, call `buttonRef.current.click()`.
+   * */
   ref?: any;
   /**
    * Displays an icon before the button text.
@@ -49,18 +55,14 @@ export interface ButtonProps {
    */
   testId?: string;
   /**
-   * The `style` prop specifies the style of the button. It will add the style inline. It's great to use it to add margin or padding to the button.
+   * The `style` prop specifies the style of the button.
    */
   style?: CSSProperties;
   /**
-   * The `className` prop specifies the class of the button. It will add the class to the button. It's great to use it to add margin or padding to the button.
+   * The `className` prop specifies the class of the button.
    */
   className?: string;
 }
-
-const ButtonWrapper = styled.div`
-  display: contents;
-`;
 
 const StyledButton = styled.button<{
   $active: boolean;
@@ -78,7 +80,7 @@ const StyledButton = styled.button<{
   }};
   border: transparent;
   font: inherit;
-  font-weight: 900;
+  font-weight: 700;
   cursor: pointer;
   height: ${({ $size, $iconBefore, $iconAfter, $children }) => {
     /* Icon button height */
@@ -113,7 +115,7 @@ const StyledButton = styled.button<{
     else if ($appearance === "warning") return "var(--color-button-warning-fg)";
     else return "var(--color-button-default-fg)";
   }};
-  ${({ $isLoading }) => $isLoading && "opacity: 0.6; pointer-events: none;"}
+  ${({ $isLoading }) => $isLoading && "opacity: 0.6;"}
 
   &:hover {
     background: ${({ $appearance }) => {
@@ -178,6 +180,9 @@ const StyledSpinner = styled.span<{ $isLoading: boolean }>`
   ${({ $isLoading }) =>
     $isLoading &&
     `
+  position: relative; /* This is important to center the loading spinner*/
+  display: block; /* This is important to center the loading spinner*/
+
   &:after {
     content: "";
     position: absolute;
@@ -226,33 +231,34 @@ const Button = ({
   ...props
 }: ButtonProps) => {
   return (
-    <ButtonWrapper style={style} className={className}>
-      <StyledButton
-        aria-label={ariaLabel}
-        type={type}
-        onClick={onClick && !isLoading ? onClick : undefined}
-        $appearance={appearance}
-        $active={active}
-        $size={size}
-        $fullWidth={fullWidth}
-        $iconBefore={iconBefore}
-        $iconAfter={iconAfter}
-        $children={children}
-        $isLoading={isLoading}
-        title={tooltip}
-        disabled={isDisabled}
-        ref={ref}
-        data-testid={testId}
-        {...props}
-      >
+    <StyledButton
+      aria-label={ariaLabel}
+      type={type}
+      onClick={onClick && !isLoading ? onClick : undefined}
+      $appearance={appearance}
+      $active={active}
+      $size={size}
+      $fullWidth={fullWidth}
+      $iconBefore={iconBefore}
+      $iconAfter={iconAfter}
+      $children={children}
+      $isLoading={isLoading}
+      title={tooltip}
+      disabled={isDisabled || isLoading}
+      ref={ref}
+      data-testid={testId}
+      style={style}
+      className={className}
+      {...props}
+    >
+      <StyledSpinner $isLoading={isLoading}>
         <StyledButtonText $iconBefore={iconBefore} $iconAfter={iconAfter} $isLoading={isLoading}>
           {iconBefore}
           {children}
           {iconAfter}
         </StyledButtonText>
-        <StyledSpinner $isLoading={isLoading} />
-      </StyledButton>
-    </ButtonWrapper>
+      </StyledSpinner>
+    </StyledButton>
   );
 };
 

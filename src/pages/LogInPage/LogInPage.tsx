@@ -12,9 +12,10 @@ import { Heading2 } from "../../components/text/Heading2";
 import { TextField } from "../../components/TextField";
 import { IUser } from "../../context/AuthContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { generateErrorMessagesObject, trimWhiteSpace } from "../../utils/utils";
 import { validateLoginForm } from "../../validation/validate";
-import { generateErrorMessagesObject, removeWhiteSpace } from "../../utils/utils";
 import { renderPasswordIcons, StyledSmallPrintDiv } from "../SignUpPage";
+import { AxiosResponse } from "axios";
 
 interface IUserLogInErrors {
   email: string;
@@ -27,10 +28,25 @@ interface ILogInData {
   user: IUser;
 }
 
+const makeUser = (response: AxiosResponse): IUser => {
+  // Extract the token and user details from the response
+  const bearerToken = response.headers.Authorization || response.headers.authorization;
+  const token = bearerToken.split(" ")[1];
+  const { registered_user_uid, first_name, last_name, email } = response.data;
+  return {
+    isAuthenticated: true,
+    token: token,
+    userId: registered_user_uid,
+    firstName: first_name,
+    lastName: last_name,
+    email: email,
+  };
+};
+
 async function action({ request }: { request: Request }) {
   let formData = await request.formData();
   // Trim the white spaces from the email and password
-  const trimmedUserLogInData = removeWhiteSpace(formData) as unknown as IUserLogInErrors;
+  const trimmedUserLogInData = trimWhiteSpace(formData) as unknown as IUserLogInErrors;
 
   // Validate the user login data, before sending it to the server
   const { error } = validateLoginForm(trimmedUserLogInData);
@@ -43,18 +59,7 @@ async function action({ request }: { request: Request }) {
   try {
     const LOGIN_ENDPOINT = `${USER_ENDPOINT}/login`;
     const response = await axiosInstance.post(LOGIN_ENDPOINT, trimmedUserLogInData);
-    // Extract the token and user details from the response
-    const bearerToken = response.headers.Authorization || response.headers.authorization;
-    const token = bearerToken.split(" ")[1];
-    const { registered_user_uid, first_name, last_name, email } = response.data;
-    const user = {
-      isAuthenticated: true,
-      token: token,
-      userId: registered_user_uid,
-      firstName: first_name,
-      lastName: last_name,
-      email: email,
-    };
+    const user = makeUser(response);
     return { user };
   } catch (error: any) {
     console.error(`[ACTION ERROR]: ${error}`);
@@ -111,9 +116,9 @@ const LogInPage = () => {
       // Redirect to the url that the user was trying to access
       const intendedUrl = localStorage.getItem("endpoint");
       if (intendedUrl) {
-        navigate(intendedUrl);
+        navigate(intendedUrl, { state: { from: "login" }, replace: true });
       } else {
-        navigate("/students");
+        navigate("/students", { replace: true });
       }
     }
   }, [actionData?.user, navigate, logIn]);
@@ -186,4 +191,4 @@ const LogInPage = () => {
   );
 };
 
-export { LogInPage, action };
+export { action, LogInPage, makeUser };

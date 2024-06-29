@@ -52,7 +52,7 @@ const StyledValue = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: var(--font-size-16);
-  font-weight: 700;
+  font-weight: 600;
   word-break: break-word;
 `;
 

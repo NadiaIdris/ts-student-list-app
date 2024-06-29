@@ -18,7 +18,7 @@ const formatErrorMessages = (errorDetails: ValidationErrorItem[], errorLabels: R
 
 const validateSignUpForm = (data: IUserSignUpData) => {
   // Add the abortEarly option to show all the errors at once. The abortEarly option stops validation on the first error.
-  const { error, value } = signUpSchema.validate(data, { abortEarly: false });
+  const { error } = signUpSchema.validate(data, { abortEarly: false });
   const signUpFormErrorLabels = {
     first_name: "First name",
     last_name: "Last name",
@@ -36,11 +36,11 @@ const validateSignUpForm = (data: IUserSignUpData) => {
     });
   }
 
-  return { error, value: value as IUserSignUpData };
+  return { error };
 };
 
 const validateLoginForm = (data: IUserLogInData) => {
-  const { error, value } = logInSchema.validate(data, { abortEarly: false });
+  const { error } = logInSchema.validate(data, { abortEarly: false });
 
   const logInFormErrorLabels = {
     email: "Email",
@@ -55,11 +55,11 @@ const validateLoginForm = (data: IUserLogInData) => {
       detail.message = updatedErrorMessages[index];
     });
   }
-  return { error, value: value as IUserLogInData };
+  return { error };
 };
 
 const validateStudentData = (data: IStudentErrors) => {
-  const { error, value } = studentSchema.validate(data, { abortEarly: false });
+  const { error } = studentSchema.validate(data, { abortEarly: false });
 
   const studentFormErrorLabels = {
     first_name: "First name",
@@ -76,7 +76,7 @@ const validateStudentData = (data: IStudentErrors) => {
       detail.message = updatedErrorMessages[index];
     });
   }
-  return { error, value: value as IStudentErrors };
+  return { error };
 };
 
 export { validateSignUpForm, validateLoginForm, validateStudentData };

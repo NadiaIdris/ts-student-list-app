@@ -10,9 +10,9 @@
   --color-white: white;
   --color-black: black;
   --color-gray-400: rgba(238, 238, 238, 0.4);
-  --color-gray-600: rgba(238, 238, 238, 0.6);
-  --color-gray-800: rgba(238, 238, 238, 0.8);
-  --color-gray-1000: rgba(238, 238, 238, 1);
+  --color-gray-600: #f6f6f6;
+  --color-gray-800: #f2f2f2;
+  --color-gray-1000: rgba(238, 238, 238);
   --color-black-300: rgba(0, 0, 0, 0.3);
   --color-black-600: rgba(0, 0, 0, 0.6);
   --color-black-700: rgba(0, 0, 0, 0.7);
@@ -78,8 +78,11 @@
 /* whole app background color */
 body {
   caret-color: var(--color-danger-darker);
-  font: normal normal 400 14px/1.5 "Poppins", sans-serif;
-  /* overflow: hidden; */
+  font-family: "Poppins", Helvetica, sans-serif;
+  font-size: var(--font-size-16);
+  font-weight: 400;
+  font-variant: normal;
+  line-height: 1.5;
 }
 
 ::selection {
