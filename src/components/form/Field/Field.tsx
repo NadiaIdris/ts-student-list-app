@@ -33,11 +33,6 @@ interface FieldProps {
   className?: string;
 }
 
-// const StyledField = styled.div`
-//   display: flex;
-//   flex-direction: column;
-// `;
-
 const StyledLabelWrapper = styled.div<{ $direction: Direction }>`
   display: flex;
   flex-direction: ${({ $direction }) => $direction};
