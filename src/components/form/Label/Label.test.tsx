@@ -39,6 +39,7 @@ describe("Label", () => {
     expect(label).toHaveStyle({
       fontSize: "var(--font-size-16)",
       minWidth: "113px",
+      width: "113px",
     });
   });
 

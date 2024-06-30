@@ -33,12 +33,12 @@ interface FieldProps {
   className?: string;
 }
 
-const StyledField = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
+// const StyledField = styled.div`
+//   display: flex;
+//   flex-direction: column;
+// `;
 
-const StyledWrapper = styled.div<{ $direction: Direction }>`
+const StyledLabelWrapper = styled.div<{ $direction: Direction }>`
   display: flex;
   flex-direction: ${({ $direction }) => $direction};
   ${({ $direction }) => {
@@ -60,30 +60,20 @@ const Field = ({
   ...props
 }: FieldProps) => {
   return (
-    <StyledField
-      data-testid={testId}
-      style={style}
-      className={className}
-      {...props}
-    >
-      <StyledWrapper $direction={direction}>
+    <div data-testid={testId} style={style} className={className} {...props}>
+      <StyledLabelWrapper $direction={direction}>
         <Label htmlFor={id} direction={direction} size={size}>
           {label}
           {isRequired && <RequiredAsterisk />}
         </Label>
-        {typeof children === "function"
-          ? children({ direction, id, size })
-          : children}
-      </StyledWrapper>
+        {typeof children === "function" ? children({ direction, id, size }) : children}
+      </StyledLabelWrapper>
       {invalidFieldMessage && (
-        <ErrorMessage
-          direction={direction}
-          isVisible={Boolean(invalidFieldMessage)}
-        >
+        <ErrorMessage direction={direction} isVisible={Boolean(invalidFieldMessage)}>
           {invalidFieldMessage}
         </ErrorMessage>
       )}
-    </StyledField>
+    </div>
   );
 };
 
