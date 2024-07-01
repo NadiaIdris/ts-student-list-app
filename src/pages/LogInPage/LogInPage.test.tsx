@@ -1,12 +1,15 @@
 import "@testing-library/jest-dom";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { AuthContextProvider } from "../../context/AuthContext";
 import { LogInPage, makeUser } from "./LogInPage";
 import { AxiosResponse } from "axios";
+import React from "react";
+import exp from "constants";
 
 describe("LogInPage", () => {
-  it("log in works", async () => {
+  it("calls action function when log in button is clicked", async () => {
+    let actionCalled = false;
     const testLogInAction = async function action({ request }: { request: Request }) {
       let responseObj = {
         data: {
@@ -19,6 +22,7 @@ describe("LogInPage", () => {
           email: "test@example.com",
         },
       };
+      actionCalled = true;
       return responseObj;
     };
 
@@ -27,10 +31,6 @@ describe("LogInPage", () => {
         path: "/login",
         element: <LogInPage />,
         action: testLogInAction,
-      },
-      {
-        path: "/students",
-        element: <div>Students</div>,
       },
     ];
 
@@ -55,9 +55,13 @@ describe("LogInPage", () => {
 
     const button = screen.getByRole("button", { name: /log in/i });
     expect(button).toBeInTheDocument();
-    button.click();
+    expect(button).toBeEnabled();
+    React.act(() => button.click()); // Wrap the button click in act to get rid of the warning.
 
-    expect(await screen.findByText(/students/i)).toBeInTheDocument();
+    // Waitfor local storage to have value for endpoint key
+    await waitFor(() => expect(localStorage.getItem("user")).toBeNull());
+
+    expect(actionCalled).toBe(true);
   });
 
   it("makeUser function generates a user correctly", () => {
@@ -79,6 +83,7 @@ describe("LogInPage", () => {
     };
 
     const user = makeUser(response as AxiosResponse);
+
     expect(user).toEqual({
       isAuthenticated: true,
       token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",

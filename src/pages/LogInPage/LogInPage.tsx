@@ -110,7 +110,9 @@ const LogInPage = () => {
   const passwordErrorMsg = actionData?.errorMsgs?.password;
 
   useEffect(() => {
+    console.log("useEffect running", actionData?.user)
     const userData = actionData?.user;
+    console.log("userData in useEffect---> ", userData);
     if (userData) {
       logIn(userData);
       // Redirect to the url that the user was trying to access

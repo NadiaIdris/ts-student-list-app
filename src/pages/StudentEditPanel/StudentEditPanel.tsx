@@ -196,7 +196,6 @@ const StudentEditPanel = () => {
           {...inputProps}
           name="gender"
           isDisabled={submitting}
-          // Data
           menuItems={GENDERS}
           defaultSelectedMenuItem={loaderData?.studentData.gender}
         />

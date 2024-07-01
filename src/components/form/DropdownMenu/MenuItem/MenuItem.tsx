@@ -28,7 +28,6 @@ const StyledMenuItem = styled.button<{ $size: FieldSize }>`
 
   ${({ $size }) => { 
     if ($size === "small") return "height: var(--input-height-small); font-size: var(--font-size-14);";
-    else if ($size === "medium") return "height: var(--input-height-medium); font-size: var(--font-size-16);";
     else return "height: var(--input-height-large); font-size: var(--font-size-16);";
   
 }}
