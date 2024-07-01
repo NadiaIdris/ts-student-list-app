@@ -26,10 +26,13 @@ const StyledMenuItem = styled.button<{ $size: FieldSize }>`
   text-align: start;
   font-family: inherit;
 
-  ${({ $size }) =>
-    $size === "small"
-      ? "font-size: var(--font-size-14); height: var(--input-height-small);"
-      : "font-size: var(--font-size-16); height: var(--input-height-medium);"};
+  ${({ $size }) => { 
+    if ($size === "small") return "height: var(--input-height-small); font-size: var(--font-size-14);";
+    else if ($size === "medium") return "height: var(--input-height-medium); font-size: var(--font-size-16);";
+    else return "height: var(--input-height-large); font-size: var(--font-size-16);";
+  
+}}
+  
   &:hover {
     background-color: var(--color-button-secondary-bg-hover);
     color: var(--text-black);

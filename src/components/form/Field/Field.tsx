@@ -61,7 +61,7 @@ const Field = ({
           {label}
           {isRequired && <RequiredAsterisk />}
         </Label>
-        {typeof children === "function" ? children({ direction, id, size }) : children}
+        {typeof children === "function" ? children({ id, size }) : children}
       </StyledLabelWrapper>
       {invalidFieldMessage && (
         <ErrorMessage direction={direction} isVisible={Boolean(invalidFieldMessage)}>

@@ -35,7 +35,8 @@ const StyledError = styled.div<{
 `;
 
 const ErrorMessage = ({ direction = "column", isVisible = true, children, testId }: ErrorMessageProps) => {
-  const [height, setHeight] = useState(0);
+  
+  const [ height, setHeight ] = useState(0);
   const errorRef = useRef<HTMLDivElement>(null);
 
   // Get the height of the error message and set it as the max-height of the error message

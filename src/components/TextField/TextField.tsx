@@ -22,7 +22,7 @@ interface TextFieldProps {
   /**
    * The `autoComplete` prop specifies whether the browser should automatically complete the input value based on the user's previous inputs.
    */
-  autoComplete?: "on" | "off";
+  autoComplete?: "password" | "on" | "off" | "username" | "new-password" | "current-password" | "email" | "tel" | "url";
   /**
    * The `size` prop specifies the size of the input field. The default value is "medium".
    */
@@ -38,7 +38,7 @@ interface TextFieldProps {
   /**
    * The `renderIcon` prop specifies a custom icon to render beside the input field.
    */
-  renderIcon?: (isDisabled: boolean, size: FieldSize) => JSX.Element;
+  renderIcon?: (id: string, isDisabled: boolean, size: FieldSize) => JSX.Element;
   /**
    * The `passwordIsVisible` prop specifies whether the password is visible or not. This prop is only used when the type is "password".
    */
@@ -48,6 +48,7 @@ interface TextFieldProps {
    */
   style?: CSSProperties;
   className?: string;
+  testId?: string;
 }
 
 const StyledTextFieldWrapper = styled.div`
@@ -62,16 +63,11 @@ const StyledTextField = styled.input<{
   $isInvalid?: boolean;
 }>`
   border-radius: var(--border-radius);
-  border: var(--border);
+  border: 2px;
   background-color: var(--color-gray-800);
   padding: ${({ $size }) => ($size === "large" ? " 0 12px" : "0 8px")};
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
   width: 100%;
-  font-family: "Poppins", sans-serif;
+  font-family: inherit;
 
   ${({ $size }) => {
     if ($size === "small")
@@ -82,8 +78,13 @@ const StyledTextField = styled.input<{
   }}
   ${({ $isInvalid }) => $isInvalid && `border-color: var(--color-danger);`}
 
-  &:focus {
-    border: 2x solid black;
+  /* &:focus {
+    border: 2px solid black;
+  } */
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 
@@ -95,9 +96,9 @@ const StyledTextField = styled.input<{
  */
 const TextField = ({
   id,
-  type = "text",
+  type,
   name,
-  placeholder,
+  placeholder = "",
   autoComplete = "on",
   size = "large",
   isInvalid = false,
@@ -106,15 +107,15 @@ const TextField = ({
   passwordIsVisible = false,
   style,
   className,
+  testId,
   ...props
 }: TextFieldProps) => {
   useLayoutEffect(() => {
     // Measure the renderIcon container width and set the padding-right of the input field
-    if (!id) return;
     const inputField = document.getElementById(id);
     const icon = document.getElementById(`${id}-icon`);
     if (inputField && icon) {
-      inputField.style.paddingRight = `${icon.offsetWidth + 2}px`;
+      inputField.style.paddingRight = `${icon.offsetWidth + 6}px`;
     }
   });
 
@@ -129,9 +130,10 @@ const TextField = ({
         $size={size}
         $isInvalid={isInvalid}
         disabled={isDisabled}
+        data-testid={testId}
         {...props}
       />
-      {renderIcon && renderIcon(isDisabled, size)}
+      {renderIcon && renderIcon(id, isDisabled, size)}
     </StyledTextFieldWrapper>
   );
 };

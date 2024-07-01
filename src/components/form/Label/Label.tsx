@@ -43,12 +43,14 @@ const Label = ({
   direction = "column",
   children,
   size = "medium",
+  testId,
   ...props
 }: LabelProps) => {
   return (
     <StyledLabel
       $direction={direction}
       $size={size}
+      data-testid={testId}
       {...props}
     >
       {children}
