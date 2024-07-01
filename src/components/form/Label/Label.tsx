@@ -40,17 +40,17 @@ const StyledLabel = styled.label<{
 `;
 
 const Label = ({
-  htmlFor,
   direction = "column",
   children,
   size = "medium",
+  testId,
   ...props
 }: LabelProps) => {
   return (
     <StyledLabel
-      htmlFor={htmlFor}
       $direction={direction}
       $size={size}
+      data-testid={testId}
       {...props}
     >
       {children}

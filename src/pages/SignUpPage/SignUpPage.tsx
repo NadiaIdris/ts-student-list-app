@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Form, Link, useActionData, useNavigate, useNavigation } from "react-router-dom";
 import styled from "styled-components";
-import { USER_ENDPOINT} from "../../api/apiConstants";
+import { USER_ENDPOINT } from "../../api/apiConstants";
 import { axiosInstance } from "../../api/axiosConfig";
 import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
-import { Field } from "../../components/form/Field";
+import { Field, FieldSize } from "../../components/form/Field";
 import { RequiredAsterisk } from "../../components/form/RequiredAsterisk";
 import { Heading1 } from "../../components/text/Heading1";
 import { Heading2 } from "../../components/text/Heading2";
@@ -151,6 +151,7 @@ const StyledSmallPrintDiv = styled.div`
 const renderPasswordIcons = (
   id: string,
   isDisabled: boolean,
+  size: FieldSize,
   showPassword: boolean,
   setShowPassword: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
@@ -162,7 +163,7 @@ const renderPasswordIcons = (
       $isDisabled={isDisabled}
     >
       <Button
-        size="large"
+        size={size}
         appearance="link-with-background"
         iconBefore={
           showPassword ? (
@@ -222,12 +223,12 @@ const SignUpPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
-                size="large"
                 type="text"
                 name="first_name"
                 placeholder="Enter your first name"
                 isInvalid={Boolean(actionData?.errorMsgs?.first_name)}
                 isDisabled={submitting}
+                autoComplete="given-name"
               />
             )}
           </Field>
@@ -241,12 +242,12 @@ const SignUpPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
-                size="large"
                 type="text"
                 name="last_name"
                 placeholder="Enter your last name"
                 isInvalid={Boolean(actionData?.errorMsgs?.last_name)}
                 isDisabled={submitting}
+                autoComplete="family-name"
               />
             )}
           </Field>
@@ -260,12 +261,12 @@ const SignUpPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
-                size="large"
                 type="email"
                 name="email"
                 placeholder="Enter your email"
                 isInvalid={Boolean(actionData?.errorMsgs?.email)}
                 isDisabled={submitting}
+                autoComplete="email"
               />
             )}
           </Field>
@@ -279,16 +280,16 @@ const SignUpPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
-                size="large"
                 type="password"
                 name="password"
                 placeholder="Enter your password"
                 isInvalid={Boolean(actionData?.errorMsgs?.password)}
                 isDisabled={submitting}
-                renderIcon={(isDisabled) =>
-                  renderPasswordIcons("login-password", isDisabled, showPassword, setShowPassword)
+                renderIcon={(id, isDisabled, size) =>
+                  renderPasswordIcons(id, isDisabled, size, showPassword, setShowPassword)
                 }
                 passwordIsVisible={showPassword}
+                autoComplete="new-password"
               />
             )}
           </Field>
@@ -302,21 +303,21 @@ const SignUpPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
-                size="large"
                 type="password"
                 name="repeat_password"
                 placeholder="Enter your password again"
                 isInvalid={Boolean(actionData?.errorMsgs?.repeat_password)}
                 isDisabled={submitting}
-                renderIcon={(isDisabled) =>
-                  renderPasswordIcons("login-password", isDisabled, showPassword, setShowPassword)
+                renderIcon={(id, isDisabled, size) =>
+                  renderPasswordIcons("login-password", isDisabled, size, showPassword, setShowPassword)
                 }
                 passwordIsVisible={showPassword}
+                autoComplete="new-password"
               />
             )}
           </Field>
           {actionData?.networkError && showCorrectErrorMsg(actionData?.networkError)}
-          <Button size="large" type="submit" fullWidth isLoading={submitting} style={{ marginTop: "24px" }}>
+          <Button type="submit" fullWidth isLoading={submitting} style={{ marginTop: "24px" }}>
             Sign up
           </Button>
         </Form>

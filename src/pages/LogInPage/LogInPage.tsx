@@ -110,7 +110,9 @@ const LogInPage = () => {
   const passwordErrorMsg = actionData?.errorMsgs?.password;
 
   useEffect(() => {
+    console.log("useEffect running", actionData?.user)
     const userData = actionData?.user;
+    console.log("userData in useEffect---> ", userData);
     if (userData) {
       logIn(userData);
       // Redirect to the url that the user was trying to access
@@ -139,12 +141,12 @@ const LogInPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
-                size="large"
                 type="email"
                 name="email"
                 placeholder="Enter your email"
                 isInvalid={Boolean(emailErrorMsg)}
                 isDisabled={submitting}
+                autoComplete="email"
               />
             )}
           </Field>
@@ -158,16 +160,16 @@ const LogInPage = () => {
             {(inputProps) => (
               <TextField
                 {...inputProps}
-                size="large"
                 type="password"
                 name="password"
                 placeholder="Enter your password"
                 isInvalid={Boolean(passwordErrorMsg)}
                 isDisabled={submitting}
-                renderIcon={(isDisabled) =>
-                  renderPasswordIcons("login-password", isDisabled, showPassword, setShowPassword)
+                renderIcon={(id, isDisabled, size) =>
+                  renderPasswordIcons(id, isDisabled, size, showPassword, setShowPassword)
                 }
                 passwordIsVisible={showPassword}
+                autoComplete="current-password"
               />
             )}
           </Field>

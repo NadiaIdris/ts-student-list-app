@@ -128,6 +128,7 @@ const AddStudentModal = () => {
           name="first_name"
           isInvalid={Boolean(actionData?.errorMsgs?.first_name)}
           isDisabled={submitting}
+          autoComplete="off"
         />
       )}
     </Field>
@@ -142,6 +143,7 @@ const AddStudentModal = () => {
           name="last_name"
           isInvalid={Boolean(actionData?.errorMsgs?.last_name)}
           isDisabled={submitting}
+          autoComplete="off"
         />
       )}
     </Field>
@@ -170,6 +172,7 @@ const AddStudentModal = () => {
           placeholder="Enter student's email name"
           isInvalid={Boolean(actionData?.errorMsgs?.email)}
           isDisabled={submitting}
+          autoComplete="off"
         />
       )}
     </Field>
