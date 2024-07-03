@@ -86,7 +86,6 @@ const SelectedMenuItem = forwardRef(
     {
       name,
       id,
-      // selectedRef,
       isDisabled,
       placeholder = "Choose one",
       dropdownIsOpen,
