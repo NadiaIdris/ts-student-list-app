@@ -18,20 +18,17 @@ interface IStudents {
 
 export async function loader() {
   try {
-    // Add setTimeout to simulate loading time.
     const response = await axiosInstance.get(STUDENTS_ENDPOINT);
-    if (response.status !== 200) throw new Error(response.statusText); // Throw an error when the
-    // response is not OK so that it proceeds directly to the catch block.
     return { students: response.data };
   } catch (error: any) {
-    console.error(error.message);
-    return { error };
+    if (error.code === "ERR_NETWORK") {
+      return { error: error.message };
+    }
+    if (error.response?.status === 500) {
+      return { error: "Internal server error" };
+    }
   }
 }
-
-const StudentsPageWrapper = styled.div<{ $noPointerEvents: boolean }>`
-  /* ${({ $noPointerEvents }) => $noPointerEvents && "pointer-events: none;"} */
-`;
 
 const TableBodyWrapper = styled.div`
   padding: 0 48px;
@@ -227,21 +224,26 @@ const StudentsPage = () => {
   useEffect(() => {
     // if url endoint is '/' redirect to '/students'
     if (window.location.pathname === "/") {
-      navigate("/students");
+      navigate("/students", { replace: true });
     }
-  }, [ navigate ]);
-  
-  // Add overflow: hidden; to the body when logged in
-  useEffect(() => { 
+  }, [navigate]);
+
+  // Add overflow: hidden; to the body when logged in, so that we can scroll only the students table.
+  useEffect(() => {
     document.body.style.overflowY = "hidden";
     return () => {
       document.body.style.overflow = "auto";
     };
   }, []);
 
+  if (loaderData?.error) {
+    /* TODO: design a more helpful network error page*/
+    return <div>{loaderData?.error}</div>;
+  }
+
   return (
     <>
-      <StudentsPageWrapper $noPointerEvents={Boolean(studentUid)}>
+      <div>
         <StyledHeader>
           <Heading1>All students</Heading1>
           <StyledNavButtonsWrapper>
@@ -318,7 +320,7 @@ const StudentsPage = () => {
             Add new student
           </Button>
         </StyledButtonWrapper>
-      </StudentsPageWrapper>
+      </div>
       <Outlet context={{ studentUid, setStudentUid } satisfies ContextType} />
     </>
   );

@@ -39,8 +39,15 @@ export async function loader({ params }: { params: Params }) {
       return { studentData };
     }
   } catch (error: any) {
-    console.error(error.message);
-    return { error };
+    console.error("Error fetching student data: ", error.message);
+    console.error("error: ", error);
+    if (error.code === "ERR_NETWORK") {
+      return { error: "Network error" };
+    }
+
+    if (error.response?.status === 500) {
+      return { error: "Internal server error" };
+    }
   }
 }
 
@@ -83,10 +90,6 @@ const StudentPanel = () => {
   const navigate = useNavigate();
   const snackbarRef = useRef(null);
 
-  useEffect(() => {
-    setStudentUid(studentId!);
-  }, [studentId, setStudentUid]);
-
   const handleCloseStudentPanel = useCallback(() => {
     // Reset the studentUid to remove css property pointer-events: none from the students page.
     setStudentUid("");
@@ -120,6 +123,13 @@ const StudentPanel = () => {
     // When use clicks on back button in browser, close the student panel
     window.onpopstate = handleCloseStudentPanel;
   }, [handleCloseStudentPanel]);
+
+  useEffect(() => {
+    if (loaderData?.error) {
+      // Navigate to the students page if student does not exist
+      navigate("/students", { replace: true, state: { error: loaderData.error } });
+    }
+  }, [loaderData?.error, navigate]);
 
   return (
     <SidePanel>

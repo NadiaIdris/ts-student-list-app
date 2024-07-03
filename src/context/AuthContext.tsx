@@ -32,7 +32,6 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const logIn = (user: IUser) => {
     setUser(user);
     localStorage.setItem("user", JSON.stringify(user));
-    console.log("localStorage.setItem ---> ", localStorage.getItem("user"));
   };
 
   const logOut = () => {

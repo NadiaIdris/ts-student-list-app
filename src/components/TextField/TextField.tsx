@@ -76,11 +76,7 @@ const StyledTextField = styled.input<{
       return "height: var(--input-height-medium); font-size: var(--font-size-16);"; // ~16px is 1rem
     else return "height: var(--input-height-large); font-size: var(--font-size-16);"; // ~16px is 1rem
   }}
-  ${({ $isInvalid }) => $isInvalid && `border-color: var(--color-danger);`}
-
-  /* &:focus {
-    border: 2px solid black;
-  } */
+  ${({ $isInvalid }) => $isInvalid && `border: 2px solid var(--color-danger);`}
 
   &:disabled {
     opacity: 0.5;

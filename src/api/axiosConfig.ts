@@ -1,4 +1,5 @@
 import axios from "axios";
+// More info: https://create-react-app.dev/docs/adding-custom-environment-variables/ 
 const isProdEnv = process.env.NODE_ENV === "production";
 
 const axiosInstance = axios.create({

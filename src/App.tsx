@@ -11,6 +11,7 @@ import { StudentEditPanel, action as editStudentAction } from "./pages/StudentEd
 import { StudentPanel, loader as studentLoader } from "./pages/StudentPanel";
 import { StudentsPage, loader as studentsLoader } from "./pages/StudentsPage";
 import { DeleteUserModal, action as deleteUserAction } from "./pages/DeleteUserModal";
+import { ErrorBoundary } from "./error-page";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     loader: studentsLoader,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/students/",
@@ -57,7 +59,7 @@ const router = createBrowserRouter([
         path: ":userId/delete-user",
         element: <DeleteUserModal />,
         action: deleteUserAction,
-      }
+      },
     ],
   },
 
@@ -70,10 +72,6 @@ const router = createBrowserRouter([
     path: "/signup",
     element: <SignUpPage />,
     action: signUpAction,
-  },
-  {
-    path: "*",
-    element: <div>404 Not Found</div>,
   },
 ]);
 

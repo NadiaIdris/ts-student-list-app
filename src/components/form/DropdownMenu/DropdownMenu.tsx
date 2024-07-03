@@ -58,7 +58,6 @@ const DropdownMenu = ({
     // Add a timeout to make sure async setGenderDropdownIsOpen is called first and then our setTimeout is called next from the JS event loop.
     setTimeout(() => {
       if (genderItemsRef.current[selectedOptionIndex]) {
-        console.log("genderItemsRef.current[selectedOptionIndex]: ", genderItemsRef.current[selectedOptionIndex]);
         genderItemsRef.current[selectedOptionIndex].focus();
         genderItemsRef.current[selectedOptionIndex].scrollIntoView({
           behavior: "smooth",
@@ -100,7 +99,6 @@ const DropdownMenu = ({
 
     if (dropdownIsOpen) {
       if (event.key === "ArrowDown") {
-        console.log("ArrowDown: ", event.key);
         let button = genderItemsRef.current[0];
         button?.focus();
       }
@@ -116,8 +114,6 @@ const DropdownMenu = ({
     // event.stopPropagation();
     const optionsLength = genderItemsRef.current.length;
 
-    console.log("event.key inside handleDropdownMenuItemDown: ", event.key);
-
     if (event.key === "Enter") {
       const item = genderItemsRef.current[index].textContent;
       if (item) setSelectedMenuItem(item);
@@ -128,7 +124,6 @@ const DropdownMenu = ({
     if (event.key === "ArrowDown") {
       const lastMenuItemIdx = optionsLength - 1;
       if (index < lastMenuItemIdx) {
-        console.log("genderItemsRef.current[index + 1]: ", genderItemsRef.current[index + 1]);
         genderItemsRef.current[index + 1].focus();
       }
     }

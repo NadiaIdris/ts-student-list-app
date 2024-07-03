@@ -68,12 +68,15 @@ async function action({ request }: { request: Request }) {
       return redirect("/students");
     }
   } catch (error: any) {
+    // If network error occurs, show the error message.
+    if (error.response === undefined) {
+      console.error(`[ACTION ERROR]: ${error.message}`);
+      throw new Error("Network error occurred. Students was not added to the list. Please try again later.");
+    }
     // Catch the 409 conflict error if the student with the same email already exists.
     if (error.response.status === 409) {
       return { errorMsgs: { email: "Student with the same email already exists" } };
     }
-    console.error(`[ACTION ERROR]: ${error}`);
-    return null;
   }
 }
 
@@ -85,10 +88,6 @@ const StyledColumn = styled.div`
   @media (max-width: 600px) {
     gap: 20px;
   }
-  //Button styling
-  /* button {
-    margin-top: 20px;
-  } */
 `;
 
 const StyledCustomModalBody = styled.div`
@@ -152,12 +151,7 @@ const AddStudentModal = () => {
   const renderGenderDropdown = () => (
     <Field id="gender" label="Gender">
       {(genderDropdownProps) => (
-        <DropdownMenu
-          {...genderDropdownProps}
-          name="gender"
-          isDisabled={submitting}
-          menuItems={GENDERS}
-        />
+        <DropdownMenu {...genderDropdownProps} name="gender" isDisabled={submitting} menuItems={GENDERS} />
       )}
     </Field>
   );
@@ -209,11 +203,7 @@ const AddStudentModal = () => {
             {renderEmailField()}
             {renderBirthdayDropdown()}
             <StyledButtonWrapper>
-              <Button
-                type="submit"
-                isLoading={submitting}
-                fullWidth
-              >
+              <Button type="submit" isLoading={submitting} fullWidth>
                 Add new student
               </Button>
               <StyledRequiredFields>
