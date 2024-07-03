@@ -8,8 +8,7 @@
 # testing
 /coverage
 
-# production
-/build
+# production. We are includin the build folder in our repo, because the free tier of AWS EC2 doen't have enough CPU to build the project.
 
 # misc
 .DS_Store
