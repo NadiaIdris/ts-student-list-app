@@ -88,3 +88,56 @@ include the `build` folder in our repository.
 Server API runs on port `4000`.
 Client runs on port `3000`.
 
+# Dadabase admin
+
+```sql
+-- sudo -i -u postgres  <-- log in as Linux user postgres into linux
+-- psql                 <-- start psql client. Everything below is in psql (not linux).
+
+CREATE ROLE nadia WITH LOGIN PASSWORD '<password>';
+ALTER ROLE nadia WITH SUPERUSER;
+ALTER ROLE nadia WITH CREATEROLE;
+ALTER ROLE nadia WITH CREATEDB;
+ALTER ROLE nadia WITH REPLICATION;
+
+-- \du   <-- View all the roles
+
+-- Change current user
+SET ROLE nadia; 
+
+CREATE DATABASE students_db;
+-- \l    <-- show all dbs
+-- \c    <-- connect to another db
+\c students_db
+
+-- Add CITEXT type extension.
+CREATE EXTENSION citext;
+
+-- View current user
+SELECT CURRENT_USER;
+
+
+-- It registered_user table doesn't exist in the students_db, then create it in my server. Write that code.
+CREATE TABLE registered_user (
+    registered_user_uid UUID PRIMARY KEY, 
+    first_name VARCHAR(100) NOT NULL, 
+    last_name VARCHAR(100) NOT NULL, 
+    email CITEXT NOT NULL UNIQUE, 
+    password VARCHAR(1024) NOT NULL
+);
+
+-- Create students table. Same. If it doesn't exist, then create it in JS using this code.
+CREATE TABLE student ( 
+    student_uid UUID PRIMARY KEY, 
+    first_name VARCHAR(50) NOT NULL, 
+    last_name VARCHAR(50) NOT NULL, 
+    gender VARCHAR(30), 
+    email VARCHAR(100) NOT NULL, 
+    date_of_birth DATE NOT NULL, 
+    UNIQUE(email)
+);
+
+-- View all the tables
+\dt
+```
+
