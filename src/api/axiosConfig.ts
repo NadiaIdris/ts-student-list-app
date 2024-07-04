@@ -1,10 +1,13 @@
 import axios from "axios";
-// More info: https://create-react-app.dev/docs/adding-custom-environment-variables/ 
-const isProdEnv = process.env.NODE_ENV === "production";
+
+let protocol = window.location.protocol; // 'http:'
+let hostname = window.location.hostname; // 'localhost'
+let port = 4000;
+let pathname = window.location.pathname; // '/students'
+let actualUrl = `${protocol}//${hostname}:${port}${pathname}`;
 
 const axiosInstance = axios.create({
-  // TODO: add production backend server URL instead of api.example.com.
-  baseURL: isProdEnv ? "https://api.example.com" : "http://localhost:4000",
+  baseURL: actualUrl,
   timeout: 20000, // Set timeout for this instance to 20 seconds
 });
 

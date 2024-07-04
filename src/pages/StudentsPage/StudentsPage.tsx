@@ -27,6 +27,8 @@ export async function loader() {
     if (error.response?.status === 500) {
       return { error: "Internal server error" };
     }
+    // Return null if any other error is encountered.
+    return null;
   }
 }
 
