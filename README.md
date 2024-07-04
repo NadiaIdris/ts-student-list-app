@@ -4,6 +4,8 @@ This is a full stack web app built using React, TypeScript, Node.js, Express.js,
 The app allows users to view all the students in the database, add, delete and update a student
 information. Users can also register, login, logout and delete their account.
 
+You can access it here: http://3.21.228.224:3000/login
+
 ## Table of contents
 
 ## Features
@@ -85,3 +87,4 @@ include the `build` folder in our repository.
 
 Server API runs on port `4000`.
 Client runs on port `3000`.
+
