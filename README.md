@@ -134,11 +134,35 @@ CREATE TABLE student (
     first_name VARCHAR(50) NOT NULL, 
     last_name VARCHAR(50) NOT NULL, 
     gender VARCHAR(30), 
-    email VARCHAR(100) NOT NULL, 
+    email VARCHAR(100) NOT NULL UNIQUE, 
     date_of_birth DATE NOT NULL, 
-    UNIQUE(email)
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 -- View all the tables
 \dt
+
+-- If records are too long that they wrap, run '\x' to print records vertically.
+\x
+
+-- View all the student records
+SELECT * FROM student;
+
+-- View all the registered_user records
+SELECT * FROM registered_user;
 ```
+
+## SSL Certificate
+
+Tutorials:
+- https://adamtheautomator.com/https-nodejs/
+- https://dev.to/fredabod/building-an-express-app-with-an-https-server-2mbj
+
+```bash
+cd .ssl
+openssl genrsa -out key.pem  # Generate a private and public key
+openssl req -new -key key.pem -out csr.pem  # Create a certificate signing request
+openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem # Create a self-signed certificate
+```
+
