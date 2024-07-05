@@ -111,7 +111,9 @@ CREATE DATABASE students_db;
 \c students_db
 
 -- Add CITEXT type extension.
-CREATE EXTENSION citext;
+CREATE EXTENSION IF NOT EXISTS "citext";
+-- Add UUID type extension.
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- View current user
 SELECT CURRENT_USER;
@@ -140,4 +142,3 @@ CREATE TABLE student (
 -- View all the tables
 \dt
 ```
-

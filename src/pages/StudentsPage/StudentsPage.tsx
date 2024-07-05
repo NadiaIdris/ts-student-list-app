@@ -19,8 +19,10 @@ interface IStudents {
 export async function loader() {
   try {
     const response = await axiosInstance.get(STUDENTS_ENDPOINT);
+    console.log("Students page loader response.data (valid) ", response.data);
     return { students: response.data };
   } catch (error: any) {
+    console.log("Students page loader response error ", error);
     if (error.code === "ERR_NETWORK") {
       return { error: error.message };
     }
