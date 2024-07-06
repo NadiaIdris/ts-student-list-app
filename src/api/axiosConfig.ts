@@ -1,7 +1,6 @@
 import axios from "axios";
 
-let hostname = window.location.hostname; // 'localhost'
-let actualUrl = `http://${hostname}:4000`;
+let actualUrl = process.env.NODE_ENV === 'production' ? "http://mylisty.com:4000" : 'http://localhost:4000';
 
 const axiosInstance = axios.create({
   baseURL: actualUrl,
