@@ -1,9 +1,7 @@
 import axios from "axios";
 
-let protocol = window.location.protocol; // 'http:'
 let hostname = window.location.hostname; // 'localhost'
-let port = 4000;
-let actualUrl = `${protocol}//${hostname}:${port}`;
+let actualUrl = `http://${hostname}:4000`;
 
 const axiosInstance = axios.create({
   baseURL: actualUrl,
