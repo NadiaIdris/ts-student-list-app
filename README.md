@@ -166,9 +166,9 @@ Key is saved at: /etc/letsencrypt/live/mylisty.com/privkey.pem
 - Install nginx: `sudo apt-get install nginx`
 - https://www.sitepoint.com/configuring-nginx-ssl-node-js/
 - Add nginx configuration: `sudo nano /etc/nginx/sites-enabled/default`
-  ```yaml
-  #The Nginx server instance
-  server{
+
+  ```nginx
+  server {
     listen       80;
     listen       443 ssl;
     server_name  mylisty.com;
@@ -184,8 +184,18 @@ Key is saved at: /etc/letsencrypt/live/mylisty.com/privkey.pem
       proxy_set_header Host $host;
       proxy_cache_bypass $http_upgrade;
     }
+
+  location /secureapi/ {
+    # Rewrite URLs to remove the /app2 prefix for the backend server
+    rewrite ^/secureapi/(.*) /$1 break;
+
+    # Forward requests to the Node.js server on port 4000
+    proxy_pass http://localhost:4000;
+  }
+
   }
   ```
+
 - Test the nginx configuration: `sudo nginx -t`
 - Restart the nginx server: `sudo systemctl restart nginx`
 
