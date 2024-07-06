@@ -188,3 +188,9 @@ Key is saved at: /etc/letsencrypt/live/mylisty.com/privkey.pem
   ```
 - Test the nginx configuration: `sudo nginx -t`
 - Restart the nginx server: `sudo systemctl restart nginx`
+
+## Run node scripts in the background withouth hanging up
+
+- `cd ~/github/ts-student-list-app/ && nohup npm run serve &`
+- `cd ~/github/nodejs-postgresql-api/ && nohup npm run start &`
+- To kill all node processes: `killall node`
