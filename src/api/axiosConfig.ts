@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let actualUrl = process.env.NODE_ENV === "production" ? "http://mylisty.com/secureapi/" : "http://localhost:4000";
+let actualUrl = process.env.NODE_ENV === "production" ? "https://mylisty.com/secureapi/" : "http://localhost:4000";
 
 const axiosInstance = axios.create({
   baseURL: actualUrl,
