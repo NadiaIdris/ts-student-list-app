@@ -155,14 +155,7 @@ SELECT * FROM registered_user;
 
 ## SSL Certificate
 
-Tutorials:
-- https://adamtheautomator.com/https-nodejs/
-- https://dev.to/fredabod/building-an-express-app-with-an-https-server-2mbj
+- Let's Encrypt: https://certbot.eff.org/instructions?ws=other&os=ubuntufocal&tab=standard
 
-```bash
-cd .ssl
-openssl genrsa -out key.pem  # Generate a private and public key
-openssl req -new -key key.pem -out csr.pem  # Create a certificate signing request
-openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem # Create a self-signed certificate
-```
-
+Certificate is saved at: /etc/letsencrypt/live/mylisty.com/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/mylisty.com/privkey.pem
