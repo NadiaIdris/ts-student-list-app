@@ -103,7 +103,7 @@ ALTER ROLE nadia WITH REPLICATION;
 -- \du   <-- View all the roles
 
 -- Change current user
-SET ROLE nadia; 
+SET ROLE nadia;
 
 CREATE DATABASE students_db;
 -- \l    <-- show all dbs
@@ -121,21 +121,21 @@ SELECT CURRENT_USER;
 
 -- It registered_user table doesn't exist in the students_db, then create it in my server. Write that code.
 CREATE TABLE registered_user (
-    registered_user_uid UUID PRIMARY KEY, 
-    first_name VARCHAR(100) NOT NULL, 
-    last_name VARCHAR(100) NOT NULL, 
-    email CITEXT NOT NULL UNIQUE, 
+    registered_user_uid UUID PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email CITEXT NOT NULL UNIQUE,
     password VARCHAR(1024) NOT NULL
 );
 
 -- Create students table. Same. If it doesn't exist, then create it in JS using this code.
-CREATE TABLE student ( 
-    student_uid UUID PRIMARY KEY, 
-    first_name VARCHAR(50) NOT NULL, 
-    last_name VARCHAR(50) NOT NULL, 
-    gender VARCHAR(30), 
-    email VARCHAR(100) NOT NULL UNIQUE, 
-    date_of_birth DATE NOT NULL, 
+CREATE TABLE student (
+    student_uid UUID PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    gender VARCHAR(30),
+    email VARCHAR(100) NOT NULL UNIQUE,
+    date_of_birth DATE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
@@ -156,6 +156,7 @@ SELECT * FROM registered_user;
 ## SSL Certificate
 
 - Let's Encrypt: https://certbot.eff.org/instructions?ws=other&os=ubuntufocal&tab=standard
+- Certificate is issued for mylisty.com. DNS A record is set to the public IP address of the EC2 instance.
 
 Certificate is saved at: /etc/letsencrypt/live/mylisty.com/fullchain.pem
-Key is saved at:         /etc/letsencrypt/live/mylisty.com/privkey.pem
+Key is saved at: /etc/letsencrypt/live/mylisty.com/privkey.pem
