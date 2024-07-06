@@ -160,3 +160,31 @@ SELECT * FROM registered_user;
 
 Certificate is saved at: /etc/letsencrypt/live/mylisty.com/fullchain.pem
 Key is saved at: /etc/letsencrypt/live/mylisty.com/privkey.pem
+
+## Nginx
+
+- Install nginx: `sudo apt-get install nginx`
+- https://www.sitepoint.com/configuring-nginx-ssl-node-js/
+- Add nginx configuration: `sudo nano /etc/nginx/sites-enabled/default`
+  ```yaml
+  #The Nginx server instance
+  server{
+    listen       80;
+    listen       443 ssl;
+    server_name  mylisty.com;
+
+    ssl_certificate /etc/letsencrypt/live/mylisty.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/mylisty.com/privkey.pem;
+
+    location / {
+      proxy_pass http://localhost:3000;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection 'upgrade';
+      proxy_set_header Host $host;
+      proxy_cache_bypass $http_upgrade;
+    }
+  }
+  ```
+- Test the nginx configuration: `sudo nginx -t`
+- Restart the nginx server: `sudo systemctl restart nginx`
