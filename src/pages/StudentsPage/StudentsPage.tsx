@@ -11,11 +11,6 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { StudentsSkeleton } from "./StudentsSkeleton";
 import { UserAccountDropdown } from "./UserAccountDropdown";
 
-interface IStudents {
-  students: Student[] | null;
-  error: any;
-}
-
 export async function loader() {
   try {
     const response = await axiosInstance.get(STUDENTS_ENDPOINT);
@@ -32,26 +27,31 @@ export async function loader() {
   }
 }
 
+interface IStudents {
+  students: Student[] | null;
+  error: any;
+}
+
 const TableBodyWrapper = styled.div`
   padding: 0 48px;
   overflow-y: auto;
   overflow-x: auto;
-  height: calc(100vh - 64px - 52px);
+  height: calc(-114px - 64px + 100vh); // 64px is the height of the bottom bar with 'Add new student' button. 114px is the header height.
   background-color: var(--color-white);
 
   @media (max-width: 770px) {
     padding: 0 20px;
-    height: calc(100vh - 64px - 86px); // 58px is the height of the bottom bar with 'Add new student' button.
+    height: calc(-91px - 64px + 100vh); // 64px is the height of the bottom bar with 'Add new student' button. 91px is the header height.
   }
 
   @media (max-width: 500px) {
     padding: 0 8px;
-    height: calc(100vh - 64px - 64px);
+    height: calc(-68px - 64px + 100vh);
   }
 
-  @media (max-width: 420px) {
+  @media (max-width: 460px) {
     padding: 0 8px;
-    height: calc(100vh - 64px - 128px);
+    height: calc(-133px - 64px + 100vh);
   }
 `;
 
@@ -76,7 +76,7 @@ const StyledHeader = styled.header`
     }
   }
 
-  @media (max-width: 420px) {
+  @media (max-width: 460px) {
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 16px;
@@ -149,7 +149,6 @@ const StyledIconsWrapper = styled.div`
 `;
 
 const StyledButtonWrapper = styled.div`
-  margin: 12px 0 0 0;
   position: sticky;
   bottom: 0;
   background-color: var(--color-white);
