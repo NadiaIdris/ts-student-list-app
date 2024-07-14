@@ -145,6 +145,7 @@ const LogInPage = () => {
                 isInvalid={Boolean(emailErrorMsg)}
                 isDisabled={submitting}
                 autoComplete="email"
+                defaultValue="testaccount@gmail.com"
               />
             )}
           </Field>
@@ -168,6 +169,7 @@ const LogInPage = () => {
                 }
                 passwordIsVisible={showPassword}
                 autoComplete="current-password"
+                defaultValue="testaccount"
               />
             )}
           </Field>
@@ -187,6 +189,30 @@ const LogInPage = () => {
           <RequiredAsterisk /> Required fields
         </StyledSmallPrintDiv>
       </StyledFormWrapper>
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "800px",
+          marginTop: "30px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Heading2 style={{ textAlign: "center"}}>Students App demo video</Heading2>
+        <div
+          className="video-container"
+          style={{ width: "100%", height: "100%", aspectRatio: "16/9", maxWidth: "800px" }}
+        >
+          <iframe
+            width="100%"
+            height="100%"
+            src="https://www.youtube.com/embed/tCMTtNJYRdc?si=3AIVajIGJ1xculYY"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          ></iframe>
+        </div>
+      </div>
     </StyledLoginPageWrapper>
   );
 };

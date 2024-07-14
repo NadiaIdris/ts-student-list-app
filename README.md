@@ -1,6 +1,6 @@
 # Students App
-<a id="markdown-students-app" name="students-app"></a>
 
+<a id="markdown-students-app" name="students-app"></a>
 
 This is a full-stack production-grade web app built using React, TypeScript, Node.js, Express.js, PostgreSQL and AWS.
 The app allows users to view all the students in the database, and add, delete, and update student
@@ -19,6 +19,7 @@ information. Users can also register, log in, log out, and delete their accounts
 - Backend API GitHub repository: https://github.com/NadiaIdris/nodejs-postgresql-api
 
 # Table of contents
+
 <a id="markdown-table-of-contents" name="table-of-contents"></a>
 
 <!-- TOC -->
@@ -32,6 +33,8 @@ information. Users can also register, log in, log out, and delete their accounts
 - [Run the app locally](#run-the-app-locally)
   - [Steps to run the frontend app](#steps-to-run-the-frontend-app)
   - [Steps to run the backend app](#steps-to-run-the-backend-app)
+- [Make updates to the app](#make-updates-to-the-app)
+  - [Run node scripts in the background without hanging up](#run-node-scripts-in-the-background-without-hanging-up)
 - [API endpoints](#api-endpoints)
   - [Registered user routes](#registered-user-routes)
   - [Student routes](#student-routes)
@@ -39,21 +42,19 @@ information. Users can also register, log in, log out, and delete their accounts
 - [Database](#database)
 - [SSL Certificate](#ssl-certificate)
 - [Nginx](#nginx)
-- [Run node scripts in the background without hanging up](#run-node-scripts-in-the-background-without-hanging-up)
 
-<!-- /TOC -->
 <!-- /TOC -->
 
 ## Features
-<a id="markdown-features" name="features"></a>
 
+<a id="markdown-features" name="features"></a>
 
 - Users can register, login, logout and delete their account
 - Users can view all the students in the database, add, delete, and update student information
 
 ## Client-side technologies used
-<a id="markdown-client-side-technologies-used" name="client-side-technologies-used"></a>
 
+<a id="markdown-client-side-technologies-used" name="client-side-technologies-used"></a>
 
 - React
   - Context API (for state management), hooks
@@ -67,8 +68,8 @@ information. Users can also register, log in, log out, and delete their accounts
 - Joi for client-side form validation
 
 ## Server-side technologies used
-<a id="markdown-server-side-technologies-used" name="server-side-technologies-used"></a>
 
+<a id="markdown-server-side-technologies-used" name="server-side-technologies-used"></a>
 
 - Node.js
 - Express.js
@@ -82,8 +83,8 @@ information. Users can also register, log in, log out, and delete their accounts
 - Unit tests using Jest
 
 ## Other technologies used
-<a id="markdown-other-technologies-used" name="other-technologies-used"></a>
 
+<a id="markdown-other-technologies-used" name="other-technologies-used"></a>
 
 - Git for version control
 - GitHub for remotely storing the code
@@ -91,14 +92,14 @@ information. Users can also register, log in, log out, and delete their accounts
 - Figma for designing the app
 
 ## Deployment
-<a id="markdown-deployment" name="deployment"></a>
 
+<a id="markdown-deployment" name="deployment"></a>
 
 - The app is deployed on AWS EC2.
 
 ### How to deploy the app
-<a id="markdown-how-to-deploy-the-app" name="how-to-deploy-the-app"></a>
 
+<a id="markdown-how-to-deploy-the-app" name="how-to-deploy-the-app"></a>
 
 Local:
 
@@ -119,30 +120,51 @@ server, and the build process is never completed. So, we have to build the front
 include the `build` folder in our repository.
 
 ## Run the app locally
+
 <a id="markdown-run-the-app-locally" name="run-the-app-locally"></a>
 
-
 ### Steps to run the frontend app
-<a id="markdown-steps-to-run-the-frontend-app" name="steps-to-run-the-frontend-app"></a>
 
+<a id="markdown-steps-to-run-the-frontend-app" name="steps-to-run-the-frontend-app"></a>
 
 1. Clone the [ts-student-list-app](https://github.com/NadiaIdris/ts-student-list-app) repository by running `git clone https://github.com/NadiaIdris/ts-student-list-app.git`
 2. Run `npm install` in the root directory
-3. Run `start-dev` to start the server
+3. Run `npm run start-dev` to start the server
 
 ### Steps to run the backend app
-<a id="markdown-steps-to-run-the-backend-app" name="steps-to-run-the-backend-app"></a>
 
+<a id="markdown-steps-to-run-the-backend-app" name="steps-to-run-the-backend-app"></a>
 
 1. Clone the [nodejs-postgresql-api](https://github.com/NadiaIdris/nodejs-postgresql-api) repository
    by running `git clone https://github.com/NadiaIdris/nodejs-postgresql-api.git`
 2. Run `npm install` in the root directory
 3. Run `npm run start-dev` to start the server
 
+## Make updates to the app
+
+<a id="markdown-make-updates-to-the-app" name="make-updates-to-the-app"></a>
+
+- Make changes to the frontend code in the `ts-student-list-app` folder.
+- Make changes to the backend code in the `nodejs-postgresql-api` folder.
+- Run `npm run build` in the `ts-student-list-app` folder to build the app.
+- Commit the changes and push to the GitHub repository.
+- SSH into the EC2 instance and pull the changes from the repository.
+- Kill the server running on the EC2 instance. Run `killall node`.
+
+### Run node scripts in the background without hanging up
+
+<a id="markdown-run-node-scripts-in-the-background-without-hanging-up" name="run-node-scripts-in-the-background-without-hanging-up"></a>
+
+- `cd ~/github/ts-student-list-app/ && nohup npm run serve &`
+- `cd ~/github/nodejs-postgresql-api/ && nohup npm run start &`
+- To kill all node processes: `killall node`
+
 ## API endpoints
+
 <a id="markdown-api-endpoints" name="api-endpoints"></a>
 
 ### Registered user routes
+
 <a id="markdown-registered-user-routes" name="registered-user-routes"></a>
 
 - `POST /api/v1/user/signup` - Register a user
@@ -150,6 +172,7 @@ include the `build` folder in our repository.
 - `DELETE /api/v1/:userId/delete` - Delete a user account
 
 ### Student routes
+
 <a id="markdown-student-routes" name="student-routes"></a>
 
 - `GET /api/v1/students` - Get all students
@@ -159,15 +182,15 @@ include the `build` folder in our repository.
 - `DELETE /api/v1/students/:uid` - Delete a student
 
 ## Ports
-<a id="markdown-ports" name="ports"></a>
 
+<a id="markdown-ports" name="ports"></a>
 
 Server API runs on port `4000`.
 The client runs on port `3000`.
 
 ## Database
-<a id="markdown-database" name="database"></a>
 
+<a id="markdown-database" name="database"></a>
 
 - We have used PostgreSQL for the database.
 - We have two tables in the database: `student` and `registered_user`.
@@ -239,8 +262,8 @@ SELECT * FROM registered_user;
 ```
 
 ## SSL Certificate
-<a id="markdown-ssl-certificate" name="ssl-certificate"></a>
 
+<a id="markdown-ssl-certificate" name="ssl-certificate"></a>
 
 - Let's Encrypt: https://certbot.eff.org/instructions?ws=other&os=ubuntufocal&tab=standard
 - Certificate is issued for mylisty.com. DNS A record is set to the public IP address of the EC2 instance.
@@ -249,8 +272,8 @@ The certificate is saved at: /etc/letsencrypt/live/mylisty.com/fullchain.pem
 The key is saved at: /etc/letsencrypt/live/mylisty.com/privkey.pem
 
 ## Nginx
-<a id="markdown-nginx" name="nginx"></a>
 
+<a id="markdown-nginx" name="nginx"></a>
 
 - Install nginx: `sudo apt-get install nginx`
 - https://www.sitepoint.com/configuring-nginx-ssl-node-js/
@@ -287,11 +310,3 @@ The key is saved at: /etc/letsencrypt/live/mylisty.com/privkey.pem
 
 - Test the nginx configuration: `sudo nginx -t`
 - Restart the nginx server: `sudo systemctl restart nginx`
-
-## Run node scripts in the background without hanging up
-<a id="markdown-run-node-scripts-in-the-background-without-hanging-up" name="run-node-scripts-in-the-background-without-hanging-up"></a>
-
-
-- `cd ~/github/ts-student-list-app/ && nohup npm run serve &`
-- `cd ~/github/nodejs-postgresql-api/ && nohup npm run start &`
-- To kill all node processes: `killall node`
